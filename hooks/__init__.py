@@ -11,9 +11,10 @@ import simplejson as json
 #记录访问日志
 def do_log_history(req, resp):
     request_id = req.get_header(name='REQUEST-ID')
-    request_id = request_id[-19:]
     if request_id is None:
         return
+
+    request_id = request_id[-19:]
     paths = filter(lambda x: x != '', req.path.split('/'))
     if len(paths) >= 2:
         ctrl_name = paths[0]
@@ -37,9 +38,9 @@ def do_log_history(req, resp):
 #记录结果
 def do_log_result(req, resp):
     request_id = req.get_header(name='REQUEST-ID')
-    request_id = request_id[-19:]
     if request_id is None:
         return
+    request_id = request_id[-19:]
     respone_timestamp = datetime.now()
     OperatorLog.update(
         result=json.dumps(resp.body),

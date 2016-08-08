@@ -4,7 +4,7 @@
 from library.aliyun import Connection, DnsConnection, EssConnection, RdsConnection, EcsConnection, SlbConnection, VpcConnection
 
 
-class Ali:
+class Aliyun:
     def help(self, req, resp):
         h = '''
                         aliyun ecs rds ess slb dns

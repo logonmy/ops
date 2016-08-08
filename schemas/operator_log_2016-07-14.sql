@@ -40,6 +40,8 @@ CREATE TABLE `operator_log` (
   `exec_path` varchar(100) DEFAULT NULL COMMENT '执行路径',
   `server_ip` varchar(50) DEFAULT NULL COMMENT '服务器ip',
   `post_data` text COMMENT '提交的内容',
+  `result` text COMMENT '执行的结果',
+  `respone_timestamp` timestamp NULL DEFAULT NULL COMMENT '返回时间',
   `func` varchar(100) DEFAULT '' COMMENT '函数',
   `controller` varchar(100) DEFAULT NULL COMMENT '控制器',
   `request_id` bigint(20) unsigned DEFAULT NULL COMMENT '请求id',

@@ -37,6 +37,8 @@ class OperatorLog(BaseModel):
     login_uid = IntegerField(null=True)
     login_user = CharField(null=True)
     post_data = TextField(null=True)
+    result = TextField(null=True)
+    respone_timestamp = DateTimeField(null=True)
     request = BigIntegerField(db_column='request_id', null=True)
     server_ip = CharField(null=True)
 

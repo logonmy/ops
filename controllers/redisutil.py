@@ -5,7 +5,7 @@
 class redisutil:
     def help(self, req, resp):
         h = '''
-                        redis管理(使用codis)
+                        redis管理(使用codis,redis-cluster)
 
             ops redisutil create_instance 创建实例
             ops redisutil del_instance 删除实例

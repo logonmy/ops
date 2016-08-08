@@ -43,9 +43,7 @@ def sink(req, resp):
             resp.status = falcon.HTTP_500
             resp.body = str(ex)
             #resp.body = 'A server error occurred. Please contact the administrator'
-
     do_log_result(req, resp)
-
 
 app = falcon.API(middleware=[MultipartMiddleware()])
 

@@ -10,7 +10,7 @@ from configs import upyun_config, chinacache_config
 from helpers.logger import log_error, log_debug
 import simplejson as json
 
-support = ['alicdn', 'upyun', 'chinacache']
+support = ['alicdn', 'upyun', 'chinacache','qcloud']
 
 
 class cdn:
@@ -21,7 +21,7 @@ class cdn:
                         请确认配置好configs/__init__.py中的对应的配置
 
             ops cdn refresh --file /tmp/test.txt,/tmp/fafew.txt --domain test.example.com -t alicdn 刷新cdn文件
-                            -t 支持 alicdn , upyun , chinacache ,默认全部
+                            -t 支持 alicdn , qcloud ,  upyun , chinacache ,默认全部
 
         '''
         return h

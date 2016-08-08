@@ -1,0 +1,67 @@
+https://github.com/ios-xr/iosxr-ansible/tree/master/local/samples/xml
+
+nexus
+
+<nc:rpc message-id="1" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0" xmlns="http://www.cisco.com/nxos:1.0:nfcli">
+        <nc:get>
+          <nc:filter type="subtree">
+            <show>
+              <interface/>
+            </show>
+          </nc:filter>
+        </nc:get>
+      </nc:rpc>
+	  
+deleteVlanInterface
+
+	"config t",
+	"no interface Vlan$vlanId"
+	
+createVrf
+	s"conf t ; vrf context $name"
+
+addSecondaryIpToInterface
+    s"conf t ; interface $interfaceName",
+    s"no shutdown ; vrf member $vrfName",
+    s"ip address $address/$netmaskBits secondary"
+	
+removeBgpNeighbor
+	s"conf t ; router bgp $customerAsnId",
+	s"no neighbor $amazonBgpIp"
+
+configureBgp
+	s"conf t ; router bgp $customerAsnId ;  vrf $vrfName",
+	s"address-family ipv4 unicast",
+	s"network $svmCidr",
+	s"neighbor $amazonBgpIp remote-as $amazonAsnId",
+	s"password 0 $bgpKey",
+	s"address-family ipv4 unicast"
+	
+createVlan
+	s"conf t ; feature interface-vlan",
+	s"vlan $id",
+	s"name $name"
+	
+createVlanInterface
+	s"conf t ; interface Vlan$vlanId",
+	s"no shutdown ; vrf member $vrfName",
+	s"ip address $address/$netmaskBits"
+
+allowVlanOnAllInterfaces
+	s"conf t ; interface Eth1/1-32",
+	s" switchport trunk  allowed  vlan  add $vlanId"
+
+vlans
+	<nc:rpc message-id="1" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0" xmlns="http://www.cisco.com/nxos:1.0:nfcli">
+	        <nc:get>
+	          <nc:filter type="subtree">
+	            <show>
+	              <vlan/>
+	            </show>
+	          </nc:filter>
+	        </nc:get>
+	      </nc:rpc>
+
+
+
+	  

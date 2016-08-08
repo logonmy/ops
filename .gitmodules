@@ -1,0 +1,6 @@
+[submodule "vendors/playbook"]
+	path = vendors/playbook
+	url = git://github.com/xiaomatech/playbook.git
+[submodule "vendors/zabbix"]
+	path = vendors/zabbix
+	url = git://github.com/xiaomatech/zabbix.git

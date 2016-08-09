@@ -10,7 +10,7 @@ from configs import upyun_config, chinacache_config
 from helpers.logger import log_error, log_debug
 import simplejson as json
 
-support = ['alicdn', 'upyun', 'chinacache','qcloud']
+support = ['alicdn', 'upyun', 'chinacache', 'qcloud']
 
 
 class cdn:
@@ -76,7 +76,7 @@ class cdn:
                 log_error(e)
                 raise Exception(e)
 
-    def _refresh_qcloud(self,domain, files):
+    def _refresh_qcloud(self, domain, files):
         service = Cdn()
         for f in files:
             try:

@@ -1,10 +1,5 @@
-"""NOS NETCONF XML Configuration Command Templates.
-
-Interface Configuration Commands
-"""
-
 # Create VLAN (vlan_id)
-CREATE_VLAN_INTERFACE = """
+brocade_CREATE_VLAN_INTERFACE = """
     <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
         <interface-vlan xmlns="urn:brocade.com:mgmt:brocade-interface">
             <interface>
@@ -17,7 +12,7 @@ CREATE_VLAN_INTERFACE = """
 """
 
 # Delete VLAN (vlan_id)
-DELETE_VLAN_INTERFACE = """
+brocade_DELETE_VLAN_INTERFACE = """
     <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
         <interface-vlan xmlns="urn:brocade.com:mgmt:brocade-interface">
             <interface>
@@ -29,12 +24,8 @@ DELETE_VLAN_INTERFACE = """
     </config>
 """
 
-#
-# AMPP Life-cycle Management Configuration Commands
-#
-
 # Create AMPP port-profile (port_profile_name)
-CREATE_PORT_PROFILE = """
+brocade_CREATE_PORT_PROFILE = """
     <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
         <port-profile xmlns="urn:brocade.com:mgmt:brocade-port-profile">
             <name>{name}</name>
@@ -43,7 +34,7 @@ CREATE_PORT_PROFILE = """
 """
 
 # Create VLAN sub-profile for port-profile (port_profile_name)
-CREATE_VLAN_PROFILE_FOR_PORT_PROFILE = """
+brocade_CREATE_VLAN_PROFILE_FOR_PORT_PROFILE = """
     <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
         <port-profile xmlns="urn:brocade.com:mgmt:brocade-port-profile">
             <name>{name}</name>
@@ -53,7 +44,7 @@ CREATE_VLAN_PROFILE_FOR_PORT_PROFILE = """
 """
 
 # Configure L2 mode for VLAN sub-profile (port_profile_name)
-CONFIGURE_L2_MODE_FOR_VLAN_PROFILE = """
+brocade_CONFIGURE_L2_MODE_FOR_VLAN_PROFILE = """
     <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
         <port-profile xmlns="urn:brocade.com:mgmt:brocade-port-profile">
             <name>{name}</name>
@@ -65,7 +56,7 @@ CONFIGURE_L2_MODE_FOR_VLAN_PROFILE = """
 """
 
 # Configure trunk mode for VLAN sub-profile (port_profile_name)
-CONFIGURE_TRUNK_MODE_FOR_VLAN_PROFILE = """
+brocade_CONFIGURE_TRUNK_MODE_FOR_VLAN_PROFILE = """
     <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
         <port-profile xmlns="urn:brocade.com:mgmt:brocade-port-profile">
             <name>{name}</name>
@@ -82,7 +73,7 @@ CONFIGURE_TRUNK_MODE_FOR_VLAN_PROFILE = """
 
 # Configure allowed VLANs for VLAN sub-profile
 # (port_profile_name, allowed_vlan, native_vlan)
-CONFIGURE_ALLOWED_VLANS_FOR_VLAN_PROFILE = """
+brocade_CONFIGURE_ALLOWED_VLANS_FOR_VLAN_PROFILE = """
     <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
         <port-profile xmlns="urn:brocade.com:mgmt:brocade-port-profile">
             <name>{name}</name>
@@ -102,7 +93,7 @@ CONFIGURE_ALLOWED_VLANS_FOR_VLAN_PROFILE = """
 """
 
 # Delete port-profile (port_profile_name)
-DELETE_PORT_PROFILE = """
+brocade_DELETE_PORT_PROFILE = """
     <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
         <port-profile
 xmlns="urn:brocade.com:mgmt:brocade-port-profile" operation="delete">
@@ -112,7 +103,7 @@ xmlns="urn:brocade.com:mgmt:brocade-port-profile" operation="delete">
 """
 
 # Activate port-profile (port_profile_name)
-ACTIVATE_PORT_PROFILE = """
+brocade_ACTIVATE_PORT_PROFILE = """
     <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
         <port-profile-global xmlns="urn:brocade.com:mgmt:brocade-port-profile">
             <port-profile>
@@ -124,7 +115,7 @@ ACTIVATE_PORT_PROFILE = """
 """
 
 # Deactivate port-profile (port_profile_name)
-DEACTIVATE_PORT_PROFILE = """
+brocade_DEACTIVATE_PORT_PROFILE = """
     <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
         <port-profile-global xmlns="urn:brocade.com:mgmt:brocade-port-profile">
             <port-profile>
@@ -137,7 +128,7 @@ xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0" nc:operation="delete" />
 """
 
 # Associate MAC address to port-profile (port_profile_name, mac_address)
-ASSOCIATE_MAC_TO_PORT_PROFILE = """
+brocade_ASSOCIATE_MAC_TO_PORT_PROFILE = """
     <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
         <port-profile-global xmlns="urn:brocade.com:mgmt:brocade-port-profile">
             <port-profile>
@@ -151,7 +142,7 @@ ASSOCIATE_MAC_TO_PORT_PROFILE = """
 """
 
 # Dissociate MAC address from port-profile (port_profile_name, mac_address)
-DISSOCIATE_MAC_FROM_PORT_PROFILE = """
+brocade_DISSOCIATE_MAC_FROM_PORT_PROFILE = """
     <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
         <port-profile-global xmlns="urn:brocade.com:mgmt:brocade-port-profile">
             <port-profile>

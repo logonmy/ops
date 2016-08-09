@@ -98,7 +98,7 @@ class Base:
     requestUri = '/v2/index.php'
     _params = {}
 
-    def __init__(self, region=None,method='GET'):
+    def __init__(self, region=None, method='GET'):
         self.secretId = qcloud_config.get('secret_id')
         self.secretKey = qcloud_config.get('secret_key')
         self.defaultRegion = region or qcloud_config.get('region')

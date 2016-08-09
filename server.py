@@ -9,12 +9,8 @@ import simplejson as json
 from helpers.logger import log_error
 
 loader = Loader(application_path='./')
-
-
 def sink(req, resp):
     do_log_history(req, resp)
-
-    rbac(req, resp)
 
     paths = filter(lambda x: x != '', req.path.split('/'))
     ctrl_name = func_name = 'index'
@@ -44,6 +40,7 @@ def sink(req, resp):
             resp.body = str(ex)
             #resp.body = 'A server error occurred. Please contact the administrator'
     do_log_result(req, resp)
+
 
 app = falcon.API(middleware=[MultipartMiddleware()])
 

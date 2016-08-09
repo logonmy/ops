@@ -144,11 +144,7 @@ aliyun_config = {
     'secret_access_key': '',
 }
 
-qcloud_config = {
-    'secret_id':'',
-    'secret_key':'',
-    'region':'gz'
-}
+qcloud_config = {'secret_id': '', 'secret_key': '', 'region': 'gz'}
 upyun_config = {'bucket': '', 'username': '', 'password': '', 'secret': ''}
 
 chinacache_config = {'username': '', 'password': ''}

@@ -48,7 +48,7 @@ class Nexus(Netconf):
                                       </config>
                                 """
 
-    def enable_vlan(self, vlanid, vlanname):
+    def create_vlan(self, vlanid, vlanname):
         cmd_vlan_conf_snippet = """
                                         <vlan>
                                           <vlan-id-create-delete>
@@ -72,7 +72,7 @@ class Nexus(Netconf):
         xml_raw = self.connect.edit_config(target='running', config=confstr)
         return xmltodict.parse(xml_raw.data_xml)
 
-    def enable_vlan_interface(self, interface, vlanid):
+    def modify_interface_trunk(self, interface, vlanid):
         cmd_vlan_int_snippet = """
                                       <interface>
                                         <ethernet>
@@ -99,33 +99,6 @@ class Nexus(Netconf):
         xml_raw = self.connect.edit_config(target='running', config=confstr)
         return xmltodict.parse(xml_raw.data_xml)
 
-    def disable_vlan_interface(self, interface, vlanid):
-        cmd_no_vlan_int_snippet = """
-                                        <interface>
-                                            <ethernet>
-                                              <interface>%s</interface>
-                                              <__XML__MODE_if-ethernet-switch>
-                                                <switchport></switchport>
-                                                <switchport>
-                                                  <trunk>
-                                                    <notallowed>
-                                                      <vlan>
-                                                        <__XML__BLK_Cmd_switchport_trunk_allowed_allow-vlans>
-                                                          <allow-vlans>%s</allow-vlans>
-                                                        </__XML__BLK_Cmd_switchport_trunk_allowed_allow-vlans>
-                                                      </vlan>
-                                                    </notallowed>
-                                                  </trunk>
-                                                <switchport>
-                                              </__XML__MODE_if-ethernet-switch>
-                                            </ethernet>
-                                          </interface>
-                                 """
-        confstr = cmd_no_vlan_int_snippet % (interface, vlanid)
-        confstr = self.exec_conf_prefix + confstr + self.exec_conf_postfix
-        xml_raw = self.connect.edit_config(target='running', config=confstr)
-        return xmltodict.parse(xml_raw.data_xml)
-
     def get_mac_address_table(self):
         cmd_mac_address_snippt = """
                                   <show>
@@ -144,6 +117,15 @@ class Nexus(Netconf):
                                 </show>
                             """
         xml_raw = self.connect.get(("subtree", cmd_show_vlans))
+        return xmltodict.parse(str(xml_raw))
+
+    def get_interface_list(self):
+        show_interface = '''
+                        <show>
+                              <interface/>
+                        </show>
+                        '''
+        xml_raw = self.connect.get(("subtree", show_interface))
         return xmltodict.parse(str(xml_raw))
 
     def exec_commond(self, command_list):
@@ -165,6 +147,46 @@ class Nexus(Netconf):
         xml_raw = self.connect.edit_config(target='running', config=confstr)
         return xmltodict.parse(xml_raw.data_xml)
 
+    def delete_vlan_interface(self, vlan_id):
+        cmd_list = ['config t', 'no interface Vlan%s' % vlan_id]
+        return self.exec_commond(cmd_list)
+
+    def create_vrf(self, vrf_name):
+        cmd_list = ['config t', 'vrf context %s' % vrf_name]
+        return self.exec_commond(cmd_list)
+
+    def add_secondary_ip_to_interface(self, interface_name, vrf_name, address,
+                                      netmask_bits):
+        cmd_list = ['config t', 'interface %s' % interface_name,
+                    'no shutdown ; vrf member %s' % vrf_name,
+                    'ip address %s/%s secondary' % (address, netmask_bits)]
+        return self.exec_commond(cmd_list)
+
+    def remove_bgp_neighbor(self, customer_asn_id, amazon_bgp_ip):
+        cmd_list = ['conf t ; router bgp %s' % customer_asn_id,
+                    'no neighbor %s' % amazon_bgp_ip]
+        return self.exec_commond(cmd_list)
+
+    def configure_bgp(self, customer_asn_id, vrf_name, svm_cidr, amazon_bgp_ip,
+                      amazon_asn_id, bgp_key):
+        cmd_list = ["conf t ; router bgp %s ;  vrf %s" %
+                    (customer_asn_id, vrf_name), "address-family ipv4 unicast",
+                    "network %s" % svm_cidr, "neighbor %s remote-as %s" %
+                    (amazon_bgp_ip, amazon_asn_id), "password 0 %s" % bgp_key,
+                    "address-family ipv4 unicast"]
+        return self.exec_commond(cmd_list)
+
+    def create_vlan_interface(self, vlan_id, vrf_name, address, netmask_bits):
+        cmd_list = ["conf t ; interface Vlan%s" % vlan_id,
+                    "no shutdown ; vrf member %s" % vrf_name,
+                    "ip address %s/%s" % (address, netmask_bits)]
+        return self.exec_commond(cmd_list)
+
+    def allowVlanOnAllInterfaces(self, vlan_id):
+        cmd_list = ["conf t ; interface Eth1/1-32",
+                    " switchport trunk  allowed  vlan  add %s" % vlan_id]
+        return self.exec_commond(cmd_list)
+
 
 class H3c(Netconf):
     def __init__(self, host, device='h3c'):
@@ -180,7 +202,7 @@ class H3c(Netconf):
         self.get_prefix = """<top xmlns="http://www.h3c.com/netconf/data:1.0">"""
         self.get_postfix = """</top>"""
 
-    def enable_vlan(self, vlanid, vlanname):
+    def create_vlan(self, vlanid, vlanname):
         vlan_xml = '''
                         <VLAN nc:operation="merge"><VLANs><VLANID><Name>%s</Name><Description>%s</Description><ID>%s</ID></VLANID></VLANs></VLAN>
                     '''
@@ -275,7 +297,7 @@ class H3c(Netconf):
             ('subtree', self.get_prefix + interface_filter + self.get_postfix))
         return xmltodict.parse(xml_raw.data_xml)
 
-    def down(self, interface_name):
+    def interface_down(self, interface_name):
         iface_index = self.get_iface_index(interface_name=interface_name)
         if iface_index is None:
             return
@@ -285,7 +307,7 @@ class H3c(Netconf):
         xml_raw = self.connect.edit_config(target='running', config=confstr)
         return xml_raw
 
-    def up(self, interface_name):
+    def interface_up(self, interface_name):
         iface_index = self.get_iface_index(interface_name=interface_name)
         if iface_index is None:
             return

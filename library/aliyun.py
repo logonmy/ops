@@ -226,11 +226,7 @@ class DnsConnection(Connection):
                  region_id='cn-hangzhou',
                  access_key_id=None,
                  secret_access_key=None):
-        super(DnsConnection, self).__init__(
-            region_id,
-            'dns',
-            access_key_id=access_key_id,
-            secret_access_key=secret_access_key)
+        super(DnsConnection, self).__init__(region_id, 'dns')
 
     def add_record(self, rr=None, rrtype='A', value=None, domainname=None):
         """
@@ -409,11 +405,7 @@ class EssConnection(Connection):
     ]
 
     def __init__(self, region_id, access_key_id=None, secret_access_key=None):
-        super(EssConnection, self).__init__(
-            region_id,
-            'ess',
-            access_key_id=access_key_id,
-            secret_access_key=secret_access_key)
+        super(EssConnection, self).__init__(region_id, 'ess')
 
     def create_scaling_group(self,
                              max_size,
@@ -1136,11 +1128,7 @@ class EcsConnection(Connection):
     """
 
     def __init__(self, region_id, access_key_id=None, secret_access_key=None):
-        super(EcsConnection, self).__init__(
-            region_id,
-            'ecs',
-            access_key_id=access_key_id,
-            secret_access_key=secret_access_key)
+        super(EcsConnection, self).__init__(region_id, 'ecs')
 
     def get_all_regions(self):
         """Get all regions.
@@ -2618,11 +2606,7 @@ class RdsConnection(Connection):
     """
 
     def __init__(self, region_id, access_key_id=None, secret_access_key=None):
-        super(RdsConnection, self).__init__(
-            region_id,
-            'rds',
-            access_key_id=access_key_id,
-            secret_access_key=secret_access_key)
+        super(RdsConnection, self).__init__(region_id, 'rds')
 
     def describe_all_db_instances(self,
                                   region_id='cn-hangzhou',
@@ -3021,11 +3005,7 @@ class SlbConnection(Connection):
             access_key_id (str): The access key id.
             secret_access_key (str): The secret access key.
         """
-        super(SlbConnection, self).__init__(
-            region_id,
-            'slb',
-            access_key_id=access_key_id,
-            secret_access_key=secret_access_key)
+        super(SlbConnection, self).__init__(region_id, 'slb')
 
     def get_all_regions(self):
         """Get all regions.
@@ -3707,11 +3687,7 @@ class VpcConnection(Connection):
                  region_id='cn-hangzhou',
                  access_key_id=None,
                  secret_access_key=None):
-        super(VpcConnection, self).__init__(
-            region_id,
-            'vpc',
-            access_key_id=access_key_id,
-            secret_access_key=secret_access_key)
+        super(VpcConnection, self).__init__(region_id, 'vpc')
 
     def create_vpc(self,
                    cidr_block=None,

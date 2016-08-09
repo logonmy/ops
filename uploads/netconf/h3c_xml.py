@@ -1,205 +1,3 @@
-# -*- coding: utf-8 -*-
-#
-# H3C Technologies Co., Limited Copyright 2003-2015, All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-# implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-import urllib2
-import ssl
-from string import Template
-from xml.etree import ElementTree
-from oslo_log import log as logging
-from neutron.plugins.ml2.drivers.hp.common import tools
-
-LOG = logging.getLogger(__name__)
-
-MESSAGE_ID = "404"
-LANGUAGE_CH = "zh-cn"
-LANGUAGE_EN = "en"
-
-NS_HELLO = "{http://www.%s.com/netconf/base:1.0}"
-NS_DATA = "{http://www.%s.com/netconf/data:1.0}"
-SESSION = """<env:Envelope
-  xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
-  <env:Header>
-    <auth:Authentication env:mustUnderstand="1"
-    xmlns:auth="http://www.$OEM.com/netconf/base:1.0">
-      <auth:AuthInfo>$AuthInfo</auth:AuthInfo>
-      <auth:Language>$Language</auth:Language>
-    </auth:Authentication>
-  </env:Header>
-  <env:Body>
-    <rpc message-id="$messageid"
-    xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
-       <get-sessions/>
-    </rpc>
-   </env:Body>
-</env:Envelope>
-"""
-HELLO = """<env:Envelope
- xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
-   <env:Header>
-      <auth:Authentication env:mustUnderstand="1"
-      xmlns:auth="http://www.%s.com/netconf/base:1.0">
-         <auth:UserName>%s</auth:UserName>
-         <auth:Password>%s</auth:Password>
-      </auth:Authentication>
-   </env:Header>
-   <env:Body>
-      <hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
-         <capabilities>
-            <capability>urn:ietf:params:netconf:base:1.0</capability>
-         </capabilities>
-      </hello>
-   </env:Body>
-</env:Envelope>"""
-
-CLOSE = """<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
-   <env:Header>
-      <auth:Authentication env:mustUnderstand="1"
-      xmlns:auth="http://www.$OEM.com/netconf/base:1.0">
-         <auth:AuthInfo>$AuthInfo</auth:AuthInfo>
-         <auth:Language>$Language</auth:Language>
-      </auth:Authentication>
-   </env:Header>
-   <env:Body>
-     <rpc message-id="$messageid"
-          xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
-       <close-session/>
-     </rpc>
-   </env:Body>
-</env:Envelope>"""
-
-EDIT_HEAD = """<env:Envelope
-xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
-  <env:Header>
-    <auth:Authentication env:mustUnderstand="1"
-     xmlns:auth="http://www.$OEM.com/netconf/base:1.0">
-      <auth:AuthInfo>$AuthInfo</auth:AuthInfo>
-      <auth:Language>$Language</auth:Language>
-    </auth:Authentication>
-  </env:Header>
-  <env:Body>
-    <rpc message-id="$messageid"
-      xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
-      <edit-config>
-             <target>
-          <running/>
-        </target>
-            <default-operation>merge</default-operation>
-        <test-option>set</test-option>
-        <error-option>continue-on-error</error-option>
-        <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
-          <top xmlns="http://www.$OEM.com/netconf/config:1.0" >"""
-
-EDIT_TAIL = """ </top>
-        </config>
-      </edit-config>
-    </rpc>
-  </env:Body>
-</env:Envelope>"""
-
-GET_HEADER = """<env:Envelope
-  xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
-  <env:Header>
-    <auth:Authentication env:mustUnderstand="1"
-     xmlns:auth="http://www.$OEM.com/netconf/base:1.0">
-      <auth:AuthInfo>$AuthInfo</auth:AuthInfo>
-      <auth:Language>$Language</auth:Language>
-    </auth:Authentication>
-  </env:Header>
-  <env:Body>
-    <rpc message-id="$messageid"
-    xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
-      <get>
-        <filter type="subtree">
-          <top xmlns="http://www.$OEM.com/netconf/data:1.0"
-          xmlns:h3c="http://www.$OEM.com/netconf/data:1.0"
-          xmlns:base="http://www.$OEM.com/netconf/base:1.0"
-          xmlns:netconf="urn:ietf:params:xml:ns:netconf:base:1.0">"""
-
-GET_TAIL = """</top></filter>
-         </get>
-      </rpc>
-   </env:Body>
-</env:Envelope>"""
-
-GET_BULK_HEADER = """<env:Envelope
-xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
-  <env:Header>
-    <auth:Authentication env:mustUnderstand="1"
-    xmlns:auth="http://www.$OEM.com/netconf/base:1.0">
-      <auth:AuthInfo>$AuthInfo</auth:AuthInfo>
-      <auth:Language>$Language</auth:Language>
-    </auth:Authentication>
-  </env:Header>
-  <env:Body>
-    <rpc message-id="$messageid"
-    xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
-      <get-bulk>
-        <filter type="subtree">
-          <top xmlns="http://www.$OEM.com/netconf/data:1.0"
-          xmlns:h3c="http://www.$OEM.com/netconf/data:1.0"
-          xmlns:base="http://www.$OEM.com/netconf/base:1.0"
-          xmlns:netconf="urn:ietf:params:xml:ns:netconf:base:1.0">"""
-
-GET_BULK_TAIL = """</top></filter>
-         </get-bulk>
-      </rpc>
-   </env:Body>
-</env:Envelope>"""
-
-CLI_EXEC_HEAD = """<env:Envelope
- xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
-   <env:Header>
-      <auth:Authentication env:mustUnderstand="1"
-      xmlns:auth="http://www.$OEM.com/netconf/base:1.0">
-         <auth:AuthInfo>$AuthInfo</auth:AuthInfo>
-         <auth:Language>$Language</auth:Language>
-      </auth:Authentication>
-   </env:Header>
-   <env:Body>
-      <rpc message-id="$messageid"
-      xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
-         <CLI>
-          <Execution>"""
-
-CLI_EXEC_TAIL = """</Execution>
-        </CLI>
-      </rpc>
-   </env:Body>
-</env:Envelope>"""
-
-CLI_CONF_HEAD = """<env:Envelope
- xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
-   <env:Header>
-      <auth:Authentication env:mustUnderstand="1"
-       xmlns:auth="http://www.$OEM.com/netconf/base:1.0">
-         <auth:AuthInfo>$AuthInfo</auth:AuthInfo>
-         <auth:Language>$Language</auth:Language>
-      </auth:Authentication>
-   </env:Header>
-   <env:Body>
-      <rpc message-id="$messageid"
-       xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
-         <CLI>
-          <Configuration>"""
-
-CLI_CONF_TAIL = """</Configuration>
-        </CLI>
-      </rpc>
-   </env:Body>
-</env:Envelope>"""
 NC_VLAN_GROUP = """<VLAN xc:operation='%s'>
                     <VLANs>%s</VLANs>
                  </VLAN>
@@ -221,7 +19,6 @@ NC_LINKTYPE_INTERFACE = """<Interface>
 NC_LINKTYPE = """<Ifmgr>
                  <Interfaces>%s</Interfaces>
                </Ifmgr>"""
-SOAP_HTTPS_PORT = 832
 
 change_sysname = """
 <config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
@@ -514,3 +311,158 @@ display_command = """
                     </CLI>
                 </rpc>
                 """
+
+vsi_xml = """
+        <config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"
+         xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+          <top xmlns="http://www.h3c.com/netconf/config:1.0">
+            <L2VPN xc:operation="{operation}">
+              <VSIs>
+                <VSI>
+                  <VsiName>{vsiname}</VsiName>
+                </VSI>
+              </VSIs>
+            </L2VPN>
+          </top>
+        </config>
+    """
+create_vxlan_xml = """
+        <config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"
+         xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+          <top xmlns="http://www.h3c.com/netconf/config:1.0">
+            <VXLAN xc:operation="merge">
+              <VXLANs>
+                  <Vxlan>
+                      <VxlanID>{vxlanid}</VxlanID>
+                      <VsiName>{vsiname}</VsiName>
+                  </Vxlan>
+              </VXLANs>
+            </VXLAN>
+          </top>
+        </config>
+    """
+delete_vxlan_xml = """
+        <config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"
+         xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+          <top xmlns="http://www.h3c.com/netconf/config:1.0">
+            <VXLAN xc:operation="remove">
+              <VXLANs>
+                  <Vxlan>
+                      <VxlanID>{vxlanid}</VxlanID>
+                  </Vxlan>
+              </VXLANs>
+            </VXLAN>
+          </top>
+        </config>
+    """
+edit_vxlan_xml = """
+        <config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"
+         xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+          <top xmlns="http://www.h3c.com/netconf/config:1.0">
+            <VXLAN xc:operation="merge">
+              <Tunnels>
+                  <Tunnel>
+                      <VxlanID>{vxlanid}</VxlanID>
+                      <TunnelID>{tunnelid}</TunnelID>
+                  </Tunnel>
+              </Tunnels>
+            </VXLAN>
+          </top>
+        </config>
+    """
+create_tunnel_xml = """
+        <config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"
+         xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+          <top xmlns="http://www.h3c.com/netconf/config:1.0">
+            <TUNNEL xc:operation="merge">
+              <Tunnels>
+                  <Tunnel>
+                      <ID>{tunnel_id}</ID>
+                      <Mode>24</Mode>
+                      <IPv4Addr>
+                          <SrcAddr>{src_addr}</SrcAddr>
+                          <DstAddr>{dst_addr}</DstAddr>
+                      </IPv4Addr>
+                  </Tunnel>
+              </Tunnels>
+            </TUNNEL>
+          </top>
+        </config>
+    """
+delete_tunnel_xml = """
+        <config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"
+         xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+          <top xmlns="http://www.h3c.com/netconf/config:1.0">
+            <TUNNEL xc:operation="remove">
+              <Tunnels>
+                  <Tunnel>
+                      <ID>{tunnel_id}</ID>
+                  </Tunnel>
+              </Tunnels>
+            </TUNNEL>
+          </top>
+        </config>
+    """
+create_ac_xml = """
+    <config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"
+     xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+        <top xmlns="http://www.h3c.com/netconf/config:1.0">
+            <L2VPN xc:operation="merge">
+                <ACs>
+                    <AC>
+                        <IfIndex>{if_index}</IfIndex>
+                        <SrvID>{service_id}</SrvID>
+                        <VsiName>{vsi_name}</VsiName>
+                    </AC>
+                </ACs>
+            </L2VPN>
+        </top>
+    </config>
+    """
+delete_ac_xml = """
+    <config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"
+     xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+        <top xmlns="http://www.h3c.com/netconf/config:1.0">
+            <L2VPN xc:operation="remove">
+                <ACs>
+                    <AC>
+                        <IfIndex>{if_index}</IfIndex>
+                        <SrvID>{service_id}</SrvID>
+                    </AC>
+                </ACs>
+            </L2VPN>
+        </top>
+    </config>
+    """
+create_service_xml = """
+    <config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"
+     xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+        <top xmlns="http://www.h3c.com/netconf/config:1.0">
+            <L2VPN xc:operation="merge">
+                <SRVs>
+                    <SRV>
+                        <IfIndex>{if_index}</IfIndex>
+                        <SrvID>{service_id}</SrvID>
+                        <Encap>4</Encap>
+                        <SVlanRange>{s_vid}</SVlanRange>
+                    </SRV>
+                </SRVs>
+            </L2VPN>
+        </top>
+    </config>
+    """
+delete_service_xml = """
+    <config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"
+     xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+        <top xmlns="http://www.h3c.com/netconf/config:1.0">
+            <L2VPN xc:operation="remove">
+                <SRVs>
+                    <SRV>
+                        <IfIndex>{if_index}</IfIndex>
+                        <SrvID>{service_id}</SrvID>
+                    </SRV>
+                </SRVs>
+            </L2VPN>
+        </top>
+    </config>
+    """

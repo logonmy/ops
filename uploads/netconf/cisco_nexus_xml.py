@@ -1,8 +1,4 @@
-"""
-Nexus-OS XML-based configuration snippets
-"""
-
-EXEC_CONF_SNIPPET = """
+nexus_EXEC_CONF_SNIPPET = """
       <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
         <configure>
           <__XML__MODE__exec_configure>%s
@@ -11,7 +7,7 @@ EXEC_CONF_SNIPPET = """
       </config>
 """
 
-CMD_VLAN_CONF_SNIPPET = """
+nexus_CMD_VLAN_CONF_SNIPPET = """
             <vlan>
               <vlan-id-create-delete>
                 <__XML__PARAM_value>%s</__XML__PARAM_value>
@@ -24,7 +20,7 @@ CMD_VLAN_CONF_SNIPPET = """
             </vlan>
 """
 
-CMD_VLAN_ACTIVE_SNIPPET = """
+nexus_CMD_VLAN_ACTIVE_SNIPPET = """
             <vlan>
               <vlan-id-create-delete>
                 <__XML__PARAM_value>%s</__XML__PARAM_value>
@@ -37,7 +33,7 @@ CMD_VLAN_ACTIVE_SNIPPET = """
             </vlan>
 """
 
-CMD_VLAN_NO_SHUTDOWN_SNIPPET = """
+nexus_CMD_VLAN_NO_SHUTDOWN_SNIPPET = """
             <vlan>
               <vlan-id-create-delete>
                 <__XML__PARAM_value>%s</__XML__PARAM_value>
@@ -50,7 +46,7 @@ CMD_VLAN_NO_SHUTDOWN_SNIPPET = """
             </vlan>
 """
 
-CMD_NO_VLAN_CONF_SNIPPET = """
+nexus_CMD_NO_VLAN_CONF_SNIPPET = """
           <no>
           <vlan>
             <vlan-id-create-delete>
@@ -60,7 +56,7 @@ CMD_NO_VLAN_CONF_SNIPPET = """
           </no>
 """
 
-CMD_INT_VLAN_HEADER = """
+nexus_CMD_INT_VLAN_HEADER = """
           <interface>
             <%s>
               <interface>%s</interface>
@@ -70,14 +66,14 @@ CMD_INT_VLAN_HEADER = """
                     <allowed>
                       <vlan>"""
 
-CMD_VLAN_ID = """
+nexus_CMD_VLAN_ID = """
                           <vlan_id>%s</vlan_id>"""
 
-CMD_VLAN_ADD_ID = """
+nexus_CMD_VLAN_ADD_ID = """
                         <add>%s
-                        </add>""" % CMD_VLAN_ID
+                        </add>""" % nexus_CMD_VLAN_ID
 
-CMD_INT_VLAN_TRAILER = """
+nexus_CMD_INT_VLAN_TRAILER = """
                       </vlan>
                     </allowed>
                   </trunk>
@@ -87,13 +83,13 @@ CMD_INT_VLAN_TRAILER = """
           </interface>
 """
 
-CMD_INT_VLAN_SNIPPET = (
-    CMD_INT_VLAN_HEADER + CMD_VLAN_ID + CMD_INT_VLAN_TRAILER)
+nexus_CMD_INT_VLAN_SNIPPET = (
+    nexus_CMD_INT_VLAN_HEADER + nexus_CMD_VLAN_ID + nexus_CMD_INT_VLAN_TRAILER)
 
-CMD_INT_VLAN_ADD_SNIPPET = (
-    CMD_INT_VLAN_HEADER + CMD_VLAN_ADD_ID + CMD_INT_VLAN_TRAILER)
+nexus_CMD_INT_VLAN_ADD_SNIPPET = (
+    nexus_CMD_INT_VLAN_HEADER + nexus_CMD_VLAN_ID + nexus_CMD_INT_VLAN_TRAILER)
 
-CMD_PORT_TRUNK = """
+nexus_CMD_PORT_TRUNK = """
           <interface>
             <%s>
               <interface>%s</interface>
@@ -110,7 +106,7 @@ CMD_PORT_TRUNK = """
           </interface>
 """
 
-CMD_NO_SWITCHPORT = """
+nexus_CMD_NO_SWITCHPORT = """
           <interface>
             <%s>
               <interface>%s</interface>
@@ -124,7 +120,7 @@ CMD_NO_SWITCHPORT = """
           </interface>
 """
 
-CMD_NO_VLAN_INT_SNIPPET = """
+nexus_CMD_NO_VLAN_INT_SNIPPET = """
           <interface>
             <%s>
               <interface>%s</interface>
@@ -146,7 +142,7 @@ CMD_NO_VLAN_INT_SNIPPET = """
           </interface>
 """
 
-FILTER_SHOW_VLAN_BRIEF_SNIPPET = """
+nexus_FILTER_SHOW_VLAN_BRIEF_SNIPPET = """
       <show xmlns="http://www.cisco.com/nxos:1.0:vlan_mgr_cli">
         <vlan>
           <brief/>
@@ -154,7 +150,7 @@ FILTER_SHOW_VLAN_BRIEF_SNIPPET = """
       </show>
 """
 
-CMD_VLAN_SVI_SNIPPET = """
+nexus_CMD_VLAN_SVI_SNIPPET = """
 <interface>
     <vlan>
         <vlan>%s</vlan>
@@ -172,7 +168,7 @@ CMD_VLAN_SVI_SNIPPET = """
 </interface>
 """
 
-CMD_NO_VLAN_SVI_SNIPPET = """
+nexus_CMD_NO_VLAN_SVI_SNIPPET = """
 <no>
     <interface>
         <vlan>

@@ -163,7 +163,7 @@ class Deploy:
             for app_ip in app_ip_list:
                 Tasks.insert(job=job_id,
                              group=lb_ip,
-                             server_ip=app_ip ).execute()
+                             server_ip=app_ip).execute()
         #threadpool task for every group
         self._do_job(job_id=job_id)
 

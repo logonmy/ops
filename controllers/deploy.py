@@ -106,7 +106,7 @@ class Deploy:
 
     def _job_id(self, uid):
         now_time = time.time()
-        request_id = str(now_time) + str(uid)
+        request_id = str(now_time).replace('.', '')[-8:] + str(uid)[-4:]
         return request_id.replace('.', '')
 
     @staticmethod

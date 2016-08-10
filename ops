@@ -183,7 +183,7 @@ class Common(object):
     def request_id(self, uid, server_ip):
         ip2int = self.ip2int(server_ip)
         now_time = time.time()
-        request_id = str(ip2int) + str(now_time) + str(uid)
+        request_id = str(ip2int)[-8:] + str(now_time).replace('.', '')[-8:] + str(uid)[-4:]
         return request_id.replace('.', '')
 
     def url_fetch(self, url, data=None, timeout=30):

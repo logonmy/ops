@@ -211,7 +211,7 @@ class H3c(Netconf):
         xml_raw = self.connect.edit_config(target='running', config=confstr)
         return xml_raw
 
-    def modify_vlan_access(self, interface_name, vlanid):
+    def modify_interface_access(self, interface_name, vlanid):
         iface_index = self.get_iface_index(interface_name=interface_name)
         if iface_index is None:
             return
@@ -225,7 +225,7 @@ class H3c(Netconf):
         xml_raw = self.connect.edit_config(target='running', config=confstr)
         return xml_raw
 
-    def modify_vlan_trunk(self, interface_name, vlanid_str):
+    def modify_interface_trunk(self, interface_name, vlanid_str):
         iface_index = self.get_iface_index(interface_name=interface_name)
         if iface_index is None:
             return

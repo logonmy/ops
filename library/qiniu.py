@@ -257,13 +257,3 @@ class Bucket(object):
 
     def _build_cp_mv_args(self, *args):
         return [self.bucket, args[0], self.bucket, args[1]]
-
-
-if __name__ == '__main__':
-    qiniu = Qiniu('333333333', 'ffffffffff')
-    b = qiniu.get_bucket('eeeeeeeee')
-    b.put('a')
-    b.stat('a')
-    b.delete('a')
-    b.copy('a', 'c')
-    b.move('a', 'c')

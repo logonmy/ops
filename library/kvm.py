@@ -38,7 +38,7 @@ from datetime import datetime
 from IPy import IP
 import base64
 from configs import kvm_config
-from helpers.logger import log_error, log_debug
+from helpers.logger import log_error
 from threading import Condition, Lock, currentThread
 import time
 

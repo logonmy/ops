@@ -456,19 +456,3 @@ class Switch:
 
         return []
 
-# if __name__ == '__main__':
-#     import pprint
-#     s = snmp();
-#     s.dest('10.3.188.32')
-#     pprint.pprint(s.walk('.1.3.6.1.2.1.1'))
-#     pprint.pprint(s.walk('.1.3.6.1.2.1.2.2.1'))
-#     h3cSwitchMIB=dict(
-#         sn='iso.3.6.1.2.1.47.1.1.1.1.11.2', mactable='iso.3.6.1.4.1.25506.8.35.3.1.1.1',
-#         table2port='iso.3.6.1.4.1.25506.8.35.3.2.1.2', portmacaddr='iso.3.6.1.2.1.2.2.1.6',
-#         portname='iso.3.6.1.2.1.2.2.1.2', portstatus='iso.3.6.1.2.1.2.2.1.8')
-#
-#     pprint.pprint(s.walk('.1.3.6.1.4.1.9.9.46.1.3.1.1.4.1')) #vlan
-#     sw = switch()
-#     sw.setDest('10.3.188.32')
-#     pprint.pprint(sw.getInterfaces())
-#     pprint.pprint(sw.getCamTable(translateInterface=False))

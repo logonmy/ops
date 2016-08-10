@@ -49,7 +49,7 @@ zabbix_config = {
 }
 
 ssh_config = {
-    'private_key_file': './ssh_key_file',
+    'private_key_file': '',
     'port': 22,
     'user': 'ops',
     'password': 'feafoanohfd',

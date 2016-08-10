@@ -137,7 +137,6 @@ class Deploy:
         if uid is None:
             return 'uid need'
         job_id = req.get_header(name='REQUEST-ID') or self._job_id(uid=uid)
-        job_id = job_id[-19:]
         group_file = req.get_param(name='f')
         if group_file is not None:
             json_txt = group_file.file.read()

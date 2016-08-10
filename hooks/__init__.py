@@ -26,8 +26,7 @@ def do_log_history(req, resp):
     request_id = req.get_header(name='REQUEST-ID')
     if request_id is None:
         return
-    if len(request_id)>19:
-        request_id = request_id[-20:]
+    request_id = request_id[-20:]
     paths = filter(lambda x: x != '', req.path.split('/'))
     if len(paths) >= 2:
         ctrl_name = paths[0]
@@ -52,8 +51,7 @@ def do_log_result(req, resp):
     request_id = req.get_header(name='REQUEST-ID')
     if request_id is None:
         return
-    if len(request_id)>19:
-        request_id = request_id[-20:]
+    request_id = request_id[-20:]
     respone_timestamp = datetime.now()
     OperatorLog.update(result=json.dumps(resp.body),
                        respone_timestamp=respone_timestamp).where(

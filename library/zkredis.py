@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf8 -*-
 
-import json
+import simplejson as json
 import random
 
 from redis import Connection

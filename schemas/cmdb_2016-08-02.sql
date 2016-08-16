@@ -1,15 +1,3 @@
-# ************************************************************
-# Sequel Pro SQL dump
-# Version 4541
-#
-# http://www.sequelpro.com/
-# https://github.com/sequelpro/sequelpro
-#
-# Host: 127.0.0.1 (MySQL 5.7.11-4)
-# Database: cmdb
-# Generation Time: 2016-08-02 03:17:34 +0000
-# ************************************************************
-
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -240,8 +228,8 @@ DROP TABLE IF EXISTS `server_tag`;
 
 CREATE TABLE `server_tag` (
   `server_tag_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `server_tag_key` varchar(300) DEFAULT '0',
-  `server_tag_value` varchar(300) DEFAULT '0',
+  `server_tag_key` varchar(100) DEFAULT '0',
+  `server_tag_value` varchar(100) DEFAULT '0',
   `create_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `assets_id` int(10) unsigned DEFAULT '0',
   PRIMARY KEY (`server_tag_id`),

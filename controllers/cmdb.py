@@ -175,19 +175,21 @@ class cmdb:
         if asset_id is None:
             return 'not such host,please addhost first'
 
-        device = Device.select().join(DeviceTemplate,on=(DeviceTemplate.template == Device.template))\
-            .where(Device.assets == asset_id)
+        device = Device.select().where(Device.assets == asset_id)
         for item in device:
             result['status'] = item.device_status
             result['environment'] = item.environment
             result['logic_area'] = item.logic_area
             result['seat'] = item.seat
             result['tier'] = item.tier
-            result['cpu'] = item.template.cpu
-            result['disk'] = item.template.disk
-            result['memory'] = item.template.memory
-            result['server_type'] = item.template.server_type
-            result['kernel'] = item.template.kernel
+	template = DeviceTemplate.select().join(Device,on=(DeviceTemplate.template == Device.template))\
+            .where(Device.assets == asset_id)
+	for item in template:
+            result['cpu'] = item.cpu
+            result['disk'] = item.disk
+            result['memory'] = item.memory
+            result['server_type'] = item.server_type
+            result['kernel'] = item.kernel
 
         return result
 
@@ -195,7 +197,7 @@ class cmdb:
         result = []
         res = Ip.select().group_by(Ip.ip)
         for server in res:
-            result.append(server.ip.ip)
+            result.append(server.ip)
         return result
 
     def addhost(self, req, resp):

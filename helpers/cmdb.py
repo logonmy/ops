@@ -29,8 +29,8 @@ def server_tag_ip(tag):
     res = Ip.raw(sql + ' and '.join(sql_list))
 
     for server in res:
-        if server.ip.ip not in result:
-            result.append(server.ip.ip)
+        if server.ip not in result:
+            result.append(server.ip)
     return result
 
 

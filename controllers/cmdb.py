@@ -93,9 +93,7 @@ class cmdb:
                 unsuport_key.append(key)
                 continue
             servertag, created = ServerTag.get_or_create(
-                assets=asset_id,
-                server_tag_value=value,
-                server_tag_key=key)
+                assets=asset_id, server_tag_value=value, server_tag_key=key)
         if len(unsuport_key) > 0:
             return {'status': 'fail',
                     'unsuport_key': unsuport_key,
@@ -182,9 +180,9 @@ class cmdb:
             result['logic_area'] = item.logic_area
             result['seat'] = item.seat
             result['tier'] = item.tier
-	template = DeviceTemplate.select().join(Device,on=(DeviceTemplate.template == Device.template))\
-            .where(Device.assets == asset_id)
-	for item in template:
+        template = DeviceTemplate.select().join(Device,on=(DeviceTemplate.template == Device.template))\
+                   .where(Device.assets == asset_id)
+        for item in template:
             result['cpu'] = item.cpu
             result['disk'] = item.disk
             result['memory'] = item.memory
@@ -210,13 +208,14 @@ class cmdb:
         rack = req.get_param(name='rack')
         seat = req.get_param(name='seat')
 
-        return self._addhost(type=type,
-                             ip=ip,
-                             room=room,
-                             rack=rack,
-                             seat=seat,
-                             logicarea=logicarea,
-                             remarks=remarks)
+        return self._addhost(
+            type=type,
+            ip=ip,
+            room=room,
+            rack=rack,
+            seat=seat,
+            logicarea=logicarea,
+            remarks=remarks)
 
     def addsegment(self, req, resp):
         vlan_id = req.get_param(name='vlan_id') or 0
@@ -236,19 +235,20 @@ class cmdb:
         ips = IP(cidr)
         netmask = ips.netmask()
 
-        room_res, created = Room.get_or_create(room_name_en=room,
-                                               room_name=room)
+        room_res, created = Room.get_or_create(
+            room_name_en=room, room_name=room)
         room_id = room_res.room
 
-        segment, created = Segment.get_or_create(gateway=gateway,
-                                                 ip_type=ip_type,
-                                                 carriers=carriers,
-                                                 remarks=remarks,
-                                                 segment_ip=segment_ip,
-                                                 netmask=netmask,
-                                                 total=len(ips),
-                                                 vlan=vlan_id,
-                                                 room=room_id)
+        segment, created = Segment.get_or_create(
+            gateway=gateway,
+            ip_type=ip_type,
+            carriers=carriers,
+            remarks=remarks,
+            segment_ip=segment_ip,
+            netmask=netmask,
+            total=len(ips),
+            vlan=vlan_id,
+            room=room_id)
         if created:
             insert = []
             for ip in ips:
@@ -305,13 +305,14 @@ class cmdb:
             seat = row.get('seat')
             logicarea = row.get('logicarea')
             remarks = row.get('remarks')
-            self._addhost(type=type,
-                          ip=ip,
-                          room=room,
-                          rack=rack,
-                          seat=seat,
-                          logicarea=logicarea,
-                          remarks=remarks)
+            self._addhost(
+                type=type,
+                ip=ip,
+                room=room,
+                rack=rack,
+                seat=seat,
+                logicarea=logicarea,
+                remarks=remarks)
         return 'ok'
 
     def _addhost(self, type, ip, room, rack, seat, logicarea, remarks=None):
@@ -320,8 +321,8 @@ class cmdb:
         if not exist:
             return 'please add segment first'
 
-        room_res, created = Room.get_or_create(room_name_en=room,
-                                               room_name=room)
+        room_res, created = Room.get_or_create(
+            room_name_en=room, room_name=room)
         room_id = room_res.room
 
         rack_res, created = Rack.get_or_create(room=room_id, rack=rack)
@@ -330,12 +331,13 @@ class cmdb:
         template, created = DeviceTemplate.get_or_create(server_type=type, )
         template_id = template.template
 
-        device, created = Device.get_or_create(logic_area=logicarea,
-                                               remarks=remarks,
-                                               room=room_id,
-                                               rack=rack_id,
-                                               seat=seat,
-                                               template=template_id)
+        device, created = Device.get_or_create(
+            logic_area=logicarea,
+            remarks=remarks,
+            room=room_id,
+            rack=rack_id,
+            seat=seat,
+            template=template_id)
         asset_id = device.assets
 
         SegmentIpPool.update(assigned='enable').where(
@@ -343,11 +345,12 @@ class cmdb:
         segment_id = exist[0].segment
         segment = Segment.select().where(Segment.segment == segment_id)
         Segment.update(assigned=segment[0].assigned + 1).execute()
-        Ip.get_or_create(assets=asset_id,
-                         ip=ip,
-                         carriers=segment[0].carriers,
-                         gateway=segment[0].gateway,
-                         netmask=segment[0].netmask,
-                         segment_ip=segment[0].segment_ip)
+        Ip.get_or_create(
+            assets=asset_id,
+            ip=ip,
+            carriers=segment[0].carriers,
+            gateway=segment[0].gateway,
+            netmask=segment[0].netmask,
+            segment_ip=segment[0].segment_ip)
 
         return 'ok'

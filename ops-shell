@@ -40,9 +40,11 @@ logging.basicConfig(
     format='%(asctime)-25s %(module)s:%(lineno)d  %(levelname)-8s %(message)s',
     filename=client_log_filename,
     filemode='a')
-logger.addHandler(RotatingFileHandler(filename=client_log_filename,
-                                      maxBytes=100 * 1024 * 1024,
-                                      backupCount=3))
+logger.addHandler(
+    RotatingFileHandler(
+        filename=client_log_filename,
+        maxBytes=100 * 1024 * 1024,
+        backupCount=3))
 
 
 class CompletionIndex:
@@ -81,9 +83,8 @@ class ShellLexer(RegexLexer):
         'root': [
             # ec2, s3, elb...
             (words(
-                tuple(completion_index.commands),
-                prefix=r'\b',
-                suffix=r'\b'), Literal.String),
+                tuple(completion_index.commands), prefix=r'\b', suffix=r'\b'),
+             Literal.String),
             # describe-instances
             (words(
                 tuple(completion_index.subcommands),
@@ -96,9 +97,8 @@ class ShellLexer(RegexLexer):
                 suffix=r'\b'), Keyword.Declaration),
             # --profile
             (words(
-                tuple(completion_index.global_opts),
-                prefix=r'',
-                suffix=r'\b'), Operator.Word),
+                tuple(completion_index.global_opts), prefix=r'', suffix=r'\b'),
+             Operator.Word),
             # Everything else
             (r'.*\n', Text),
         ]
@@ -127,10 +127,8 @@ class Command(object):
     def run(self, timeout=30):
         def target():
             logger.info(self.cmd)
-            self.process = subprocess.Popen(self.cmd,
-                                            shell=True,
-                                            stdout=self.result,
-                                            stderr=self.result)
+            self.process = subprocess.Popen(
+                self.cmd, shell=True, stdout=self.result, stderr=self.result)
             self.process.communicate()
 
         thread = threading.Thread(target=target)
@@ -219,10 +217,8 @@ class Common(object):
                 if data.has_key('f') and os.path.isfile(data.get('f')):
                     files = files = {'f': open(data.get('f'), 'rb')}
                     del data['f']
-                    r = requests.post(url,
-                                      files=files,
-                                      headers=headers,
-                                      data=data)
+                    r = requests.post(
+                        url, files=files, headers=headers, data=data)
                 else:
                     r = requests.post(url, headers=headers, data=data)
             else:
@@ -372,12 +368,13 @@ def main():
     cli = Cli()
     while True:
         try:
-            text = prompt('> ',
-                          lexer=ShellLexer,
-                          completer=wordcompleter,
-                          style=DocumentStyle,
-                          history=history,
-                          on_abort=AbortAction.RETRY)
+            text = prompt(
+                '> ',
+                lexer=ShellLexer,
+                completer=wordcompleter,
+                style=DocumentStyle,
+                history=history,
+                on_abort=AbortAction.RETRY)
         except EOFError as e:
             logger.info(e)
 

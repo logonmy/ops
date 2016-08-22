@@ -466,8 +466,9 @@ class Worker(multiprocessing.Process):
                     command += "={0}".format(v)
 
         if self.manager.settings.SHARD_DB_CREDENTIALS['password']:
-            command += ' --password={0}'.format(pipes.quote(
-                self.manager.settings.SHARD_DB_CREDENTIALS['password']))
+            command += ' --password={0}'.format(
+                pipes.quote(self.manager.settings.SHARD_DB_CREDENTIALS[
+                    'password']))
         if item['slave_host'] is not None:
             command += " --check-slave-lag=h=" + item['slave_host']
             if item['slave_port'] is not None:
@@ -481,18 +482,17 @@ class Worker(multiprocessing.Process):
         command += " --{0}".format(self.manager.settings.OPTIONS[
             'running_mode'])
         print command
-        proc = subprocess.Popen(command,
-                                stderr=subprocess.PIPE,
-                                stdout=subprocess.PIPE,
-                                shell=True)  #output-producing process
-        p1 = OnlineStdoutConsumer(proc, self.response_queue,
-                                  "{0}:{1}:{2}:{3}".format(self.host,
-                                                           self.port, self.id,
-                                                           item['shard']))
-        p2 = OnlineStderrConsumer(proc, self.response_queue,
-                                  "{0}:{1}:{2}:{3}".format(self.host,
-                                                           self.port, self.id,
-                                                           item['shard']))
+        proc = subprocess.Popen(
+            command,
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            shell=True)  #output-producing process
+        p1 = OnlineStdoutConsumer(
+            proc, self.response_queue, "{0}:{1}:{2}:{3}".format(
+                self.host, self.port, self.id, item['shard']))
+        p2 = OnlineStderrConsumer(
+            proc, self.response_queue, "{0}:{1}:{2}:{3}".format(
+                self.host, self.port, self.id, item['shard']))
         try:
             p1.daemon = True
             p1.start()
@@ -567,21 +567,24 @@ def main():
     group.add_argument(
         '--alter',
         help='Alter operations portion of an alter statement similar to pt-online-schema-change, eg: "ADD COLUMN foo VARCHAR(10) AFTER bar, DROP COLUMN baz, ENGINE=InnoDB"')
-    group.add_argument('--create',
-                       help='Create table statement to use for create type',
-                       metavar='CREATE_STATEMENT')
-    group.add_argument('--script',
-                       help='Run provided SQL script against all shards',
-                       metavar='SCRIPT_PATH')
+    group.add_argument(
+        '--create',
+        help='Create table statement to use for create type',
+        metavar='CREATE_STATEMENT')
+    group.add_argument(
+        '--script',
+        help='Run provided SQL script against all shards',
+        metavar='SCRIPT_PATH')
     parser.add_argument(
         '-n',
         '--concurrency',
         type=int,
         help='Number of concurrent operations to run on each database node')
-    parser.add_argument('--type',
-                        help='Type of operation to run',
-                        choices=['alter', 'create', 'drop', 'script'],
-                        default='alter')
+    parser.add_argument(
+        '--type',
+        help='Type of operation to run',
+        choices=['alter', 'create', 'drop', 'script'],
+        default='alter')
     parser.add_argument(
         '--mode',
         help='Set the mode of alter to run the alter directly or use pt-online-schema-change to perform online alter (default defined in settings)',
@@ -600,9 +603,8 @@ def main():
         '--dry-run',
         help='Perform a dry run of the operation on the model shard. No direct DDL change statements will be run, and pt-osc will be run with --dry-run',
         action='store_true')
-    group.add_argument('--execute',
-                       help='execute the operation',
-                       action='store_true')
+    group.add_argument(
+        '--execute', help='execute the operation', action='store_true')
     ptgroup = parser.add_argument_group(
         title='pt-online-schema-change options',
         description='options get passed to all pt-online-schema-change processes when performing online alter, refer to the documentation for pt-online-schema-change. Some or all of theses options may be defined in the settings file.')

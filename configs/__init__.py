@@ -165,3 +165,4 @@ netconf_config = {
             'password': '',
             'port': 830}
 }
+elasticsearch_config = {'hosts': ''}

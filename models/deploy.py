@@ -33,10 +33,11 @@ class Jobs(BaseModel):
     job = BigIntegerField(db_column='job_id', primary_key=True)
     operator = CharField(null=True)
     release_version = CharField(null=True)
-    template = ForeignKeyField(db_column='template_id',
-                               null=True,
-                               rel_model=DeployTemplate,
-                               to_field='template')
+    template = ForeignKeyField(
+        db_column='template_id',
+        null=True,
+        rel_model=DeployTemplate,
+        to_field='template')
 
     class Meta:
         db_table = 'jobs'
@@ -45,10 +46,8 @@ class Jobs(BaseModel):
 class Tasks(BaseModel):
     create_timestamp = DateTimeField(null=True)
     group = CharField(null=True)
-    job = ForeignKeyField(db_column='job_id',
-                          null=True,
-                          rel_model=Jobs,
-                          to_field='job')
+    job = ForeignKeyField(
+        db_column='job_id', null=True, rel_model=Jobs, to_field='job')
     result_log = TextField(null=True)
     result_status = IntegerField(null=True)
     server_ip = CharField(null=True)

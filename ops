@@ -30,9 +30,11 @@ logging.basicConfig(
     format='%(asctime)-25s %(module)s:%(lineno)d  %(levelname)-8s %(message)s',
     filename=client_log_filename,
     filemode='a')
-logger.addHandler(RotatingFileHandler(filename=client_log_filename,
-                                      maxBytes=100 * 1024 * 1024,
-                                      backupCount=3))
+logger.addHandler(
+    RotatingFileHandler(
+        filename=client_log_filename,
+        maxBytes=100 * 1024 * 1024,
+        backupCount=3))
 
 
 class MultiPartForm(object):
@@ -95,10 +97,8 @@ class Command(object):
     def run(self, timeout=30):
         def target():
             logger.info(self.cmd)
-            self.process = subprocess.Popen(self.cmd,
-                                            shell=True,
-                                            stdout=self.result,
-                                            stderr=self.result)
+            self.process = subprocess.Popen(
+                self.cmd, shell=True, stdout=self.result, stderr=self.result)
             self.process.communicate()
 
         thread = threading.Thread(target=target)
@@ -183,7 +183,8 @@ class Common(object):
     def request_id(self, uid, server_ip):
         ip2int = self.ip2int(server_ip)
         now_time = time.time()
-        request_id = str(ip2int)[-8:] + str(now_time).replace('.', '')[-8:] + str(uid)[-4:]
+        request_id = str(ip2int)[-8:] + str(now_time).replace(
+            '.', '')[-8:] + str(uid)[-4:]
         return request_id.replace('.', '')
 
     def url_fetch(self, url, data=None, timeout=30):
@@ -200,9 +201,8 @@ class Common(object):
                     else:  #file
                         f = open(data[v], 'r')
                         res = f.read()
-                        form.add_file('f',
-                                      filename=data[v],
-                                      fileHandle=StringIO(res))
+                        form.add_file(
+                            'f', filename=data[v], fileHandle=StringIO(res))
                         f.close()
 
             # Build the request

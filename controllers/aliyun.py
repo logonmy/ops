@@ -23,10 +23,8 @@ class Aliyun:
         domainname = req.get_param(name='domainname')
         if domainname is None:
             return '--domainname(domainname) is need'
-        return DnsConnection.add_record(rr=rr,
-                                        rrtype=rrtype,
-                                        value=value,
-                                        domainname=domainname)
+        return DnsConnection.add_record(
+            rr=rr, rrtype=rrtype, value=value, domainname=domainname)
 
     def get_all_records(self, req, resp):
         domainname = req.get_param(name='domainname')
@@ -45,10 +43,8 @@ class Aliyun:
         domainname = req.get_param(name='domainname')
         if domainname is None:
             return '--domainname(domainname) is need'
-        return DnsConnection.get_record_id(rr=rr,
-                                           rrtype=rrtype,
-                                           value=value,
-                                           domainname=domainname)
+        return DnsConnection.get_record_id(
+            rr=rr, rrtype=rrtype, value=value, domainname=domainname)
 
     def delete_record(self, req, resp):
         rr = req.get_param(name='rr')
@@ -61,10 +57,8 @@ class Aliyun:
         domainname = req.get_param(name='domainname')
         if domainname is None:
             return '--domainname(domainname) is need'
-        return DnsConnection.delete_record(rr=rr,
-                                           rrtype=rrtype,
-                                           value=value,
-                                           domainname=domainname)
+        return DnsConnection.delete_record(
+            rr=rr, rrtype=rrtype, value=value, domainname=domainname)
 
     def create_scaling_group(self, req, resp):
         max_size = req.get_param(name='max_size')
@@ -148,16 +142,16 @@ class Aliyun:
         if instance_id is None:
             return '--instance_id(instance_id) is need'
         force = req.get_param(name='force') or False
-        return EcsConnection.stop_instance(instance_id=instance_id,
-                                           force=force)
+        return EcsConnection.stop_instance(
+            instance_id=instance_id, force=force)
 
     def reboot_instance(self, req, resp):
         instance_id = req.get_param(name='instance_id')
         if instance_id is None:
             return '--instance_id(instance_id) is need'
         force = req.get_param(name='force') or False
-        return EcsConnection.reboot_instance(instance_id=instance_id,
-                                             force=force)
+        return EcsConnection.reboot_instance(
+            instance_id=instance_id, force=force)
 
     def delete_instance(self, req, resp):
         instance_id = req.get_param(name='instance_id')
@@ -202,8 +196,8 @@ class Aliyun:
         if instance_id is None:
             return '--instance_id(instance_id) is need'
         period = req.get_param(name='period')
-        return EcsConnection.renew_instance(instance_id=instance_id,
-                                            period=period)
+        return EcsConnection.renew_instance(
+            instance_id=instance_id, period=period)
 
     def report_expiring_instance(self, req, resp):
         days = req.get_param(name='days') or 7
@@ -216,8 +210,8 @@ class Aliyun:
         image_id = req.get_param(name='image_id')
         if image_id is None:
             return '--image_id(image_id) is need'
-        return EcsConnection.replace_system_disk(instance_id=instance_id,
-                                                 image_id=image_id)
+        return EcsConnection.replace_system_disk(
+            instance_id=instance_id, image_id=image_id)
 
     def join_security_group(self, req, resp):
         instance_id = req.get_param(name='instance_id')
@@ -227,8 +221,7 @@ class Aliyun:
         if security_group_id is None:
             return '--security_group_id(security_group_id) is need'
         return EcsConnection.join_security_group(
-            instance_id=instance_id,
-            security_group_id=security_group_id)
+            instance_id=instance_id, security_group_id=security_group_id)
 
     def leave_security_group(self, req, resp):
         instance_id = req.get_param(name='instance_id')
@@ -238,8 +231,7 @@ class Aliyun:
         if security_group_id is None:
             return '--security_group_id(security_group_id) is need'
         return EcsConnection.leave_security_group(
-            instance_id=instance_id,
-            security_group_id=security_group_id)
+            instance_id=instance_id, security_group_id=security_group_id)
 
     def create_disk(self, req, resp):
         zone_id = req.get_param(name='zone_id')
@@ -249,11 +241,12 @@ class Aliyun:
         description = req.get_param(name='description')
         size = req.get_param(name='size')
         snapshot_id = req.get_param(name='snapshot_id')
-        return EcsConnection.create_disk(zone_id=zone_id,
-                                         name=name,
-                                         description=description,
-                                         size=size,
-                                         snapshot_id=snapshot_id)
+        return EcsConnection.create_disk(
+            zone_id=zone_id,
+            name=name,
+            description=description,
+            size=size,
+            snapshot_id=snapshot_id)
 
     def attach_disk(self, req, resp):
         instance_id = req.get_param(name='instance_id')
@@ -277,8 +270,8 @@ class Aliyun:
         disk_id = req.get_param(name='disk_id')
         if instance_id is None:
             return '--instance_id(instance_id) is need'
-        return EcsConnection.detach_disk(instance_id=instance_id,
-                                         disk_id=disk_id)
+        return EcsConnection.detach_disk(
+            instance_id=instance_id, disk_id=disk_id)
 
     def add_disk(self, req, resp):
         instance_id = req.get_param(name='instance_id')
@@ -306,8 +299,8 @@ class Aliyun:
         disk_id = req.get_param(name='disk_id')
         if disk_id is None:
             return '--instance_id(instance_id) is need'
-        return EcsConnection.reset_disk(disk_id=disk_id,
-                                        snapshot_id=snapshot_id)
+        return EcsConnection.reset_disk(
+            disk_id=disk_id, snapshot_id=snapshot_id)
 
     def delete_disk(self, req, resp):
         disk_id = req.get_param(name='disk_id')
@@ -468,9 +461,8 @@ class Aliyun:
         zone_id = req.get_param(name='zone_id')
         disk_ids = req.get_param(name='disk_ids')
         instance_id = req.get_param(name='instance_id')
-        return EcsConnection.describe_disks(zone_id=zone_id,
-                                            disk_ids=disk_ids,
-                                            instance_id=instance_id)
+        return EcsConnection.describe_disks(
+            zone_id=zone_id, disk_ids=disk_ids, instance_id=instance_id)
 
     def describe_instance_types(self, req, resp):
         return EcsConnection.describe_instance_types()
@@ -507,8 +499,8 @@ class Aliyun:
         instance_id = req.get_param(name='instance_id')
         if instance_id is None:
             return '--instance_id(instance_id) is need'
-        return EcsConnection.delete_snapshot(instance_id=instance_id,
-                                             snapshot_id=instance_id)
+        return EcsConnection.delete_snapshot(
+            instance_id=instance_id, snapshot_id=instance_id)
 
     def describe_snapshot(self, req, resp):
         instance_id = req.get_param(name='instance_id')
@@ -520,9 +512,10 @@ class Aliyun:
         instance_id = req.get_param(name='instance_id')
         disk_id = req.get_param(name='disk_id')
         snapshot_ids = req.get_param(name='snapshot_ids')
-        return EcsConnection.describe_snapshots(instance_id=instance_id,
-                                                disk_id=disk_id,
-                                                snapshot_ids=snapshot_ids)
+        return EcsConnection.describe_snapshots(
+            instance_id=instance_id,
+            disk_id=disk_id,
+            snapshot_ids=snapshot_ids)
 
     def create_snapshot(self, req, resp):
         instance_id = req.get_param(name='instance_id')
@@ -535,19 +528,21 @@ class Aliyun:
         snapshot_name = req.get_param(name='snapshot_name')
         timeout_secs = req.get_param(name='timeout_secs')
         description = req.get_param(name='description')
-        return EcsConnection.create_snapshot(instance_id=instance_id,
-                                             disk_id=disk_id,
-                                             snapshot_name=snapshot_name,
-                                             timeout_secs=timeout_secs,
-                                             description=description)
+        return EcsConnection.create_snapshot(
+            instance_id=instance_id,
+            disk_id=disk_id,
+            snapshot_name=snapshot_name,
+            timeout_secs=timeout_secs,
+            description=description)
 
     def describe_images(self, req, resp):
         image_ids = req.get_param(name='image_ids')
         owner_alias = req.get_param(name='owner_alias')
         snapshot_id = req.get_param(name='snapshot_id')
-        return EcsConnection.describe_images(image_ids=image_ids,
-                                             owner_alias=owner_alias,
-                                             snapshot_id=snapshot_id)
+        return EcsConnection.describe_images(
+            image_ids=image_ids,
+            owner_alias=owner_alias,
+            snapshot_id=snapshot_id)
 
     def delete_image(self, req, resp):
         image_id = req.get_param(name='image_id')
@@ -562,10 +557,11 @@ class Aliyun:
         image_version = req.get_param(name='image_version')
         description = req.get_param(name='description')
         os_name = req.get_param(name='os_name')
-        return EcsConnection.create_image(snapshot_id=snapshot_id,
-                                          image_version=image_version,
-                                          description=description,
-                                          os_name=os_name)
+        return EcsConnection.create_image(
+            snapshot_id=snapshot_id,
+            image_version=image_version,
+            description=description,
+            os_name=os_name)
 
     def create_image_from_instance(self, req, resp):
         instance_id = req.get_param(name='instance_id')
@@ -777,8 +773,7 @@ class Aliyun:
         if status is None:
             return '--status(status) is need'
         return SlbConnection.set_load_balancer_status(
-            load_balancer_id=load_balancer_id,
-            status=status)
+            load_balancer_id=load_balancer_id, status=status)
 
     def set_load_balancer_name(self, req, resp):
         load_balancer_id = req.get_param(name='load_balancer_id')
@@ -788,8 +783,7 @@ class Aliyun:
         if name is None:
             return '--name(name) is need'
         return SlbConnection.set_load_balancer_name(
-            load_balancer_id=load_balancer_id,
-            name=name)
+            load_balancer_id=load_balancer_id, name=name)
 
     def delete_listener(self, req, resp):
         load_balancer_id = req.get_param(name='load_balancer_id')
@@ -798,8 +792,8 @@ class Aliyun:
         listener_port = req.get_param(name='listener_port')
         if listener_port is None:
             return '--listener_port(listener_port) is need'
-        return SlbConnection.delete_listener(load_balancer_id=load_balancer_id,
-                                             listener_port=listener_port)
+        return SlbConnection.delete_listener(
+            load_balancer_id=load_balancer_id, listener_port=listener_port)
 
     def set_listener_status(self, req, resp):
         load_balancer_id = req.get_param(name='load_balancer_id')
@@ -809,8 +803,7 @@ class Aliyun:
         if status is None:
             return '--status(status) is need'
         return SlbConnection.set_load_balancer_status(
-            load_balancer_id=load_balancer_id,
-            status=status)
+            load_balancer_id=load_balancer_id, status=status)
 
     def get_tcp_listener(self, req, resp):
         load_balancer_id = req.get_param(name='load_balancer_id')
@@ -820,8 +813,7 @@ class Aliyun:
         if listener_port is None:
             return '--listener_port(listener_port) is need'
         return SlbConnection.get_tcp_listener(
-            load_balancer_id=load_balancer_id,
-            listener_port=listener_port)
+            load_balancer_id=load_balancer_id, listener_port=listener_port)
 
     def get_http_listener(self, req, resp):
         load_balancer_id = req.get_param(name='load_balancer_id')
@@ -831,8 +823,7 @@ class Aliyun:
         if listener_port is None:
             return '--listener_port(listener_port) is need'
         return SlbConnection.get_http_listener(
-            load_balancer_id=load_balancer_id,
-            listener_port=listener_port)
+            load_balancer_id=load_balancer_id, listener_port=listener_port)
 
     def create_tcp_listener(self, req, resp):
         load_balancer_id = req.get_param(name='load_balancer_id')
@@ -988,8 +979,7 @@ class Aliyun:
         if listener_port is None:
             return '--listener_port(listener_port) is need'
         return SlbConnection.start_load_balancer_listener(
-            load_balancer_id=load_balancer_id,
-            listener_port=listener_port)
+            load_balancer_id=load_balancer_id, listener_port=listener_port)
 
     def stop_load_balancer_listener(self, req, resp):
         load_balancer_id = req.get_param(name='load_balancer_id')
@@ -999,8 +989,7 @@ class Aliyun:
         if listener_port is None:
             return '--listener_port(listener_port) is need'
         return SlbConnection.stop_load_balancer_listener(
-            load_balancer_id=load_balancer_id,
-            listener_port=listener_port)
+            load_balancer_id=load_balancer_id, listener_port=listener_port)
 
     def get_backend_servers(self, req, resp):
         load_balancer_id = req.get_param(name='load_balancer_id')
@@ -1010,8 +999,7 @@ class Aliyun:
         if listener_port is None:
             return '--listener_port(listener_port) is need'
         return SlbConnection.get_backend_servers(
-            load_balancer_id=load_balancer_id,
-            listener_port=listener_port)
+            load_balancer_id=load_balancer_id, listener_port=listener_port)
 
     def remove_backend_servers(self, req, resp):
         load_balancer_id = req.get_param(name='load_balancer_id')
@@ -1021,8 +1009,7 @@ class Aliyun:
         if backend_servers is None:
             return '--backend_servers(backend_servers) is need'
         return SlbConnection.remove_backend_servers(
-            load_balancer_id=load_balancer_id,
-            backend_servers=backend_servers)
+            load_balancer_id=load_balancer_id, backend_servers=backend_servers)
 
     def add_backend_servers(self, req, resp):
         load_balancer_id = req.get_param(name='load_balancer_id')
@@ -1032,8 +1019,7 @@ class Aliyun:
         if backend_servers is None:
             return '--backend_servers(backend_servers) is need'
         return SlbConnection.add_backend_servers(
-            load_balancer_id=load_balancer_id,
-            backend_servers=backend_servers)
+            load_balancer_id=load_balancer_id, backend_servers=backend_servers)
 
     def deregister_backend_servers(self, req, resp):
         backend_servers = req.get_param(name='backend_servers')
@@ -1046,10 +1032,11 @@ class Aliyun:
         usercidr = req.get_param(name='usercidr')
         vpcname = req.get_param(name='vpcname')
         description = req.get_param(name='description')
-        return VpcConnection.create_vpc(cidr_block=cidr_block,
-                                        usercidr=usercidr,
-                                        vpcname=vpcname,
-                                        description=description)
+        return VpcConnection.create_vpc(
+            cidr_block=cidr_block,
+            usercidr=usercidr,
+            vpcname=vpcname,
+            description=description)
 
     def delete_vpc(self, req, resp):
         vpcid = req.get_param(name='vpcid')
@@ -1065,10 +1052,11 @@ class Aliyun:
         usercidr = req.get_param(name='usercidr')
         vpcname = req.get_param(name='vpcname')
         description = req.get_param(name='description')
-        return VpcConnection.modify_vpc(cidr_block=cidr_block,
-                                        usercidr=usercidr,
-                                        vpcname=vpcname,
-                                        description=description)
+        return VpcConnection.modify_vpc(
+            cidr_block=cidr_block,
+            usercidr=usercidr,
+            vpcname=vpcname,
+            description=description)
 
     def describe_vrouters(self, req, resp):
         return VpcConnection.describe_vrouters()
@@ -1079,9 +1067,10 @@ class Aliyun:
             return '--vrouter_id is need'
         vroutername = req.get_param(name='vroutername')
         description = req.get_param(name='description')
-        return VpcConnection.modify_vrouter(vrouter_id=vrouter_id,
-                                            vroutername=vroutername,
-                                            description=description)
+        return VpcConnection.modify_vrouter(
+            vrouter_id=vrouter_id,
+            vroutername=vroutername,
+            description=description)
 
     def create_vswitch(self, req, resp):
         zone_id = req.get_param(name='zone_id')
@@ -1095,11 +1084,12 @@ class Aliyun:
             return '--vpc_id is need'
         vswitchname = req.get_param(name='vswitchname')
         description = req.get_param(name='description')
-        return VpcConnection.create_vswitch(zone_id=zone_id,
-                                            cidr_block=cidr_block,
-                                            vpc_id=vpc_id,
-                                            vswitchname=vswitchname,
-                                            description=description)
+        return VpcConnection.create_vswitch(
+            zone_id=zone_id,
+            cidr_block=cidr_block,
+            vpc_id=vpc_id,
+            vswitchname=vswitchname,
+            description=description)
 
     def describe_vswitches(self, req, resp):
         vpc_id = req.get_param(name='vpc_id')
@@ -1108,10 +1098,11 @@ class Aliyun:
         is_default = req.get_param(name='is_default')
         if vpc_id is None:
             return '--vpc_id is need'
-        return VpcConnection.describe_vswitches(vpc_id=vpc_id,
-                                                zone_id=zone_id,
-                                                vswitch_id=vswitch_id,
-                                                is_default=is_default)
+        return VpcConnection.describe_vswitches(
+            vpc_id=vpc_id,
+            zone_id=zone_id,
+            vswitch_id=vswitch_id,
+            is_default=is_default)
 
     def delete_vswitch(self, req, resp):
         vswitch_id = req.get_param(name='vswitch_id')
@@ -1125,9 +1116,10 @@ class Aliyun:
             return '--vswitch_id is need'
         vswitchname = req.get_param(name='vswitchname')
         description = req.get_param(name='description')
-        return VpcConnection.modify_vswitch(vswitch_id=vswitch_id,
-                                            vswitchname=vswitchname,
-                                            description=description)
+        return VpcConnection.modify_vswitch(
+            vswitch_id=vswitch_id,
+            vswitchname=vswitchname,
+            description=description)
 
     def create_route_entry(self, req, resp):
         routetable_id = req.get_param(name='routetable_id')
@@ -1153,10 +1145,11 @@ class Aliyun:
         nexthop_type = req.get_param(name='nexthop_type')
         nexthop_id = req.get_param(name='nexthop_id')
         nexthop_list = req.get_param(name='nexthop_list')
-        return VpcConnection.delete_route_entry(routetable_id=routetable_id,
-                                                nexthop_type=nexthop_type,
-                                                nexthop_id=nexthop_id,
-                                                nexthop_list=nexthop_list)
+        return VpcConnection.delete_route_entry(
+            routetable_id=routetable_id,
+            nexthop_type=nexthop_type,
+            nexthop_id=nexthop_id,
+            nexthop_list=nexthop_list)
 
     def describe_route_table(self, req, resp):
         return VpcConnection.describe_route_table()
@@ -1165,8 +1158,7 @@ class Aliyun:
         bandwidth = req.get_param(name='bandwidth')
         internet_charge_type = req.get_param(name='internet_charge_type')
         return VpcConnection.allocate_eip_dddress(
-            bandwidth=bandwidth,
-            internet_charge_type=internet_charge_type)
+            bandwidth=bandwidth, internet_charge_type=internet_charge_type)
 
     def associate_eip_dddress(self, req, resp):
         allocation_id = req.get_param(name='allocation_id')
@@ -1176,9 +1168,10 @@ class Aliyun:
         if instance_id is None:
             return '--instance_id is need'
         instance_type = req.get_param(name='instance_type')
-        return VpcConnection.associate_eip_dddress(allocation_id=allocation_id,
-                                                   instance_id=instance_id,
-                                                   instance_type=instance_type)
+        return VpcConnection.associate_eip_dddress(
+            allocation_id=allocation_id,
+            instance_id=instance_id,
+            instance_type=instance_type)
 
     def unassociate_eip_dddress(self, req, resp):
         allocation_id = req.get_param(name='allocation_id')
@@ -1201,8 +1194,8 @@ class Aliyun:
         if allocation_id is None:
             return '--allocation_id is need'
         bandwidth = req.get_param(name='bandwidth')
-        return VpcConnection.modify_eip_dddress(allocation_id=allocation_id,
-                                                bandwidth=bandwidth)
+        return VpcConnection.modify_eip_dddress(
+            allocation_id=allocation_id, bandwidth=bandwidth)
 
     def release_eip_dddress(self, req, resp):
         allocation_id = req.get_param(name='allocation_id')
@@ -1218,5 +1211,4 @@ class Aliyun:
         if vlan_id is None:
             return '--vlan_id is need'
         return VpcConnection.create_virtual_border_router(
-            physical_connection_id=physical_connection_id,
-            vlan_id=vlan_id)
+            physical_connection_id=physical_connection_id, vlan_id=vlan_id)

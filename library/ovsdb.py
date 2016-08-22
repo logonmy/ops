@@ -48,8 +48,8 @@ class OVSDBConnection(threading.Thread):
     def _on_remote_message(self, message):
         log_debug("message %s", message)
         try:
-            json_m = json.loads(message,
-                                object_pairs_hook=collections.OrderedDict)
+            json_m = json.loads(
+                message, object_pairs_hook=collections.OrderedDict)
             # handler for it
             handler_method = json_m.get('method', None)
             if handler_method:

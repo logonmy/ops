@@ -95,33 +95,34 @@ class dockerutil:
         networking_config = req.get_param(name='networking_config')
         name = req.get_param(name='name')
 
-        return client.create_container(image=self.image,
-                                       command=command,
-                                       hostname=hostname,
-                                       user=user,
-                                       detach=detach,
-                                       stdin_open=stdin_open,
-                                       tty=tty,
-                                       mem_limit=mem_limit,
-                                       ports=ports,
-                                       environment=environment,
-                                       dns=dns,
-                                       volumes=volumes,
-                                       volumes_from=volumes_from,
-                                       network_disabled=network_disabled,
-                                       name=name,
-                                       entrypoint=entrypoint,
-                                       cpu_shares=cpu_shares,
-                                       working_dir=working_dir,
-                                       domainname=domainname,
-                                       memswap_limit=memswap_limit,
-                                       cpuset=cpuset,
-                                       host_config=host_config,
-                                       mac_address=mac_address,
-                                       labels=labels,
-                                       volume_driver=volume_driver,
-                                       stop_signal=stop_signal,
-                                       networking_config=networking_config)
+        return client.create_container(
+            image=self.image,
+            command=command,
+            hostname=hostname,
+            user=user,
+            detach=detach,
+            stdin_open=stdin_open,
+            tty=tty,
+            mem_limit=mem_limit,
+            ports=ports,
+            environment=environment,
+            dns=dns,
+            volumes=volumes,
+            volumes_from=volumes_from,
+            network_disabled=network_disabled,
+            name=name,
+            entrypoint=entrypoint,
+            cpu_shares=cpu_shares,
+            working_dir=working_dir,
+            domainname=domainname,
+            memswap_limit=memswap_limit,
+            cpuset=cpuset,
+            host_config=host_config,
+            mac_address=mac_address,
+            labels=labels,
+            volume_driver=volume_driver,
+            stop_signal=stop_signal,
+            networking_config=networking_config)
 
     def edit(self, req, resp):
         client = self._client(req)
@@ -139,17 +140,18 @@ class dockerutil:
         memswap_limit = req.get_param(name='memswap_limit')
         kernel_memory = req.get_param(name='kernel_memory')
 
-        return client.update_container(container,
-                                       blkio_weight=blkio_weight,
-                                       cpu_period=cpu_period,
-                                       cpu_quota=cpu_quota,
-                                       cpu_shares=cpu_shares,
-                                       cpuset_cpus=cpuset_cpus,
-                                       cpuset_mems=cpuset_mems,
-                                       mem_limit=mem_limit,
-                                       mem_reservation=mem_reservation,
-                                       memswap_limit=memswap_limit,
-                                       kernel_memory=kernel_memory)
+        return client.update_container(
+            container,
+            blkio_weight=blkio_weight,
+            cpu_period=cpu_period,
+            cpu_quota=cpu_quota,
+            cpu_shares=cpu_shares,
+            cpuset_cpus=cpuset_cpus,
+            cpuset_mems=cpuset_mems,
+            mem_limit=mem_limit,
+            mem_reservation=mem_reservation,
+            memswap_limit=memswap_limit,
+            kernel_memory=kernel_memory)
 
     def delete(self, req, resp):
         client = self._client(req)
@@ -183,27 +185,28 @@ class dockerutil:
         publish_all_ports = req.get_param(name='publish_all_ports')
         dns_search = req.get_param(name='dns_search')
         dns = req.get_param(name='dns')
-        return client.start(container=container,
-                            binds=binds,
-                            port_bindings=port_bindings,
-                            lxc_conf=lxc_conf,
-                            publish_all_ports=publish_all_ports,
-                            links=links,
-                            privileged=privileged,
-                            dns=dns,
-                            dns_search=dns_search,
-                            volumes_from=volumes_from,
-                            network_mode=network_mode,
-                            restart_policy=restart_policy,
-                            cap_add=cap_add,
-                            cap_drop=cap_drop,
-                            devices=devices,
-                            extra_hosts=extra_hosts,
-                            read_only=read_only,
-                            pid_mode=pid_mode,
-                            ipc_mode=ipc_mode,
-                            security_opt=security_opt,
-                            ulimits=ulimits)
+        return client.start(
+            container=container,
+            binds=binds,
+            port_bindings=port_bindings,
+            lxc_conf=lxc_conf,
+            publish_all_ports=publish_all_ports,
+            links=links,
+            privileged=privileged,
+            dns=dns,
+            dns_search=dns_search,
+            volumes_from=volumes_from,
+            network_mode=network_mode,
+            restart_policy=restart_policy,
+            cap_add=cap_add,
+            cap_drop=cap_drop,
+            devices=devices,
+            extra_hosts=extra_hosts,
+            read_only=read_only,
+            pid_mode=pid_mode,
+            ipc_mode=ipc_mode,
+            security_opt=security_opt,
+            ulimits=ulimits)
 
     def restart(self, req, resp):
         client = self._client(req)
@@ -265,10 +268,8 @@ class dockerutil:
         container = req.get_param(name='n')
         if container is None:
             return '-n(container) need'
-        return client.remove_container(container=container,
-                                       v=False,
-                                       link=False,
-                                       force=False)
+        return client.remove_container(
+            container=container, v=False, link=False, force=False)
 
     def remove_net(self, req, resp):
         client = self._client()
@@ -286,11 +287,12 @@ class dockerutil:
         container = req.get_param(name='n')
         if container is None:
             return '-n(container) need'
-        return client.networks(container=container,
-                               driver=None,
-                               options=None,
-                               ipam=None,
-                               check_duplicate=None)
+        return client.networks(
+            container=container,
+            driver=None,
+            options=None,
+            ipam=None,
+            check_duplicate=None)
 
     def inspect_network(self, req, resp):
         client = self._client(req)
@@ -310,12 +312,13 @@ class dockerutil:
         net_id = req.get_param(name='i')
         if net_id is None:
             return '-i(net_id) need'
-        return client.networks(container=container,
-                               net_id=net_id,
-                               ipv4_address=ip4,
-                               ipv6_address=None,
-                               aliases=None,
-                               links=None)
+        return client.networks(
+            container=container,
+            net_id=net_id,
+            ipv4_address=ip4,
+            ipv6_address=None,
+            aliases=None,
+            links=None)
 
     def disconnect_network(self, req, resp):
         client = self._client(req)
@@ -325,8 +328,8 @@ class dockerutil:
         net_id = req.get_param(name='i')
         if net_id is None:
             return '-i(net_id) need'
-        return client.disconnect_container_from_network(container=container,
-                                                        net_id=net_id)
+        return client.disconnect_container_from_network(
+            container=container, net_id=net_id)
 
     def remove_volume(self, req, resp):
         client = self._client()
@@ -349,9 +352,8 @@ class dockerutil:
         if driver_opts is None:
             return '-o(driver_opts) need'
 
-        return client.create_volume(name=name,
-                                    driver=driver,
-                                    driver_opts=driver_opts)
+        return client.create_volume(
+            name=name, driver=driver, driver_opts=driver_opts)
 
     def inspect_volume(self, req, resp):
         client = self._client()
@@ -369,11 +371,12 @@ class dockerutil:
         container = req.get_param(name='n')
         if container is None:
             return '-n(container) need'
-        return client.logs(container=container,
-                           stdout=True,
-                           stderr=True,
-                           stream=False,
-                           timestamps=False,
-                           tail='all',
-                           since=None,
-                           follow=None)
+        return client.logs(
+            container=container,
+            stdout=True,
+            stderr=True,
+            stream=False,
+            timestamps=False,
+            tail='all',
+            since=None,
+            follow=None)

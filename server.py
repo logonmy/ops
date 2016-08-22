@@ -9,6 +9,8 @@ import simplejson as json
 from helpers.logger import log_error
 
 loader = Loader(application_path='./')
+
+
 def sink(req, resp):
     do_log_history(req, resp)
 

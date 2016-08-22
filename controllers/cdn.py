@@ -130,6 +130,6 @@ class cdn:
         data = {'username': chinacache_config.get('username'),
                 'password': chinacache_config.get('password'),
                 'task': task}
-        r = requests.post('https://r.chinacache.com/content/refresh',
-                          data=data)
+        r = requests.post(
+            'https://r.chinacache.com/content/refresh', data=data)
         return r.text

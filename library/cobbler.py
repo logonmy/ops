@@ -43,10 +43,11 @@ class Cobbler(object):
         if not isinstance(params, (list, tuple)):
             log_error('params must be list or tuple')
             return (False, '', 'params must be list or tuple')
-        pop = subprocess.Popen(params,
-                               stdin=subprocess.PIPE,
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE)
+        pop = subprocess.Popen(
+            params,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
 
         code = pop.wait()
         if code == 0:
@@ -146,18 +147,16 @@ class System(Cobbler):
         mandatory_fileds = filter(lambda x: fileds[x][0], fileds.keys())
         for k in mandatory_fileds:
             if not params.get(k, None):
-                log_error(
-                    'Variable "{0}" is mandatory, check your params.'.format(
-                        k))
+                log_error('Variable "{0}" is mandatory, check your params.'.
+                          format(k))
 
         scode_fileds = filter(lambda x: fileds[x][1], fileds.keys())
         for k in scode_fileds:
             val = params.get(k)
             if val:
                 if val not in fileds[k][2]:
-                    log_error(
-                        'Variable {0} value is Error, must in {1}'.format(
-                            k, fileds[k][2]))
+                    log_error('Variable {0} value is Error, must in {1}'.
+                              format(k, fileds[k][2]))
 
     def check_fileds(self, params):
 

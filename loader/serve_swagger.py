@@ -87,8 +87,8 @@ class SpecServer():
                                                        uri_template}
                     if operationId not in self.operation_handlers.keys():
                         log.warning(
-                            'In Swagger spec but not in operation_handlers: {}'.format(
-                                operationId))
+                            'In Swagger spec but not in operation_handlers: {}'.
+                            format(operationId))
         except:
             raise Exception(
                 "Unable to build routing table from provided Swagger spec.")
@@ -144,9 +144,8 @@ class SpecServer():
                     route_signature))
                 # the regex groupdict function conveniently puts our URI template fieldnames and values in a dict
                 self.uri_fields = m.groupdict()
-                log.info(
-                    "Request URL contained these template fields: {}".format(
-                        self.uri_fields))
+                log.info("Request URL contained these template fields: {}".
+                         format(self.uri_fields))
                 self.matched_operation = operation
                 log.info("Matched operation: {} {}".format(
                     self.matched_operation, v))
@@ -154,16 +153,15 @@ class SpecServer():
 
         # the request URL does not match any of the routes from our Swagger specification, so return 404
         if self.matched_operation is None:
-            log.info(
-                "Request URL does not match any route signature: {}".format(
-                    route_signature))
+            log.info("Request URL does not match any route signature: {}".
+                     format(route_signature))
             raise falcon.HTTPNotFound()
 
         # the request URL matches an operation from our Swagger specification, but does not have request_handlers so return 404
         if self.matched_operation not in self.operation_handlers.keys():
             log.info(
-                "Operation found in spec but not in operation_handlers: {}".format(
-                    self.matched_operation))
+                "Operation found in spec but not in operation_handlers: {}".
+                format(self.matched_operation))
             raise falcon.HTTPNotFound()
 
     def parse_form_data(self):
@@ -179,8 +177,8 @@ class SpecServer():
             #log.info("POST data in req.context: {}".format(self.req.context['postdata']))
             if self.req.get_header('content-type').lower(
             ) == 'application/x-www-form-urlencoded':
-                self.form_fields = parse_qs(self.req.context[
-                    'postdata'].decode('utf-8'))
+                self.form_fields = parse_qs(self.req.context['postdata']
+                                            .decode('utf-8'))
             log.info("Form fields found: {}".format(self.form_fields))
 
     def dispatch_matched_operation_to_request_handlers(self):
@@ -204,14 +202,13 @@ class SpecServer():
                 for authorization_function in item:
                     if authorization_function(**request_handler_args):
                         log.info(
-                            "Successful execution of authorization handler: {}".format(
-                                authorization_function))
+                            "Successful execution of authorization handler: {}".
+                            format(authorization_function))
                         # we got a True back from the authorization function, request is authorized!
                         break
                 else:
-                    log.info(
-                        "Failed execution of authorization handler: {}".format(
-                            authorization_function))
+                    log.info("Failed execution of authorization handler: {}".
+                             format(authorization_function))
                     # no authorization functions return True so request is not authorized, abort with exception
                     raise falcon.HTTPUnauthorized('Unauthorized.',
                                                   'Request is not authorized.')

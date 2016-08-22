@@ -62,9 +62,8 @@ class CodisConnectionPool(BlockingConnectionPool):
         self._init_proxy_watcher()
 
     def _init_proxy_watcher(self):
-        @self.zk_client.ChildrenWatch(self.zk_proxy_dir,
-                                      allow_session_lost=True,
-                                      send_event=True)
+        @self.zk_client.ChildrenWatch(
+            self.zk_proxy_dir, allow_session_lost=True, send_event=True)
         def proxyChanged(children, event):
             log_warning("proxy changed: %s, %s" % (children, event))
             # if event:
@@ -177,8 +176,8 @@ class CodisConnectionPool(BlockingConnectionPool):
                 "max_delay": self.zk_max_delay,
                 "max_tries": self.zk_max_tries
             }
-            zk_client = KazooClient(hosts=self.zk_hosts,
-                                    connection_retry=retry)
+            zk_client = KazooClient(
+                hosts=self.zk_hosts, connection_retry=retry)
             zk_client.start()
             zk_client.ensure_path(self.zk_proxy_dir)
             return CodisConnectionPool(zk_client, self.zk_proxy_dir, True,

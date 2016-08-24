@@ -13,6 +13,7 @@ class redisutil:
 
             ops redisutil scale     扩容
             ops redisutil migrate   迁移
+	    ops redisutil query 查询
         '''
         return h
 
@@ -30,3 +31,6 @@ class redisutil:
 
     def migrate(self, req, resp):
         pass
+
+    def query(self,req,resp):
+	pass

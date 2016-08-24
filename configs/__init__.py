@@ -144,6 +144,8 @@ aliyun_config = {
     'secret_access_key': '',
 }
 
+aws_config = {}
+
 qcloud_config = {'secret_id': '', 'secret_key': '', 'region': 'gz'}
 upyun_config = {'bucket': '', 'username': '', 'password': '', 'secret': ''}
 

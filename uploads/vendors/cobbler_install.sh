@@ -100,6 +100,8 @@ cobbler repo add --name=glusterfs --breed=yum --mirror=http://mirrors.ustc.edu.c
 cobbler repo add --name=epel --mirror=http://mirrors.ustc.edu.cn/epel/7/x86_64/ --arch=x86_64 --breed=yum
 cobbler repo add --name=epel-testing --mirror=http://mirrors.ustc.edu.cn/epel/testing/7/x86_64/  --arch=x86_64 --breed=yum
 cobbler repo add --name=cloudera --mirror=http://archive-primary.cloudera.com/cdh5/redhat/7/x86_64/cdh/5/ --arch=x86_64 --breed=yum
+cobbler repo add --name=cloudera-kudu --mirror=http://archive.cloudera.com/beta/kudu/redhat/7/x86_64/kudu/1/ --arch=x86_64 --breed=yum
+cobbler repo add --name=cloudera-impala-kudu --mirror=http://archive.cloudera.com/beta/impala-kudu/redhat/7/x86_64/impala-kudu/1/ --arch=x86_64 --breed=yum
 cobbler repo add --name=cloudera-gplextras5 --mirror=https://archive.cloudera.com/gplextras5/redhat/7/x86_64/gplextras/5/ --arch=x86_64 --breed=yum
 cobbler repo add --name=percona --mirror=http://repo.percona.com/release/centos/latest/RPMS/x86_64/ --arch=x86_64 --breed=yum
 cobbler repo add --name=mesosphere --mirror=http://repos.mesosphere.io/el/7/x86_64 --arch=x86_64 --breed=yum
@@ -107,7 +109,7 @@ cobbler repo add --name=mesosphere --mirror=http://repos.mesosphere.io/el/7/x86_
 cobbler distro add --name=centos --kernel=http://mirrors.ustc.edu.cn/centos/7.2.1511/os/x86_64/images/pxeboot/vmlinuz --initrd=http://mirrors.ustc.edu.cn/centos/7.2.1511/os/x86_64/images/pxeboot/initrd.img --arch=x86_64 
 
 #添加系统ks类型
-cobbler profile add --name=base --kickstart=/var/lib/cobbler/kickstarts/base.ks --distro=centos --repos="centos extras kvm-common ceph-hammer glusterfs updates cloudera  cloudera-gplextras5 epel epel-testing mesosphere percona" 
+cobbler profile add --name=base --kickstart=/var/lib/cobbler/kickstarts/base.ks --distro=centos --repos="centos extras kvm-common ceph-hammer glusterfs updates cloudera cloudera-kudu cloudera-impala-kudu cloudera-gplextras5 epel epel-testing mesosphere percona" 
 cobbler profile add --name=mysql --kickstart=/var/lib/cobbler/kickstarts/mysql.ks --distro=centos --repos="centos extras kvm-common ceph-hammer glusterfs updates cloudera cloudera-gplextras5 epel epel-testing mesosphere percona" 
 cobbler profile add --name=lvs --kickstart=/var/lib/cobbler/kickstarts/lvs.ks --distro=centos --repos="centos extras kvm-common ceph-hammer glusterfs updates cloudera cloudera-gplextras5 epel epel-testing mesosphere percona" 
 #docker

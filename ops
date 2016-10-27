@@ -3,7 +3,7 @@
 
 server_url = "http://127.0.0.1:8000"
 script_path = '/tmp/script'
-pidfile = "/var/ops.pid"
+pidfile = "/var/run/ops.pid"
 etcd_list = ['10.3.138.23:4001']
 etcd_prefix = 'ops'
 feedback_url = 'http://127.0.0.1:8000/feedback'

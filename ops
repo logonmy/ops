@@ -619,7 +619,7 @@ if __name__ == '__main__':
         cli.help(sys.argv)
     else:
         ctl = sys.argv[1]
-        if 'deamon' == ctl:
+        if 'daemon' == ctl:
             data = util.parse_argv(sys.argv[2:])
             opt = data.get('s')
             if 'start' == opt:

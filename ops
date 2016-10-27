@@ -3,6 +3,10 @@
 
 server_url = "http://127.0.0.1:8000"
 script_path = '/tmp/script'
+pidfile = "/var/cli.pid"
+etcd_list = ['10.3.138.23:4001', '10.3.138.24:4001', '10.3.138.25:4001']
+etcd_prefix = 'ops'
+feedback_url = 'http://127.0.0.1:8000/feedback'
 
 import os, urllib2, urllib
 import subprocess
@@ -21,7 +25,10 @@ import mimetools
 import mimetypes
 from cStringIO import StringIO
 from logging.handlers import RotatingFileHandler
-
+import random
+import json
+import signal
+import atexit
 client_log_filename = tempfile.gettempdir() + os.path.sep + 'cli.log'
 
 logger = logging.getLogger()
@@ -35,6 +42,111 @@ logger.addHandler(
         filename=client_log_filename,
         maxBytes=100 * 1024 * 1024,
         backupCount=3))
+
+
+class Daemon(object):
+    def __init__(self,
+                 stdin='/dev/null',
+                 stdout='/dev/null',
+                 stderr='/dev/null'):
+        self.stdin = stdin
+        self.stdout = stdout
+        self.stderr = stderr
+        self.pidfile = pidfile
+
+    def daemonize(self):
+        try:
+            pid = os.fork()
+            if pid > 0:
+                # exit first parent
+                sys.exit(0)
+        except OSError, e:
+            sys.stderr.write("fork #1 failed: %d (%s)\n" %
+                             (e.errno, e.strerror))
+            sys.exit(1)
+
+        # decouple from parent environment
+        os.chdir("/")
+        os.setsid()
+        os.umask(0)
+
+        # do second fork
+        try:
+            pid = os.fork()
+            if pid > 0:
+                # exit from second parent
+                sys.exit(0)
+        except OSError, e:
+            sys.stderr.write("fork #2 failed: %d (%s)\n" %
+                             (e.errno, e.strerror))
+            sys.exit(1)
+
+        # redirect standard file descriptors
+        sys.stdout.flush()
+        sys.stderr.flush()
+        si = file(self.stdin, 'r')
+        so = file(self.stdout, 'a+')
+        se = file(self.stderr, 'a+', 0)
+        os.dup2(si.fileno(), sys.stdin.fileno())
+        os.dup2(so.fileno(), sys.stdout.fileno())
+        os.dup2(se.fileno(), sys.stderr.fileno())
+
+        # write pidfile
+        atexit.register(self.delpid)
+        pid = str(os.getpid())
+        file(self.pidfile, 'w+').write("%s\n" % pid)
+
+    def delpid(self):
+        os.remove(self.pidfile)
+
+    def start(self):
+        # Check for a pidfile to see if the daemon already runs
+        try:
+            pf = file(self.pidfile, 'r')
+            pid = int(pf.read().strip())
+            pf.close()
+        except IOError:
+            pid = None
+        if pid:
+            message = "pidfile %s already exist. Daemon already running?\n"
+            sys.stderr.write(message % self.pidfile)
+            sys.exit(1)
+
+        # Start the daemon
+        self.daemonize()
+        self.run()
+
+    def stop(self):
+        # Get the pid from the pidfile
+        try:
+            pf = file(self.pidfile, 'r')
+            pid = int(pf.read().strip())
+            pf.close()
+        except IOError:
+            pid = None
+
+        if not pid:
+            message = "pidfile %s does not exist. Daemon not running?\n"
+            sys.stderr.write(message % self.pidfile)
+            return  # not an error in a restart
+
+        # Try killing the daemon process
+        try:
+            while 1:
+                os.kill(pid, signal.SIGTERM)
+                time.sleep(0.1)
+        except OSError, err:
+            err = str(err)
+            if err.find("No such process") > 0:
+                if os.path.exists(self.pidfile):
+                    os.remove(self.pidfile)
+            else:
+                print str(err)
+                sys.exit(1)
+
+    def restart(self):
+        self.stop()
+        self.start()
 
 
 class MultiPartForm(object):
@@ -119,7 +231,13 @@ class Command(object):
         return result
 
 
-class Common(object):
+class Common(Daemon):
+    def __init__(self):
+        self.update_time = 0
+        self.etcd_list = etcd_list
+        self.etcd_prefix = etcd_prefix
+        self.feedback_url = feedback_url
+
     def urlencode(self, str):
         reprStr = repr(str).replace(r'\x', '%')
         return reprStr[1:-1]
@@ -287,6 +405,121 @@ class Common(object):
         else:
             return str(args)
 
+    def remote_server(self, action, argv):
+        if isinstance(argv, dict):
+            if not 's' in argv:
+                argv['s'] = self.get_hostname()
+            if not 'i' in argv:
+                argv['i'] = self.get_one_ip()
+        ret = self.url_fetch(server_url + '/%s/%s' % ('server', action),
+                             {'param': json.dumps(argv)})
+        return ret
+
+    def get_etcd(self):
+        try:
+            now = time.time()
+            if now - self.update_time > 600:
+                if not isinstance(self.etcd_list, list):
+                    raise Exception("get etcd list error")
+                for host in self.etcd_list:
+                    self.url_fetch(
+                        "http://%s/v2/keys%s/heartbeat" %
+                        (host, self.etcd_prefix),
+                        data={'ttl': 60,
+                              'value': 'heartbeat'},
+                        httpCmd='PUT')
+                    self.url_fetch(
+                        "http://%s/v2/keys%s/servers" %
+                        (host, self.etcd_prefix),
+                        data={'ttl': 60,
+                              'value': 'servers'},
+                        httpCmd='PUT')
+                self.update_time = now
+        except Exception as er:
+            print(er)
+            time.sleep(random.randint(1, 5))
+            return self.get_etcd()
+
+    def heartbeat(self):
+        try:
+            ip = self.get_one_ip()
+            for host in self.etcd_list:
+                html = self.url_fetch(
+                    "http://%s/v2/keys%s/heartbeat/%s" %
+                    (host, self.etcd_prefix, ip),
+                    data={'ttl': 60,
+                          'value': '2333'},
+                    httpCmd='PUT')
+                if html != "":
+                    break
+        except Exception as er:
+            print er
+            logger.error('heartbeat error:' + str(er))
+
+    def watch_commmand(self):
+        try:
+            ip = self.get_one_ip()
+            for host in self.etcd_list:
+                self.url_fetch(
+                    "http://%s/v2/keys%s/servers/%s?wait=true&recursive=true" %
+                    (host, self.etcd_prefix, ip),
+                    timeout=20 + random.randint(1, 10))
+                content = self.url_fetch(
+                    "http://%s/v2/keys%s/servers/%s?recursive=true" %
+                    (host, self.etcd_prefix, ip),
+                    timeout=10)
+                if content != "":
+                    self.feedback_result(ip, host, content)
+                    break
+        except Exception as er:
+            print er
+            logger.error('watch_commmand error:' + str(er))
+
+    def feedback_result(self, ip, host, content):
+        try:
+            if content == "Not Found":
+                return
+            rjson = json.loads(content)
+            if not rjson['node'].get('dir', False):
+                url = "http://%s/v2/keys%s?recursive=true" % (
+                    host, rjson['node']['key'])
+                self.url_fetch(url, httpCmd='DELETE')
+                return
+
+            if not rjson['node'].get('nodes'):
+                return
+
+            for cNode in rjson['node']['nodes']:
+                cmd = cNode['value'].decode("utf-8")
+                key = cNode['key']
+                self.keys.append(key)
+                url = "http://%s/v2/keys%s?recursive=true" % (host, key)
+                self.url_fetch(url, httpCmd='DELETE')
+
+                #回调接口 把结果返回
+                def feedback():
+                    result = Command(cmd).run()
+                    message = {'ip': ip, 'cmd': cmd, 'result': result}
+                    self.url_fetch(feedback_url,
+                                   {'param': json.dumps({'param': message})})
+
+                threading.Thread(target=feedback).start()
+        except BaseException as e:
+            logger.error('feedback_result error:' + str(e))
+            print e
+
+    def run(self):
+        self.update_time = time.time() - 800
+        while True:
+            try:
+                self.get_etcd()
+                self.heartbeat()
+                self.watch_commmand()
+                time.sleep(1)
+            except BaseException as e:
+                pass
+                time.sleep(random.randint(1, 6))
+
 
 class Cli():
     def __init__(self):
@@ -384,11 +617,30 @@ if __name__ == '__main__':
         cli.help(sys.argv)
     else:
         ctl = sys.argv[1]
-        if len(sys.argv) > 2:
-            cmd = sys.argv[2]
+        if ctl == 'deamon':
+            data = util.parse_argv(sys.argv[1:])
+            opt = data.get('s')
+            if 'start' == opt:
+                print "ops daemon start"
+                util.start()
+            elif 'stop' == opt:
+                print "ops daemon stop"
+                util.stop()
+            elif 'restart' == opt:
+                print "ops daemon restart"
+                util.restart()
+            elif 'debug' == opt:
+                print "ops daemon debug"
+                util.run()
+            else:
+                print "usage: ops deamon -s start|stop|restart"
+                sys.exit(2)
         else:
-            cmd = 'help'
-        if hasattr(cli, ctl):
-            getattr(cli, ctl)(sys.argv[2:])
-        else:
-            cli.default(ctl + '/' + cmd, sys.argv[2:])
+            if len(sys.argv) > 2:
+                cmd = sys.argv[2]
+            else:
+                cmd = 'help'
+            if hasattr(cli, ctl):
+                getattr(cli, ctl)(sys.argv[2:])
+            else:
+                cli.default(ctl + '/' + cmd, sys.argv[2:])

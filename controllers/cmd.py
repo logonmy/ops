@@ -11,9 +11,12 @@ class Cmd:
         self.etcd_config = etcd_config_cmd
 
     def help(self, req, resp):
-        return ''
+        return '''
+                    提交shell/python任务到其他机器
+               ops cmd add -c 'ps aux' -i '10.3.118.30' -t 5  提交ps aux的任务到10.3.118.30 超时时间为5
+        '''
 
-    def cmd(self, req, resp):
+    def add(self, req, resp):
         try:
             cmd = req.get_param(name='c')
             ip = req.get_param(name='i')
@@ -25,7 +28,7 @@ class Cmd:
                 return '-i(ip) require'
             data = {'value': cmd.encode('utf-8')}
             req = requests.post(
-                url="http://%s/v2/keys/%s/servers/%s/" %
+                url="http://%s/v2/keys%s/servers/%s/" %
                 (self.etcd_config['server'], self.etcd_config['prefix'], ip),
                 data=data)
             ret = req.json()

@@ -2,16 +2,18 @@
 # -*- coding:utf8 -*-
 
 server_url = "http://127.0.0.1:8000"
-script_path = '/tmp/script'
-pidfile = "/var/run/ops.pid"
-etcd_list = ['10.3.138.23:4001']
-etcd_prefix = 'ops'
 feedback_url = 'http://127.0.0.1:8000/feedback'
 host_info_url = 'http://127.0.0.1:8000/cmdb/info'
 host_info_file = '/etc/host_info.json'
+etcd_list = ['10.3.138.23:4001']
+etcd_prefix = 'ops'
+script_path = '/tmp/script'
+pidfile = "/var/run/ops.pid"
 client_log_filename = '/var/log/ops.log'
 
-import os, urllib2, urllib
+import os
+import urllib2
+import urllib
 import subprocess
 import datetime
 import re
@@ -32,7 +34,6 @@ import random
 import json
 import signal
 import atexit
-
 import md5
     
 logger = logging.getLogger()

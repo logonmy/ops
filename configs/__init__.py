@@ -112,7 +112,10 @@ docker_config = {
     'tlscacert': '../uploads/docker-ca.pem',
     'base_image': 'alpine'
 }
-
+etcd_config_cmd = {
+    'server' : '10.3.120.98',
+    'prefix' : '/ops'
+}
 etcd_config = {
     'gz': {
         'endpoint': '',

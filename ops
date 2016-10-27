@@ -3,7 +3,7 @@
 
 server_url = "http://127.0.0.1:8000"
 script_path = '/tmp/script'
-pidfile = "/var/cli.pid"
+pidfile = "/var/ops.pid"
 etcd_list = ['10.3.138.23:4001', '10.3.138.24:4001', '10.3.138.25:4001']
 etcd_prefix = 'ops'
 feedback_url = 'http://127.0.0.1:8000/feedback'
@@ -500,6 +500,7 @@ class Common(Daemon):
                 def feedback():
                     result = Command(cmd).run()
                     message = {'ip': ip, 'cmd': cmd, 'result': result}
+                    time.sleep(random.uniform(0,1))
                     self.url_fetch(feedback_url,
                                    {'param': json.dumps({'param': message})})
 
@@ -515,9 +516,8 @@ class Common(Daemon):
                 self.get_etcd()
                 self.heartbeat()
                 self.watch_commmand()
-                time.sleep(1)
+                time.sleep(random.uniform(1,2))
             except BaseException as e:
-                pass
                 time.sleep(random.randint(1, 6))
 
 

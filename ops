@@ -29,7 +29,7 @@ import random
 import json
 import signal
 import atexit
-client_log_filename = tempfile.gettempdir() + os.path.sep + 'cli.log'
+client_log_filename = tempfile.gettempdir() + os.path.sep + 'ops.log'
 
 logger = logging.getLogger()
 logging.basicConfig(

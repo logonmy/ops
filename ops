@@ -412,7 +412,7 @@ class Common(Daemon):
         time.sleep(random.randint(1, 5))
         try:
             now = time.time()
-            if now - self.update_time > 600:
+            if now - self.update_time > 3600:
                 # 获取当前机器的类似cmdb的信息
                 html = self.url_fetch(host_info_url)
                 self.host_info = html.strip()

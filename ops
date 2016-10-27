@@ -33,6 +33,8 @@ import json
 import signal
 import atexit
 
+import md5
+    
 logger = logging.getLogger()
 logging.basicConfig(
     level=logging.DEBUG,
@@ -415,9 +417,10 @@ class Common(Daemon):
             if now - self.update_time > 600:
                 # 获取当前机器的类似cmdb的信息
                 html = self.url_fetch(host_info_url)
-                self.host_info = html.strip()
+                self.host_info = html.strip()                
                 with open(host_info_file,'w+') as fp:
-                    fp.write(self.host_info)
+                    if md5.new(self.host_info).digest() != md5.new(fp.read()).digest():
+                        fp.write(self.host_info)
 
                 if not isinstance(self.etcd_list, list):
                     raise Exception("get etcd list error")

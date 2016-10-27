@@ -436,7 +436,7 @@ class Common(Daemon):
                         httpCmd='PUT')
                 self.update_time = now
         except Exception as er:
-            print(er)
+            logger.error('get_etcd error:' + str(er))
             time.sleep(random.randint(1, 5))
             return self.get_etcd()
 
@@ -454,7 +454,6 @@ class Common(Daemon):
                 if html != "":
                     break
         except Exception as er:
-            print er
             logger.error('heartbeat error:' + str(er))
 
     def watch_commmand(self):
@@ -473,7 +472,6 @@ class Common(Daemon):
                     self.feedback_result(ip, host, content)
                     break
         except Exception as er:
-            print er
             logger.error('watch_commmand error:' + str(er))
 
     def feedback_result(self, ip, host, content):
@@ -508,7 +506,6 @@ class Common(Daemon):
                 threading.Thread(target=feedback).start()
         except BaseException as e:
             logger.error('feedback_result error:' + str(e))
-            print e
 
     def run(self):
         self.update_time = time.time() - 800

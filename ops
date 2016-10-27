@@ -4,9 +4,12 @@
 server_url = "http://127.0.0.1:8000"
 script_path = '/tmp/script'
 pidfile = "/var/ops.pid"
-etcd_list = ['10.3.138.23:4001', '10.3.138.24:4001', '10.3.138.25:4001']
+etcd_list = ['10.3.138.23:4001']
 etcd_prefix = 'ops'
 feedback_url = 'http://127.0.0.1:8000/feedback'
+host_info_url = 'http://127.0.0.1:8000/cmdb/info'
+host_info_file = '/etc/host_info.json'
+client_log_filename = '/var/log/ops.log'
 
 import os, urllib2, urllib
 import subprocess
@@ -29,7 +32,6 @@ import random
 import json
 import signal
 import atexit
-client_log_filename = tempfile.gettempdir() + os.path.sep + 'ops.log'
 
 logger = logging.getLogger()
 logging.basicConfig(
@@ -40,7 +42,7 @@ logging.basicConfig(
 logger.addHandler(
     RotatingFileHandler(
         filename=client_log_filename,
-        maxBytes=100 * 1024 * 1024,
+        maxBytes=104857600, #100m
         backupCount=3))
 
 
@@ -237,8 +239,8 @@ class Common(Daemon):
         self.etcd_list = etcd_list
         self.etcd_prefix = etcd_prefix
         self.feedback_url = feedback_url
+        self.host_info = {}
         Daemon.__init__(self)
-        
     def urlencode(self, str):
         reprStr = repr(str).replace(r'\x', '%')
         return reprStr[1:-1]
@@ -406,20 +408,17 @@ class Common(Daemon):
         else:
             return str(args)
 
-    def remote_server(self, action, argv):
-        if isinstance(argv, dict):
-            if not 's' in argv:
-                argv['s'] = self.get_hostname()
-            if not 'i' in argv:
-                argv['i'] = self.get_one_ip()
-        ret = self.url_fetch(server_url + '/%s/%s' % ('server', action),
-                             {'param': json.dumps(argv)})
-        return ret
-
     def get_etcd(self):
+        time.sleep(random.randint(1, 5))
         try:
             now = time.time()
             if now - self.update_time > 600:
+                # 获取当前机器的类似cmdb的信息
+                html = self.url_fetch(host_info_url)
+                self.host_info = html.strip()
+                with open(host_info_file) as fp:
+                    fp.write(self.host_info)
+
                 if not isinstance(self.etcd_list, list):
                     raise Exception("get etcd list error")
                 for host in self.etcd_list:
@@ -442,6 +441,7 @@ class Common(Daemon):
             return self.get_etcd()
 
     def heartbeat(self):
+        time.sleep(random.randint(1,3))
         try:
             ip = self.get_one_ip()
             for host in self.etcd_list:
@@ -618,7 +618,7 @@ if __name__ == '__main__':
         cli.help(sys.argv)
     else:
         ctl = sys.argv[1]
-        if ctl == 'deamon':
+        if 'deamon' == ctl:
             data = util.parse_argv(sys.argv[2:])
             opt = data.get('s')
             if 'start' == opt:

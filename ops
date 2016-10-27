@@ -237,7 +237,8 @@ class Common(Daemon):
         self.etcd_list = etcd_list
         self.etcd_prefix = etcd_prefix
         self.feedback_url = feedback_url
-
+        Daemon.__init__(self)
+        
     def urlencode(self, str):
         reprStr = repr(str).replace(r'\x', '%')
         return reprStr[1:-1]
@@ -618,7 +619,7 @@ if __name__ == '__main__':
     else:
         ctl = sys.argv[1]
         if ctl == 'deamon':
-            data = util.parse_argv(sys.argv[1:])
+            data = util.parse_argv(sys.argv[2:])
             opt = data.get('s')
             if 'start' == opt:
                 print "ops daemon start"

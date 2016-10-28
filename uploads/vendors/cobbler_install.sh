@@ -110,12 +110,12 @@ cobbler distro add --name=centos --kernel=http://mirrors.ustc.edu.cn/centos/7.2.
 
 #添加系统ks类型
 cobbler profile add --name=base --kickstart=/var/lib/cobbler/kickstarts/base.ks --distro=centos --repos="centos extras kvm-common ceph-hammer glusterfs updates cloudera cloudera-kudu cloudera-impala-kudu cloudera-gplextras5 epel epel-testing mesosphere percona" 
-cobbler profile add --name=mysql --kickstart=/var/lib/cobbler/kickstarts/mysql.ks --distro=centos --repos="centos extras kvm-common ceph-hammer glusterfs updates cloudera cloudera-gplextras5 epel epel-testing mesosphere percona" 
-cobbler profile add --name=lvs --kickstart=/var/lib/cobbler/kickstarts/lvs.ks --distro=centos --repos="centos extras kvm-common ceph-hammer glusterfs updates cloudera cloudera-gplextras5 epel epel-testing mesosphere percona" 
+cobbler profile add --name=mysql --kickstart=/var/lib/cobbler/kickstarts/mysql.ks --distro=centos --repos="centos extras kvm-common ceph-hammer glusterfs updates cloudera cloudera-kudu cloudera-impala-kudu cloudera-gplextras5 epel epel-testing mesosphere percona" 
+cobbler profile add --name=lvs --kickstart=/var/lib/cobbler/kickstarts/lvs.ks --distro=centos --repos="centos extras kvm-common ceph-hammer glusterfs updates cloudera cloudera-kudu cloudera-impala-kudu cloudera-gplextras5 epel epel-testing mesosphere percona" 
 #docker
-cobbler profile add --name=docker --ksmeta='host_type=docker' --kickstart=/var/lib/cobbler/kickstarts/base.ks --distro=centos --repos="centos extras kvm-common ceph-hammer glusterfs updates cloudera cloudera-gplextras5  epel epel-testing mesosphere percona"  
+cobbler profile add --name=docker --ksmeta='host_type=docker' --kickstart=/var/lib/cobbler/kickstarts/base.ks --distro=centos --repos="centos extras kvm-common ceph-hammer glusterfs updates cloudera cloudera-kudu cloudera-impala-kudu cloudera-gplextras5  epel epel-testing mesosphere percona"  
 #kvm
-cobbler profile add --name=kvm --ksmeta='host_type=kvm' --kickstart=/var/lib/cobbler/kickstarts/base.ks --distro=centos --repos="centos extras kvm-common ceph-hammer glusterfs updates cloudera cloudera-gplextras5 epel epel-testing mesosphere percona" 
+cobbler profile add --name=kvm --ksmeta='host_type=kvm' --kickstart=/var/lib/cobbler/kickstarts/base.ks --distro=centos --repos="centos extras kvm-common ceph-hammer glusterfs updates cloudera cloudera-kudu cloudera-impala-kudu cloudera-gplextras5 epel epel-testing mesosphere percona" 
 #同步配置
 cobbler sync
 

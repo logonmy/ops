@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#¾µÏñÑ¹Ëõ
+#é•œåƒå‹ç¼©
 
 #centos 6
 virsh start centos6

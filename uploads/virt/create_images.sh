@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#´´½¨ÏµÍ³¾µÏñ
+#åˆ›å»ºç³»ç»Ÿé•œåƒ
 
 yum install -y wget virt-install
 
@@ -18,7 +18,7 @@ virt-install --virt-type kvm --name centos6 --ram 2048 \
 --cdrom=/data/kvm/CentOS-6.8-x86_64-bin-DVD1.iso \
 --force  --autostart
 
-#È»ºóÍ¨¹ıvnc-viewer Á¬½Ó °²×°ÏµÍ³µ½/tmp/centos6.qcow2
+#ç„¶åé€šè¿‡vnc-viewer è¿æ¥ å®‰è£…ç³»ç»Ÿåˆ°/tmp/centos6.qcow2
 
 #virsh undefine centos6
 
@@ -35,6 +35,6 @@ virt-install --virt-type kvm --name centos7 --ram 2048 \
 --cdrom=/data/kvm/CentOS-7-x86_64-DVD-1511.iso \
 --force  --autostart
 
-#È»ºóÍ¨¹ıvnc-viewer Á¬½Ó °²×°ÏµÍ³µ½/tmp/centos7.qcow2
+#ç„¶åé€šè¿‡vnc-viewer è¿æ¥ å®‰è£…ç³»ç»Ÿåˆ°/tmp/centos7.qcow2
 
 #virsh undefine centos7

@@ -173,12 +173,14 @@ netconf_config = {
 elasticsearch_config = {'hosts': ''}
 
 router_config = {
+    'device_type':'hp_comware', #hp_comware : h3c , cisco_ios : cisco #具体参考https://github.com/ktbyers/netmiko
     'port': 22,
     'user': 'router',
     'password': '',
 }
 
 switch_config = {
+    'device_type':'hp_comware',#hp_comware : h3c , cisco_ios : cisco #具体参考https://github.com/ktbyers/netmiko
     'port': 22,
     'user': 'switch',
     'password': '',

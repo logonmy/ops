@@ -18,5 +18,5 @@ class help:
                     or module.startswith('file') or module.startswith('complete') :
                 continue
             module = module.replace('.pyc', '').replace('.py', '')
-            self.help.append('ops ' + module + ' help')
+            self.help.append('ops ' + module + '\n')
         return "\n\t  查看各模块帮助  \n\t" + "\n\t".join(self.help) + '\n\n'

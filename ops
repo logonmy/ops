@@ -1,15 +1,15 @@
 #!/usr/bin/python
 # -*- coding:utf8 -*-
 
-server_url = "http://127.0.0.1:8000"
-feedback_url = 'http://127.0.0.1:8000/feedback'
-host_info_url = 'http://127.0.0.1:8000/cmdb/info'
-host_info_file = '/etc/host_info.json'
-etcd_list = ['10.3.138.23:4001']
-etcd_prefix = '/ops'
-script_path = '/tmp/script'
-pidfile = "/var/run/ops.pid"
-client_log_filename = '/var/log/ops.log'
+server_url      = "http://127.0.0.1:8000"
+feedback_url    = 'http://127.0.0.1:8000/feedback'
+host_info_url   = 'http://127.0.0.1:8000/cmdb/info'
+host_info_file  = '/etc/host_info.json'
+etcd_list       = ['10.3.138.23:4001']
+etcd_prefix     = '/ops'
+script_path     = '/opt/scripts'
+pidfile         = "/var/run/ops.pid"
+client_log_file = '/var/log/ops.log'
 
 import os
 import urllib2
@@ -35,24 +35,30 @@ import json
 import signal
 import atexit
 import md5
-    
+
 logger = logging.getLogger()
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)-25s %(module)s:%(lineno)d  %(levelname)-8s %(message)s',
-    filename=client_log_filename,
+    filename=client_log_file,
     filemode='a')
 logger.addHandler(
     RotatingFileHandler(
-        filename=client_log_filename,
-        maxBytes=104857600, #100m
+        filename=client_log_file,
+        maxBytes=104857600,  # 100m
         backupCount=3))
 
 
 class Daemon(object):
-    def __init__(self, stdin=os.devnull,
-                 stdout=os.devnull, stderr=os.devnull,
-                 home_dir='.', umask=022, verbose=1, use_gevent=False):
+    def __init__(self,
+                 pidfile=pidfile,
+                 stdin=os.devnull,
+                 stdout=os.devnull,
+                 stderr=os.devnull,
+                 home_dir='.',
+                 umask=022,
+                 verbose=1,
+                 use_gevent=False):
         self.stdin = stdin
         self.stdout = stdout
         self.stderr = stderr
@@ -67,31 +73,26 @@ class Daemon(object):
         try:
             pid = os.fork()
             if pid > 0:
-                # Exit first parent
                 sys.exit(0)
         except OSError, e:
-            sys.stderr.write(
-                "fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
+            sys.stderr.write("fork #1 failed: %d (%s)\n" %
+                             (e.errno, e.strerror))
             sys.exit(1)
 
-        # Decouple from parent environment
         os.chdir(self.home_dir)
         os.setsid()
         os.umask(self.umask)
 
-        # Do second fork
         try:
             pid = os.fork()
             if pid > 0:
-                # Exit from second parent
                 sys.exit(0)
         except OSError, e:
-            sys.stderr.write(
-                "fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
+            sys.stderr.write("fork #2 failed: %d (%s)\n" %
+                             (e.errno, e.strerror))
             sys.exit(1)
 
-        if sys.platform != 'darwin':  # This block breaks on OS X
-            # Redirect standard file descriptors
+        if sys.platform != 'darwin':
             sys.stdout.flush()
             sys.stderr.flush()
             si = file(self.stdin, 'r')
@@ -120,9 +121,7 @@ class Daemon(object):
         if self.verbose >= 1:
             print "Started"
 
-        # Write pidfile
-        atexit.register(
-            self.delpid)  # Make sure pid file is removed if we quit
+        atexit.register(self.delpid)
         pid = str(os.getpid())
         file(self.pidfile, 'w+').write("%s\n" % pid)
 
@@ -133,7 +132,6 @@ class Daemon(object):
         if self.verbose >= 1:
             print "Starting..."
 
-        # Check for a pidfile to see if the daemon already runs
         try:
             pf = file(self.pidfile, 'r')
             pid = int(pf.read().strip())
@@ -147,8 +145,6 @@ class Daemon(object):
             message = "pidfile %s already exists. Is it already running?\n"
             sys.stderr.write(message % self.pidfile)
             sys.exit(1)
-
-        # Start the daemon
         self.daemonize()
         self.run(*args, **kwargs)
 
@@ -167,10 +163,8 @@ class Daemon(object):
             # empty but does actually exist
             if os.path.exists(self.pidfile):
                 os.remove(self.pidfile)
+            return
 
-            return  # Not an error in a restart
-
-        # Try killing the daemon process
         try:
             i = 0
             while 1:
@@ -221,6 +215,7 @@ class Daemon(object):
     def run(self):
         raise NotImplementedError
 
+
 class MultiPartForm(object):
     def __init__(self):
         self.form_fields = []
@@ -253,13 +248,13 @@ class MultiPartForm(object):
                       value, ] for name, value in self.form_fields)
 
         parts.extend(
-            [ part_boundary,
-              'Content-Disposition: file; name="%s"; filename="%s"' % \
-              (field_name, filename),
-              'Content-Type: %s' % content_type,
-              '',
-              body,
-              ]
+            [part_boundary,
+             'Content-Disposition: file; name="%s"; filename="%s"' % \
+             (field_name, filename),
+             'Content-Type: %s' % content_type,
+             '',
+             body,
+             ]
             for field_name, filename, content_type, body in self.files
         )
 
@@ -281,8 +276,10 @@ class Command(object):
     def run(self, timeout=30):
         def target():
             logger.info(self.cmd)
-            self.process = subprocess.Popen(
-                self.cmd, shell=True, stdout=self.result, stderr=self.result)
+            self.process = subprocess.Popen(self.cmd,
+                                            shell=True,
+                                            stdout=self.result,
+                                            stderr=self.result)
             self.process.communicate()
 
         thread = threading.Thread(target=target)
@@ -311,6 +308,7 @@ class Common(Daemon):
         self.feedback_url = feedback_url
         self.host_info = {}
         Daemon.__init__(self)
+
     def urlencode(self, str):
         reprStr = repr(str).replace(r'\x', '%')
         return reprStr[1:-1]
@@ -389,11 +387,12 @@ class Common(Daemon):
                 for k, v in enumerate(data):
                     if v != 'f' is not None and not os.path.isfile(data[v]):
                         form.add_field(v, data[v])
-                    else:  #file
+                    else:  # file
                         f = open(data[v], 'r')
                         res = f.read()
-                        form.add_file(
-                            'f', filename=data[v], fileHandle=StringIO(res))
+                        form.add_file('f',
+                                      filename=data[v],
+                                      fileHandle=StringIO(res))
                         f.close()
 
             # Build the request
@@ -483,28 +482,25 @@ class Common(Daemon):
         try:
             now = time.time()
             if now - self.update_time > 600:
-                # 获取当前机器的类似cmdb的信息
                 html = self.url_fetch(host_info_url)
-                self.host_info = html.strip()                
-                with open(host_info_file,'w+') as fp:
-                    if md5.new(self.host_info).digest() != md5.new(fp.read()).digest():
+                self.host_info = html.strip()
+                with open(host_info_file, 'w+') as fp:
+                    if md5.new(self.host_info).digest() != md5.new(fp.read(
+                    )).digest():
                         fp.write(self.host_info)
-
                 if not isinstance(self.etcd_list, list):
                     raise Exception("get etcd list error")
                 for host in self.etcd_list:
-                    self.url_fetch(
-                        "http://%s/v2/keys%s/heartbeat" %
-                        (host, self.etcd_prefix),
-                        data={'ttl': 60,
-                              'value': 'heartbeat'},
-                        httpCmd='PUT')
-                    self.url_fetch(
-                        "http://%s/v2/keys%s/servers" %
-                        (host, self.etcd_prefix),
-                        data={'ttl': 60,
-                              'value': 'servers'},
-                        httpCmd='PUT')
+                    self.url_fetch("http://%s/v2/keys%s/heartbeat" %
+                                   (host, self.etcd_prefix),
+                                   data={'ttl': 60,
+                                         'value': 'heartbeat'},
+                                   httpCmd='PUT')
+                    self.url_fetch("http://%s/v2/keys%s/servers" %
+                                   (host, self.etcd_prefix),
+                                   data={'ttl': 60,
+                                         'value': 'servers'},
+                                   httpCmd='PUT')
                 self.update_time = now
         except Exception as er:
             logger.error('get_etcd error:' + str(er))
@@ -512,16 +508,15 @@ class Common(Daemon):
             return self.get_etcd()
 
     def heartbeat(self):
-        time.sleep(random.randint(1,3))
+        time.sleep(random.randint(1, 3))
         try:
             ip = self.get_one_ip()
             for host in self.etcd_list:
-                html = self.url_fetch(
-                    "http://%s/v2/keys%s/heartbeat/%s" %
-                    (host, self.etcd_prefix, ip),
-                    data={'ttl': 60,
-                          'value': '2333'},
-                    httpCmd='PUT')
+                html = self.url_fetch("http://%s/v2/keys%s/heartbeat/%s" %
+                                      (host, self.etcd_prefix, ip),
+                                      data={'ttl': 60,
+                                            'value': '2333'},
+                                      httpCmd='PUT')
                 if html != "":
                     break
         except Exception as er:
@@ -566,11 +561,10 @@ class Common(Daemon):
                 url = "http://%s/v2/keys%s?recursive=true" % (host, key)
                 self.url_fetch(url, httpCmd='DELETE')
 
-                #回调接口 把结果返回
                 def feedback():
                     result = Command(cmd).run()
                     message = {'ip': ip, 'cmd': cmd, 'result': result}
-                    time.sleep(random.uniform(0,1))
+                    time.sleep(random.uniform(0, 1))
                     self.url_fetch(feedback_url,
                                    {'param': json.dumps({'param': message})})
 
@@ -585,7 +579,7 @@ class Common(Daemon):
                 self.get_etcd()
                 self.heartbeat()
                 self.watch_commmand()
-                time.sleep(random.uniform(1,2))
+                time.sleep(random.uniform(1, 2))
             except BaseException as e:
                 time.sleep(random.randint(1, 6))
 
@@ -615,7 +609,7 @@ class Cli():
             for k, v in enumerate(argv):
                 if v != 'f' is not None and not os.path.isfile(argv[v]):
                     form.add_field(v, argv[v])
-                else:  #file
+                else:  # file
                     f = open(argv[v], 'r')
                     res = f.read()
                     filepath, filename = os.path.split(argv[v])
@@ -624,7 +618,7 @@ class Cli():
                         filename=filename,
                         fileHandle=StringIO(res))
                     f.close()
-        #sync file to every idc
+        # sync file to every idc
         for cobbler_ip in cobbler_ips:
             request = urllib2.Request(url='http://' + cobbler_ip + ':8080')
             body = str(form)

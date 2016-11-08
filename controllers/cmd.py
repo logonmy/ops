@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding:utf8 -*-
 import requests
 from configs import etcd_config_cmd
 from helpers.logger import log_error, log_debug

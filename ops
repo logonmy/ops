@@ -3,7 +3,7 @@
 
 server_url      = "http://127.0.0.1:8000"
 feedback_url    = 'http://127.0.0.1:8000/feedback'
-host_info_url   = 'http://127.0.0.1:8000/cmdb/info'
+host_info_url   = 'http://127.0.0.1:8000/cmdb/hostinfo'
 host_info_file  = '/etc/host_info.json'
 etcd_list       = ['10.3.138.23:4001']
 etcd_prefix     = '/ops'

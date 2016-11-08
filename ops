@@ -682,7 +682,9 @@ if __name__ == '__main__':
         ctl = sys.argv[1]
         if 'daemon' == ctl:
             data = util.parse_argv(sys.argv[2:])
-            opt = data.get('s')
+            opt = None
+            if len(data) !=0:
+                opt = data.get('s')
             if 'start' == opt:
                 print "ops daemon start"
                 util.start()
@@ -696,7 +698,7 @@ if __name__ == '__main__':
                 print "ops daemon debug"
                 util.run()
             else:
-                print "usage: ops deamon -s start|stop|restart"
+                print "usage: ops daemon -s start|stop|restart"
                 sys.exit(2)
         else:
             if len(sys.argv) > 2:

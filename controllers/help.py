@@ -13,6 +13,7 @@ class help:
         self.help.append('ops download test.txt 下载文件')
         self.help.append('ops shell test.sh 下载并执行')
         self.help.append('ops rpmupload -f ./test/nginx.rpm 上传rpm到私有仓库\n')
+        self.help.append('ops daemon -s restart 启动守护进程以便能实时watch命令执行\n')
         for module in os.listdir(self.controllers_dir):
             if module.startswith('__') or module.endswith('.pyc') or module.startswith('help') \
                     or module.startswith('file') or module.startswith('complete') :

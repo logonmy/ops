@@ -26,7 +26,7 @@ class mysql:
 
             ops mysql list_backup 查看备份
 
-	    ops mysql query 查询
+	        ops mysql query 查询
         '''
         return h
 

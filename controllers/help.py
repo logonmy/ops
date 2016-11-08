@@ -8,10 +8,10 @@ class help:
     def list(self, req, resp):
         self.controllers_dir = './controllers/'
         self.help = []
-        self.help.append('ops listfile 查看可下载的文件')
-        self.help.append('ops upload test.txt 上传文件')
-        self.help.append('ops download test.txt 下载文件')
-        self.help.append('ops shell test.sh 下载并执行')
+        self.help.append('ops listfile 查看可下载的文件\n')
+        self.help.append('ops upload test.txt 上传文件\n')
+        self.help.append('ops download test.txt 下载文件\n')
+        self.help.append('ops shell test.sh 下载并执行\n')
         self.help.append('ops rpmupload -f ./test/nginx.rpm 上传rpm到私有仓库\n')
         self.help.append('ops daemon -s restart 启动守护进程以便能实时watch命令执行\n')
         for module in os.listdir(self.controllers_dir):

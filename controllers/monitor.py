@@ -15,7 +15,7 @@ from models.zabbix import *
 from helpers.cache import r, cache
 
 
-class Zabbix:
+class monitor:
     def __init__(self):
         try:
             self.zapi = ZabbixAPI(
@@ -32,25 +32,25 @@ class Zabbix:
         h = '''
                 前提条件:
                     1,修改configs/__init__.py中的zabbix_config,zabbix_db_config 和 ssh_config(可选)
-                    2,系统的模板在vendors/zabbix/templates 自动导入请使用 ops zabbix import_templates
+                    2,系统的模板在vendors/zabbix/templates 自动导入请使用 ops monitor import_templates
 
-            ops zabbix import_templates 导入模板
-            ops zabbix list_all          列出所有机器
-            ops zabbix list_red          列出状态出错机器
-            ops zabbix list_group        列出组
-            ops zabbix list_template     列出模板
-            ops zabbix disable -s hostname    禁用监控
-            ops zabbix enable  -s hostname    开启监控
-            ops zabbix list_able     开启监控列表
-            ops zabbix list_disable     关闭监控列表
-            ops zabbix del_host -s hostname  删除监控机器
-            ops zabbix add_hostgroup -g groupname -s hostname 添加主机到主机组
-            ops zabbix del_hostgroup -g groupname -s hostname 从主机组中删除主机
+            ops monitor import_templates 导入模板
+            ops monitor list_all          列出所有机器
+            ops monitor list_red          列出状态出错机器
+            ops monitor list_group        列出组
+            ops monitor list_template     列出模板
+            ops monitor disable -s hostname    禁用监控
+            ops monitor enable  -s hostname    开启监控
+            ops monitor list_able     开启监控列表
+            ops monitor list_disable     关闭监控列表
+            ops monitor del_host -s hostname  删除监控机器
+            ops monitor add_hostgroup -g groupname -s hostname 添加主机到主机组
+            ops monitor del_hostgroup -g groupname -s hostname 从主机组中删除主机
             exmaple:
-                   ops zabbix list_all |grep -i pre  |awk '{print $4}' |xargs -n 1 ops zabbix add_hostgroup -g 'ns-test' -s
+                   ops monitor list_all |grep -i pre  |awk '{print $4}' |xargs -n 1 ops monitor add_hostgroup -g 'ns-test' -s
 
-            ops zabbix del_hosttemplate -s hostname -t templatename  删除监控机器模板
-            ops zabbix get_item -s hostname 查看主机的items项
+            ops monitor del_hosttemplate -s hostname -t templatename  删除监控机器模板
+            ops monitor get_item -s hostname 查看主机的items项
 
             注意:本工具是以hostname为标准去处理问题的,如果出现hostname与主机真实hostname
             不一致的情况,需要修改Zabbix上的hostname为主机上的hostname

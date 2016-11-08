@@ -1,11 +1,10 @@
 import requests
 from configs import etcd_config_cmd
 from helpers.logger import log_error, log_debug
-import simplejson as json
 import time
 
 
-class Cmd:
+class cmd:
     def __init__(self):
         self.cmdkeys = {}
         self.etcd_config = etcd_config_cmd

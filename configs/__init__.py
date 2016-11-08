@@ -171,3 +171,15 @@ netconf_config = {
             'port': 830}
 }
 elasticsearch_config = {'hosts': ''}
+
+router_config = {
+    'port': 22,
+    'user': 'router',
+    'password': '',
+}
+
+switch_config = {
+    'port': 22,
+    'user': 'switch',
+    'password': '',
+}

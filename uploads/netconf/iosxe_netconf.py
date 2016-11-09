@@ -92,12 +92,11 @@ class IOSXEDevice(object):
 
     def connect(self):
         '''Returns True if connect to device is successful.'''
-        self.handle = manager.connect_ssh(
-            self.hostname,
-            username=self.username,
-            password=self.password,
-            port=self.port,
-            hostkey_verify=False)
+        self.handle = manager.connect_ssh(self.hostname,
+                                          username=self.username,
+                                          password=self.password,
+                                          port=self.port,
+                                          hostkey_verify=False)
 
     def disconnect(self):
         '''Returns True if disconnect from device is successful.'''
@@ -140,9 +139,8 @@ class IOSXEDevice(object):
 </cli-config-data-block>
 </config>""".format(commands=commands)
         try:
-            response = xmltodict.parse(
-                self.handle.edit_config(
-                    target='running', config=config).xml)
+            response = xmltodict.parse(self.handle.edit_config(
+                target='running', config=config).xml)
             return 'ok' in response['rpc-reply']  # Got <ok /> tag
         except RPCError:
             raise ConfigDeployError

@@ -20,13 +20,12 @@ class Ldap:
 
     def _client(self):
         server = Server(ldap_config.get('url'), get_info=ALL)
-        conn = Connection(
-            server,
-            user=ldap_config.get('user'),
-            password=ldap_config.get('password'),
-            authentication=SASL,
-            sasl_mechanism='GSSAPI',
-            auto_bind=AUTO_BIND_NO_TLS)
+        conn = Connection(server,
+                          user=ldap_config.get('user'),
+                          password=ldap_config.get('password'),
+                          authentication=SASL,
+                          sasl_mechanism='GSSAPI',
+                          auto_bind=AUTO_BIND_NO_TLS)
         return conn
 
     def search(self, req, resp):
@@ -37,11 +36,10 @@ class Ldap:
             return '--base(search_base) need'
         if search_filter is None:
             return '--filter(search_filter) need'
-        conn.search(
-            search_base=search_base,
-            search_filter=search_filter,
-            attributes=['cn', 'userPrincipalName', 'userAccountControl',
-                        'givenName', 'sn'])
+        conn.search(search_base=search_base,
+                    search_filter=search_filter,
+                    attributes=['cn', 'userPrincipalName',
+                                'userAccountControl', 'givenName', 'sn'])
         return conn.response
 
     def rebind(self, req, resp):

@@ -33,9 +33,8 @@ handler = logging.handlers.RotatingFileHandler(
     mode='a+',
     maxBytes=1073741824,  #1G
     backupCount=5)
-handler.setFormatter(
-    logging.Formatter(
-        '%(asctime)s %(levelname)-8s[%(filename)s:%(lineno)d(%(funcName)s)] %(message)s'))
+handler.setFormatter(logging.Formatter(
+    '%(asctime)s %(levelname)-8s[%(filename)s:%(lineno)d(%(funcName)s)] %(message)s'))
 mylggr.addHandler(handler)
 
 if not os.path.isdir(os.path.dirname(log_file)):
@@ -62,11 +61,10 @@ def do_task(**post_data):
     fout.close()
 
     #创建yum仓库索引
-    p = Popen(
-        "cd %s && createrepo %s" % (rpmdir, yumname),
-        shell=True,
-        stdout=PIPE,
-        stderr=PIPE)
+    p = Popen("cd %s && createrepo %s" % (rpmdir, yumname),
+              shell=True,
+              stdout=PIPE,
+              stderr=PIPE)
     try:
         stdout, stderr = p.communicate()
     finally:
@@ -131,8 +129,9 @@ def application(environ, start_response):
         post_data[key] = a[key].value
     mylggr.debug('request : ip %s , post_data %s ' %
                  (environ.get('REMOTE_ADRR'), str(post_data)))
-    task_pool.apply_async(
-        do_task, kwds=json.loads(post_data), callback=callback)
+    task_pool.apply_async(do_task,
+                          kwds=json.loads(post_data),
+                          callback=callback)
     yield json.dumps(result) + '\n'
 
 

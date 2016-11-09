@@ -161,10 +161,10 @@ BACKUP_TYPES = set([BACKUP_TYPE_LOGICAL, BACKUP_TYPE_XBSTREAM,
 INNOBACKUPEX = '/usr/bin/innobackupex'
 INNOBACKUP_OK = 'completed OK!'
 MYSQLDUMP = '/usr/bin/mysqldump'
-MYSQLDUMP_CMD = ' '.join(
-    (MYSQLDUMP, '--master-data', '--single-transaction', '--events',
-     '--all-databases', '--routines', '--user={dump_user}',
-     '--password={dump_pass}', '--host={host}', '--port={port}'))
+MYSQLDUMP_CMD = ' '.join((MYSQLDUMP, '--master-data', '--single-transaction',
+                          '--events', '--all-databases', '--routines',
+                          '--user={dump_user}', '--password={dump_pass}',
+                          '--host={host}', '--port={port}'))
 PIGZ = ['/usr/bin/pigz', '-p', '2']
 PV = '/usr/bin/pv -peafbt'
 S3_SCRIPT = '/usr/local/bin/gof3r'
@@ -370,8 +370,8 @@ def find_unused_db_servers():
             mysql_aws_hosts.add(host)
 
     hosts_not_in_zk = mysql_aws_hosts.difference(zk_servers)
-    hosts_not_protected = hosts_not_in_zk.difference(
-        get_protected_hosts('set'))
+    hosts_not_protected = hosts_not_in_zk.difference(get_protected_hosts(
+        'set'))
     return hosts_not_protected
 
 
@@ -437,12 +437,11 @@ def rename_db_to_drop(instance, dbs, verbose=False, dry_run=False):
         # We should be safe to create the new db and rename
         if not dry_run:
             create_db(instance, renamed_db)
-        move_db_contents(
-            instance,
-            old_db=db,
-            new_db=renamed_db,
-            verbose=verbose,
-            dry_run=dry_run)
+        move_db_contents(instance,
+                         old_db=db,
+                         new_db=renamed_db,
+                         verbose=verbose,
+                         dry_run=dry_run)
 
 
 def drop_db_after_rename(instance, dbs, verbose, dry_run):
@@ -678,11 +677,10 @@ def add_to_queue(hostname, dry_run, skip_production_check=False):
             log.info('Trying to reset user_statistics on ip '
                      '{ip}'.format(ip=instance_metadata['internal_ip']))
             with timeout.timeout(3):
-                conn = MySQLdb.connect(
-                    host=instance_metadata['internal_ip'],
-                    user=username,
-                    passwd=password,
-                    cursorclass=MySQLdb.cursors.DictCursor)
+                conn = MySQLdb.connect(host=instance_metadata['internal_ip'],
+                                       user=username,
+                                       passwd=password,
+                                       cursorclass=MySQLdb.cursors.DictCursor)
             if not conn:
                 raise Exception('timeout')
             if dry_run:
@@ -903,11 +901,10 @@ def check_for_user_activity(instance):
     log.info('Checking activity on {instance}'.format(instance=instance[
         'hostname']))
     with timeout.timeout(3):
-        conn = MySQLdb.connect(
-            host=instance['internal_ip'],
-            user=username,
-            passwd=password,
-            cursorclass=MySQLdb.cursors.DictCursor)
+        conn = MySQLdb.connect(host=instance['internal_ip'],
+                               user=username,
+                               passwd=password,
+                               cursorclass=MySQLdb.cursors.DictCursor)
     if not conn:
         raise Exception('Could not connect to {ip}'
                         ''.format(ip=instance['internal_ip']))
@@ -916,9 +913,8 @@ def check_for_user_activity(instance):
     unexpected = set(activity.keys()).difference(IGNORABLE_USERS)
     if unexpected:
         log.error('Unexpected activity on {instance} by user(s):'
-                  '{unexpected}'.format(
-                      instance=instance['hostname'],
-                      unexpected=','.join(unexpected)))
+                  '{unexpected}'.format(instance=instance['hostname'],
+                                        unexpected=','.join(unexpected)))
         return True
 
     log.info('Checking current connections on '
@@ -927,9 +923,8 @@ def check_for_user_activity(instance):
     unexpected = connected_users.difference(IGNORABLE_USERS)
     if unexpected:
         log.error('Unexpected connection on {instance} by user(s):'
-                  '{unexpected}'.format(
-                      instance=instance['hostname'],
-                      unexpected=','.join(unexpected)))
+                  '{unexpected}'.format(instance=instance['hostname'],
+                                        unexpected=','.join(unexpected)))
         return True
     return False
 
@@ -1293,8 +1288,8 @@ def add_replica_to_zk(instance, replica_type, dry_run):
                             ''.format(master=master))
 
         log.info('Detected master of {instance} '
-                 'as {master}'.format(
-                     instance=instance, master=master))
+                 'as {master}'.format(instance=instance,
+                                      master=master))
 
         (replica_set, _) = zk_local.get_replica_set_from_instance(master)
         log.info('Detected replica_set as '
@@ -1304,8 +1299,8 @@ def add_replica_to_zk(instance, replica_type, dry_run):
             (zk_node, parsed_data, version) = get_zk_node_for_replica_set(
                 kazoo_client, replica_set)
             log.info('Replica set {replica_set} is held in zk_node '
-                     '{zk_node}'.format(
-                         zk_node=zk_node, replica_set=replica_set))
+                     '{zk_node}'.format(zk_node=zk_node,
+                                        replica_set=replica_set))
             log.info('Existing config:')
             log.info(pprint.pformat(remove_auth(parsed_data[replica_set])))
             new_data = copy.deepcopy(parsed_data)
@@ -1380,8 +1375,8 @@ def swap_master_and_slave(instance, dry_run):
     (zk_node, parsed_data,
      version) = get_zk_node_for_replica_set(kazoo_client, replica_set)
     log.info('Replica set {replica_set} is held in zk_node '
-             '{zk_node}'.format(
-                 zk_node=zk_node, replica_set=replica_set))
+             '{zk_node}'.format(zk_node=zk_node,
+                                replica_set=replica_set))
 
     log.info('Existing config:')
     log.info(pprint.pformat(remove_auth(parsed_data[replica_set])))
@@ -1423,8 +1418,8 @@ def swap_slave_and_dr_slave(instance, dry_run):
     (zk_node, parsed_data,
      version) = get_zk_node_for_replica_set(kazoo_client, replica_set)
     log.info('Replica set {replica_set} is held in zk_node '
-             '{zk_node}'.format(
-                 zk_node=zk_node, replica_set=replica_set))
+             '{zk_node}'.format(zk_node=zk_node,
+                                replica_set=replica_set))
 
     log.info('Existing config:')
     log.info(pprint.pformat(remove_auth(parsed_data[replica_set])))
@@ -1668,8 +1663,8 @@ def verify_flexsharded_csv_backup(shard_type, date, instance=None):
             pprint.pprint(missing_uploads)
         else:
             print('Shard type {shard_type} is missing {num} uploads'
-                  ''.format(
-                      num=len(missing_uploads), shard_type=shard_type))
+                  ''.format(num=len(missing_uploads),
+                            shard_type=shard_type))
 
     if not missing_uploads and not instance and success:
         print 'Shard type {shard_type} is backed up'.format(
@@ -1690,8 +1685,8 @@ def verify_sharded_csv_backup(shard_type, date, instance=None):
     """
     zk = MysqlZookeeper()
     example_shard = SHARDED_DBS_PREFIX_MAP[shard_type]['example_shard']
-    schema_host = zk.shard_to_instance(
-        example_shard, repl_type=REPLICA_ROLE_SLAVE)
+    schema_host = zk.shard_to_instance(example_shard,
+                                       repl_type=REPLICA_ROLE_SLAVE)
     tables = mysql_backup_csv.mysql_backup_csv(
         schema_host).get_tables_to_backup(convert_shard_to_db(example_shard))
     success = verify_csv_schema_upload(shard_type, date, schema_host,
@@ -1728,8 +1723,8 @@ def verify_sharded_csv_backup(shard_type, date, instance=None):
             pprint.pprint(missing_uploads)
         else:
             print('Shard type {shard_type} is missing {num} uploads'
-                  ''.format(
-                      num=len(missing_uploads), shard_type=shard_type))
+                  ''.format(num=len(missing_uploads),
+                            shard_type=shard_type))
         return False
     else:
         if instance:
@@ -1816,8 +1811,8 @@ def verify_unsharded_csv_backup(shard_type, date, instance):
             if not verify_csv_schema_upload(shard_type, date, instance, db,
                                             set([table])):
                 return_status = False
-                print 'Missing schema for {db}.{table}'.format(
-                    db=db, table=table)
+                print 'Missing schema for {db}.{table}'.format(db=db,
+                                                               table=table)
                 continue
 
             (_, data_path, success_path) = \
@@ -1914,16 +1909,14 @@ def log_csv_backup_success(instance, date):
 
     if not does_table_exist(master, METADATA_DB, CSV_BACKUP_LOG_TABLE):
         print 'Creating missing metadata table'
-        cursor.execute(
-            CSV_BACKUP_LOG_TABLE_DEFINITION.format(
-                db=METADATA_DB, tbl=CSV_BACKUP_LOG_TABLE))
+        cursor.execute(CSV_BACKUP_LOG_TABLE_DEFINITION.format(
+            db=METADATA_DB, tbl=CSV_BACKUP_LOG_TABLE))
 
     sql = ('INSERT IGNORE INTO {METADATA_DB}.{CSV_BACKUP_LOG_TABLE} '
            'SET backup_date = %(date)s, '
            'completion = NOW()'
-           ''.format(
-               METADATA_DB=METADATA_DB,
-               CSV_BACKUP_LOG_TABLE=CSV_BACKUP_LOG_TABLE))
+           ''.format(METADATA_DB=METADATA_DB,
+                     CSV_BACKUP_LOG_TABLE=CSV_BACKUP_LOG_TABLE))
     cursor.execute(sql, {'date': date})
     conn.commit()
 
@@ -1950,9 +1943,8 @@ def csv_backup_success_logged(instance, date):
     sql = ('SELECT COUNT(*) as "cnt" '
            'FROM {METADATA_DB}.{CSV_BACKUP_LOG_TABLE} '
            'WHERE backup_date = %(date)s '
-           ''.format(
-               METADATA_DB=METADATA_DB,
-               CSV_BACKUP_LOG_TABLE=CSV_BACKUP_LOG_TABLE))
+           ''.format(METADATA_DB=METADATA_DB,
+                     CSV_BACKUP_LOG_TABLE=CSV_BACKUP_LOG_TABLE))
     cursor.execute(sql, {'date': date})
     if cursor.fetchone()["cnt"]:
         return True
@@ -2047,8 +2039,8 @@ class mysql_backup_csv:
         host_lock_handle = None
         try:
             log.info('Backup for instance {i} started at {t}'
-                     ''.format(
-                         t=str(self.timestamp), i=self.instance))
+                     ''.format(t=str(self.timestamp),
+                               i=self.instance))
             log.info('Checking heartbeat to make sure replicaiton is not too '
                      'lagged.')
             self.check_replication_for_backup()
@@ -2108,9 +2100,9 @@ class mysql_backup_csv:
             except:
                 self.dbs_to_put(db)
                 log.error('{proc_id}: Could not dump {db}, '
-                          'error: {e}'.format(
-                              db=db, e=traceback.format_exc(),
-                              proc_id=proc_id))
+                          'error: {e}'.format(db=db,
+                                              e=traceback.format_exc(),
+                                              proc_id=proc_id))
                 err_count = err_count + 1
                 if err_count > MAX_THREAD_ERROR:
                     log.error(
@@ -2137,13 +2129,11 @@ class mysql_backup_csv:
 
             if not self.force_reupload and self.already_backed_up(db):
                 log.info('{proc_id}: {db} is already backed up, skipping'
-                         ''.format(
-                             proc_id=proc_id, db=db))
+                         ''.format(proc_id=proc_id, db=db))
                 return
 
             log.info('{proc_id}: {db} db backup start'
-                     ''.format(
-                         db=db, proc_id=proc_id))
+                     ''.format(db=db, proc_id=proc_id))
 
             tmp_dir_db = os.path.join(self.dump_base_path, db)
             if not os.path.exists(tmp_dir_db):
@@ -2156,13 +2146,11 @@ class mysql_backup_csv:
                 self.mysql_backup_csv_table(db, table, tmp_dir_db, conn)
 
             log.info('{proc_id}: {db} db backup complete'
-                     ''.format(
-                         db=db, proc_id=proc_id))
+                     ''.format(db=db, proc_id=proc_id))
         finally:
             if lock_identifier:
                 log.debug('{proc_id}: {db} releasing lock'
-                          ''.format(
-                              db=db, proc_id=proc_id))
+                          ''.format(db=db, proc_id=proc_id))
                 self.release_db_backup_lock(lock_identifier)
 
     def mysql_backup_csv_table(self, db, table, tmp_dir_db, conn):
@@ -2179,8 +2167,10 @@ class mysql_backup_csv:
             self.datestamp, db, table, self.instance.replica_type,
             self.instance.get_zk_replica_set()[0])
         log.debug('{proc_id}: {db}.{table} dump to {path} started'
-                  ''.format(
-                      proc_id=proc_id, db=db, table=table, path=data_path))
+                  ''.format(proc_id=proc_id,
+                            db=db,
+                            table=table,
+                            path=data_path))
         self.upload_schema(db, table, tmp_dir_db)
         fifo = os.path.join(tmp_dir_db, table)
         procs = dict()
@@ -2189,16 +2179,14 @@ class mysql_backup_csv:
             self.create_fifo(fifo)
 
             # Start creating processes
-            procs['cat'] = subprocess.Popen(
-                ['cat', fifo], stdout=subprocess.PIPE)
-            procs['nullescape'] = subprocess.Popen(
-                ['nullescape'],
-                stdin=procs['cat'].stdout,
-                stdout=subprocess.PIPE)
-            procs['lzop'] = subprocess.Popen(
-                ['lzop'],
-                stdin=procs['nullescape'].stdout,
-                stdout=subprocess.PIPE)
+            procs['cat'] = subprocess.Popen(['cat', fifo],
+                                            stdout=subprocess.PIPE)
+            procs['nullescape'] = subprocess.Popen(['nullescape'],
+                                                   stdin=procs['cat'].stdout,
+                                                   stdout=subprocess.PIPE)
+            procs['lzop'] = subprocess.Popen(['lzop'],
+                                             stdin=procs['nullescape'].stdout,
+                                             stdout=subprocess.PIPE)
 
             # Start dump query
             return_value = set()
@@ -2209,17 +2197,16 @@ class mysql_backup_csv:
             query_thread.start()
 
             # And run the upload
-            safe_upload(
-                precursor_procs=procs,
-                stdin=procs['lzop'].stdout,
-                bucket=S3_CSV_BUCKET,
-                key=data_path,
-                check_func=self.check_dump_success,
-                check_arg=return_value)
+            safe_upload(precursor_procs=procs,
+                        stdin=procs['lzop'].stdout,
+                        bucket=S3_CSV_BUCKET,
+                        key=data_path,
+                        check_func=self.check_dump_success,
+                        check_arg=return_value)
             os.remove(fifo)
             log.debug('{proc_id}: {db}.{table} clean up complete'
-                      ''.format(
-                          proc_id=proc_id, db=db, table=table))
+                      ''.format(proc_id=proc_id,
+                                db=db, table=table))
         except:
             log.debug(
                 '{proc_id}: in exception handling for failed table upload'
@@ -2242,9 +2229,8 @@ class mysql_backup_csv:
             self.cleanup_fifo(fifo)
 
         log.debug('{proc_id}: creating fifo {fifo}'
-                  ''.format(
-                      proc_id=multiprocessing.current_process().name,
-                      fifo=fifo))
+                  ''.format(proc_id=multiprocessing.current_process().name,
+                            fifo=fifo))
         os.mkfifo(fifo)
         # Could not get os.mkfifo(fifo, 0777) to work due to umask
         change_owner(fifo, 'mysql', 'mysql')
@@ -2256,17 +2242,16 @@ class mysql_backup_csv:
         fifo - The path to the fifo
         """
         log.debug('{proc_id}: Cleanup of {fifo} started'
-                  ''.format(
-                      proc_id=multiprocessing.current_process().name,
-                      fifo=fifo))
+                  ''.format(proc_id=multiprocessing.current_process().name,
+                            fifo=fifo))
         cat_proc = subprocess.Popen(
-            'timeout 5 cat {fifo} >/dev/null'.format(fifo=fifo), shell=True)
+            'timeout 5 cat {fifo} >/dev/null'.format(fifo=fifo),
+            shell=True)
         cat_proc.wait()
         os.remove(fifo)
         log.debug('{proc_id}: Cleanup of {fifo} complete'
-                  ''.format(
-                      proc_id=multiprocessing.current_process().name,
-                      fifo=fifo))
+                  ''.format(proc_id=multiprocessing.current_process().name,
+                            fifo=fifo))
 
     def run_dump_query(self, db, table, fifo, conn, cat_proc, return_value):
         """ Run a SELECT INTO OUTFILE into a fifo
@@ -2283,15 +2268,13 @@ class mysql_backup_csv:
                        able to modify objects (like a set).
         """
         log.debug('{proc_id}: {db}.{table} dump started'
-                  ''.format(
-                      proc_id=multiprocessing.current_process().name,
-                      db=db,
-                      table=table))
+                  ''.format(proc_id=multiprocessing.current_process().name,
+                            db=db,
+                            table=table))
         sql = ("SELECT * "
                "INTO OUTFILE '{fifo}' "
                "FROM {db}.{table} "
-               "").format(
-                   fifo=fifo, db=db, table=table)
+               "").format(fifo=fifo, db=db, table=table)
         cursor = conn.cursor()
         try:
             cursor.execute(sql)
@@ -2301,15 +2284,14 @@ class mysql_backup_csv:
             if psutil.pid_exists(cat_proc.pid):
                 cat_proc.kill()
             log.error('{proc_id}: dump query encountered an error: {er}'
-                      ''.format(
-                          er=detail,
-                          proc_id=multiprocessing.current_process().name))
+                      ''.format(er=detail,
+                                proc_id=multiprocessing.current_process(
+                                ).name))
 
         log.debug('{proc_id}: {db}.{table} dump complete'
-                  ''.format(
-                      proc_id=multiprocessing.current_process().name,
-                      db=db,
-                      table=table))
+                  ''.format(proc_id=multiprocessing.current_process().name,
+                            db=db,
+                            table=table))
         return_value.add(SUCCESS_ENTRY)
 
     def check_dump_success(self, return_value):
@@ -2336,10 +2318,9 @@ class mysql_backup_csv:
             replica_set=self.instance.get_zk_replica_set()[0],
             date=self.datestamp, db_name=db)
         log.debug('{proc_id}: {db} Uploading pitr data to {s3_path}'
-                  ''.format(
-                      s3_path=s3_path,
-                      proc_id=multiprocessing.current_process().name,
-                      db=db))
+                  ''.format(s3_path=s3_path,
+                            proc_id=multiprocessing.current_process().name,
+                            db=db))
         boto_conn = boto.connect_s3()
         bucket = boto_conn.get_bucket(S3_CSV_BUCKET, validate=False)
         key = bucket.new_key(s3_path)
@@ -2358,9 +2339,8 @@ class mysql_backup_csv:
             self.instance.get_zk_replica_set()[0])
         create_stm = show_create_table(self.instance, db, table)
         log.debug('{proc_id}: Uploading schema to {schema_path}'
-                  ''.format(
-                      schema_path=schema_path,
-                      proc_id=multiprocessing.current_process().name))
+                  ''.format(schema_path=schema_path,
+                            proc_id=multiprocessing.current_process().name))
         boto_conn = boto.connect_s3()
         bucket = boto_conn.get_bucket(S3_CSV_BUCKET, validate=False)
         key = bucket.new_key(schema_path)
@@ -2384,8 +2364,8 @@ class mysql_backup_csv:
 
         lock_identifier = str(uuid.uuid4())
         log.debug('Taking backup lock: {replica_set} {db} '
-                  ''.format(
-                      replica_set=replica_set, db=db))
+                  ''.format(replica_set=replica_set,
+                            db=db))
         params = {'lock': lock_identifier,
                   'db': db,
                   'hostname': self.instance.hostname,
@@ -2400,8 +2380,8 @@ class mysql_backup_csv:
                "db = %(db)s,"
                "hostname = %(hostname)s,"
                "port = %(port)s"
-               "").format(
-                   db=METADATA_DB, tbl=CSV_BACKUP_LOCK_TABLE_NAME)
+               "").format(db=METADATA_DB,
+                          tbl=CSV_BACKUP_LOCK_TABLE_NAME)
         cursor = master_conn.cursor()
         try:
             cursor.execute(sql, params)
@@ -2413,18 +2393,17 @@ class mysql_backup_csv:
                    "WHERE "
                    "    lock_active = %(active)s AND "
                    "    db = %(db)s"
-                   "").format(
-                       db=METADATA_DB, tbl=CSV_BACKUP_LOCK_TABLE_NAME)
+                   "").format(db=METADATA_DB,
+                              tbl=CSV_BACKUP_LOCK_TABLE_NAME)
             cursor.execute(sql, {'db': db, 'active': ACTIVE})
             ret = cursor.fetchone()
             log.debug(
                 'DB {db} is already being backed up on {hostname}:{port}, '
                 'lock will expire at {expires}.'
-                ''.format(
-                    db=db,
-                    hostname=ret['hostname'],
-                    port=ret['port'],
-                    expires=str(ret['expires'])))
+                ''.format(db=db,
+                          hostname=ret['hostname'],
+                          port=ret['port'],
+                          expires=str(ret['expires'])))
 
         log.debug(cursor._executed)
         return lock_identifier
@@ -2446,8 +2425,8 @@ class mysql_backup_csv:
         sql = ('UPDATE {db}.{tbl} '
                'SET lock_active = NULL AND released = NOW() '
                'WHERE lock_identifier = %(lock_identifier)s'
-               '').format(
-                   db=METADATA_DB, tbl=CSV_BACKUP_LOCK_TABLE_NAME)
+               '').format(db=METADATA_DB,
+                          tbl=CSV_BACKUP_LOCK_TABLE_NAME)
         cursor.execute(sql, params)
         master_conn.commit()
         log.debug(cursor._executed)
@@ -2467,9 +2446,8 @@ class mysql_backup_csv:
         if not does_table_exist(master, METADATA_DB,
                                 CSV_BACKUP_LOCK_TABLE_NAME):
             log.debug('Creating missing metadata table')
-            cursor.execute(
-                CSV_BACKUP_LOCK_TABLE.format(
-                    db=METADATA_DB, tbl=CSV_BACKUP_LOCK_TABLE_NAME))
+            cursor.execute(CSV_BACKUP_LOCK_TABLE.format(
+                db=METADATA_DB, tbl=CSV_BACKUP_LOCK_TABLE_NAME))
 
         params = {'hostname': self.instance.hostname,
                   'port': self.instance.port}
@@ -2477,16 +2455,16 @@ class mysql_backup_csv:
                'SET lock_active = NULL AND released = NOW() '
                'WHERE hostname = %(hostname)s AND '
                '     port = %(port)s'
-               '').format(
-                   db=METADATA_DB, tbl=CSV_BACKUP_LOCK_TABLE_NAME)
+               '').format(db=METADATA_DB,
+                          tbl=CSV_BACKUP_LOCK_TABLE_NAME)
         cursor.execute(sql, params)
         master_conn.commit()
 
         sql = ('UPDATE {db}.{tbl} '
                'SET lock_active = NULL AND released = NOW() '
                'WHERE expires < NOW()'
-               '').format(
-                   db=METADATA_DB, tbl=CSV_BACKUP_LOCK_TABLE_NAME)
+               '').format(db=METADATA_DB,
+                          tbl=CSV_BACKUP_LOCK_TABLE_NAME)
         cursor.execute(sql)
         master_conn.commit()
         log.debug(cursor._executed)
@@ -2519,9 +2497,11 @@ class mysql_backup_csv:
         Returns:
         a set of table names
         """
-        tables = filter_tables_to_csv_backup(
-            self.instance, db, get_tables(
-                self.instance, db, skip_views=True))
+        tables = filter_tables_to_csv_backup(self.instance,
+                                             db,
+                                             get_tables(self.instance,
+                                                        db,
+                                                        skip_views=True))
         if not self.force_table:
             return tables
 
@@ -2788,16 +2768,15 @@ def checksum_tbl(instance, db, tbl):
     """
 
     username, password = get_mysql_user_for_role('ptchecksum')
-    cmd = (' '.join(
-        ('/usr/bin/pt-table-checksum', CHECKSUM_DEFAULTS,
-         '--tables={db}.{tbl}', '--user={username}', '--password={password}',
-         '--host={host}', '--port={port}')).format(
-             tbl=tbl,
-             db=db,
-             username=username,
-             password=password,
-             host=instance.hostname,
-             port=instance.port))
+    cmd = (' '.join(('/usr/bin/pt-table-checksum', CHECKSUM_DEFAULTS,
+                     '--tables={db}.{tbl}', '--user={username}',
+                     '--password={password}', '--host={host}',
+                     '--port={port}')).format(tbl=tbl,
+                                              db=db,
+                                              username=username,
+                                              password=password,
+                                              host=instance.hostname,
+                                              port=instance.port))
 
     out, err, ret = shell_exec(cmd)
     return cmd.replace(password, 'REDACTED'), out, err, ret
@@ -2810,13 +2789,13 @@ def checksum_tbl_via_sync(instance, db, tbl):
     username, password = get_mysql_user_for_role('ptchecksum')
     cmd = (' '.join(('/usr/bin/pt-table-sync', CHECKSUM_SYNC_DEFAULTS,
                      '--tables={db}.{tbl}', '--user={username}',
-                     '--password={password}', 'h={host},P={port}')).format(
-                         db=db,
-                         tbl=tbl,
-                         username=username,
-                         password=password,
-                         host=instance.hostname,
-                         port=instance.port))
+                     '--password={password}',
+                     'h={host},P={port}')).format(db=db,
+                                                  tbl=tbl,
+                                                  username=username,
+                                                  password=password,
+                                                  host=instance.hostname,
+                                                  port=instance.port))
 
     out, err, ret = shell_exec(cmd)
 
@@ -2964,8 +2943,8 @@ def checksum(**args):
 
                                 if not args.quiet:
                                     log.info(
-                                        "Sync command executed was:\n{cmd} ".
-                                        format(cmd=sync_cmd))
+                                        "Sync command executed was:\n{cmd} ".format(
+                                            cmd=sync_cmd))
                                     log.info("Standard out:\n {out}".format(
                                         out=sync_out))
                                     log.info("Standard error:\n {err}".format(
@@ -3071,27 +3050,26 @@ def mysql_cli(**args):
         raise Exception('Could not determine what host to connect to')
 
     log.info('Will connect to {host} with {privileges} '
-             'privileges {lq}'.format(
-                 host=host, privileges=args.privileges, lq=long_query))
+             'privileges {lq}'.format(host=host,
+                                      privileges=args.privileges,
+                                      lq=long_query))
     (username, password
      ) = get_mysql_user_for_role(CLI_ROLES[args.privileges][role_modifier])
 
     if args.execute:
         execute_escaped = string.replace(args.execute, '"', '\\"')
-        cmd = MYSQL_CLI_EX.format(
-            host=host.hostname,
-            port=host.port,
-            db=db,
-            user=username,
-            password=password,
-            execute=execute_escaped)
+        cmd = MYSQL_CLI_EX.format(host=host.hostname,
+                                  port=host.port,
+                                  db=db,
+                                  user=username,
+                                  password=password,
+                                  execute=execute_escaped)
     else:
-        cmd = MYSQL_CLI.format(
-            host=host.hostname,
-            port=host.port,
-            db=db,
-            user=username,
-            password=password)
+        cmd = MYSQL_CLI.format(host=host.hostname,
+                               port=host.port,
+                               db=db,
+                               user=username,
+                               password=password)
     log.info(cmd)
     proc = subprocess.Popen(cmd, shell=True)
     proc.wait()
@@ -3170,8 +3148,8 @@ def build_cnf(host=None, override_dir=None, override_mysql_version=None):
     config_files.append(os.path.join(RELATIVE_DIR, instance_type))
 
     log.info('Hostname "{hostname}" results in hostname prefix "{prefix}"'
-             ''.format(
-                 hostname=host.hostname, prefix=host.replica_type))
+             ''.format(hostname=host.hostname,
+                       prefix=host.replica_type))
     config_files.append(os.path.join(RELATIVE_DIR, host.replica_type))
 
     # Using the config files, setup a config file parser
@@ -3330,7 +3308,8 @@ def create_log_rotate_conf(parser, override_dir=None):
                                     parser.get(MYSQLD_SECTION, rotate_file)))
     log_rotate_values = '\n\t'.join(LOG_ROTATE_SETTINGS)
     log_rotate_settings = LOG_ROTATE_TEMPLATE.format(
-        files=files_to_rotate, settings=log_rotate_values)
+        files=files_to_rotate,
+        settings=log_rotate_values)
     if override_dir:
         log_rotate_conf_file = os.path.join(
             override_dir, os.path.basename(LOG_ROTATE_CONF_FILE))
@@ -3450,12 +3429,11 @@ def create_pt_heartbeat_conf(override_dir):
     log.info('Writing file {heartbeat_cnf_path}'
              ''.format(heartbeat_cnf_path=heartbeat_cnf_path))
     with open(heartbeat_cnf_path, "w") as heartbeat_cnf_handle:
-        heartbeat_cnf_handle.write(
-            template.format(
-                defaults_file=MYSQL_CNF_FILE,
-                username=heartbeat_user,
-                password=heartbeat_password,
-                metadata_db=METADATA_DB))
+        heartbeat_cnf_handle.write(template.format(
+            defaults_file=MYSQL_CNF_FILE,
+            username=heartbeat_user,
+            password=heartbeat_password,
+            metadata_db=METADATA_DB))
 
 
 def create_pt_kill_conf(override_dir):
@@ -3478,12 +3456,11 @@ def create_pt_kill_conf(override_dir):
     log.info('Writing file {kill_cnf_path}'
              ''.format(kill_cnf_path=kill_cnf_path))
     with open(kill_cnf_path, "w") as kill_cnf_handle:
-        kill_cnf_handle.write(
-            template.format(
-                username=kill_user,
-                password=kill_password,
-                busy_time=PT_KILL_BUSY_TIME,
-                ignore_users='|'.join(PT_KILL_IGNORE_USERS)))
+        kill_cnf_handle.write(template.format(username=kill_user,
+                                              password=kill_password,
+                                              busy_time=PT_KILL_BUSY_TIME,
+                                              ignore_users='|'.join(
+                                                  PT_KILL_IGNORE_USERS)))
 
 
 MAX_ZK_WRITE_ATTEMPTS = 5
@@ -3508,8 +3485,8 @@ def mysql_failover(master, dry_run, skip_lock, ignore_dr_slave,
     log.info('Master to demote is {master}'.format(master=master))
 
     zk = MysqlZookeeper()
-    (replica_set, _) = zk.get_replica_set_from_instance(
-        master, rtypes=['master'])
+    (replica_set, _) = zk.get_replica_set_from_instance(master,
+                                                        rtypes=['master'])
     log.info('Replica set is detected as '
              '{replica_set}'.format(replica_set=replica_set))
 
@@ -3524,7 +3501,8 @@ def mysql_failover(master, dry_run, skip_lock, ignore_dr_slave,
     try:
         master_conn = False
         slave = zk.get_mysql_instance_from_replica_set(
-            replica_set=replica_set, repl_type=REPLICA_ROLE_SLAVE)
+            replica_set=replica_set,
+            repl_type=REPLICA_ROLE_SLAVE)
         log.info('Slave/new master is detected as {slave}'.format(slave=slave))
 
         if ignore_dr_slave:
@@ -3590,8 +3568,8 @@ def mysql_failover(master, dry_run, skip_lock, ignore_dr_slave,
             confirm_max_replica_lag(replicas, REPLICATION_TOLERANCE_NONE,
                                     dead_master, True, NORMAL_HEARTBEAT_LAG)
             log.info('Setting up replication from old master ({master}) '
-                     'to new master ({slave})'.format(
-                         master=master, slave=slave))
+                     'to new master ({slave})'.format(master=master,
+                                                      slave=slave))
             setup_replication(new_master=slave, new_replica=master)
         else:
             log.info('Starting up a zk connection to make sure we can connect')
@@ -3656,16 +3634,16 @@ def mysql_failover(master, dry_run, skip_lock, ignore_dr_slave,
 
     # we don't really care if this fails, but we'll print a message anyway.
     try:
-        generic_json_post(
-            CHANGE_FEED_URL, {'type': 'MySQL Failover',
-                              'environment': replica_set,
-                              'description':
-                              "Failover from {m} to {s}".format(
-                                  m=master, s=slave),
-                              'author': get_user(),
-                              'automation': False,
-                              'source':
-                              "mysql_failover.py on {}".format(HOSTNAME)})
+        generic_json_post(CHANGE_FEED_URL,
+                          {'type': 'MySQL Failover',
+                           'environment': replica_set,
+                           'description':
+                           "Failover from {m} to {s}".format(m=master,
+                                                             s=slave),
+                           'author': get_user(),
+                           'automation': False,
+                           'source':
+                           "mysql_failover.py on {}".format(HOSTNAME)})
     except Exception as e:
         log.warning("Failover completed, but change feed "
                     "not updated: {}".format(e))
@@ -3878,8 +3856,8 @@ def is_master_alive(master, replicas):
         master_conn = False
         log.info('Unable to connect to current master {master} from '
                  '{hostname}, will check replica servers beforce declaring '
-                 'the master dead'.format(
-                     master=master, hostname=HOSTNAME))
+                 'the master dead'.format(master=master,
+                                          hostname=HOSTNAME))
     except:
         log.info('This is an unknown connection error. If you are very sure '
                  'that the master is dead, please put a "return False" at the '
@@ -3897,14 +3875,14 @@ def is_master_alive(master, replicas):
             raise Exception('Replica {replica} thinks it can connect to '
                             'master {master}, but failover script can not. '
                             'Possible network partition!'
-                            ''.format(
-                                replica=replica, master=master))
+                            ''.format(replica=replica,
+                                      master=master))
         except:
             # The exception is expected in this case
             pass
         log.info('Replica {replica} also can not connect to master '
-                 '{master}.'.format(
-                     replica=replica, master=master))
+                 '{master}.'.format(replica=replica,
+                                    master=master))
     return False
 
 
@@ -3967,12 +3945,11 @@ def format_grant(grant):
         grant_option = ''
     sql_format = "GRANT {privs} ON *.* TO `{user}`@`{host}` " + \
                  "IDENTIFIED BY '{password}' {grant_option};"
-    sql = sql_format.format(
-        privs=grant['privileges'],
-        user=grant['username'],
-        host=grant['source_host'],
-        password=grant['password'],
-        grant_option=grant_option)
+    sql = sql_format.format(privs=grant['privileges'],
+                            user=grant['username'],
+                            host=grant['source_host'],
+                            password=grant['password'],
+                            grant_option=grant_option)
     return sql
 
 
@@ -4064,8 +4041,8 @@ def manage_mysql_grants(instance, action):
         cursor.execute("SELECT user, host FROM mysql.user")
         users = cursor.fetchall()
         for row in users:
-            user = "`{user}`@`{host}`".format(
-                user=row['user'], host=row['host'])
+            user = "`{user}`@`{host}`".format(user=row['user'],
+                                              host=row['host'])
             sql = "SHOW GRANTS FOR {user}".format(user=user)
             try:
                 cursor.execute(sql)
@@ -4113,8 +4090,8 @@ def manage_mysql_grants(instance, action):
                     pprint.pformat(on_server[key]).splitlines(),
                     pprint.pformat(grants[key]).splitlines())
                 problems.append('Grant for user "{user}" does not match:'
-                                '{problem}'.format(
-                                    user=key, problem='\n'.join(diff)))
+                                '{problem}'.format(user=key,
+                                                   problem='\n'.join(diff)))
 
         return problems
 
@@ -4304,16 +4281,16 @@ def init_privileges_tables(port):
 
     datadir = get_cnf_setting('datadir', port)
     cmd = ('{MYSQL_INSTALL_DB} --datadir={datadir}'
-           ' --user=mysql'.format(
-               MYSQL_INSTALL_DB=install_command, datadir=datadir))
+           ' --user=mysql'.format(MYSQL_INSTALL_DB=install_command,
+                                  datadir=datadir))
     log.info(cmd)
     (std_out, std_err, return_code) = shell_exec(cmd)
     if return_code:
-        raise Exception(
-            "Return {return_code} != 0 \n"
-            "std_err:{std_err}\n"
-            "std_out:{std_out}".format(
-                return_code=return_code, std_err=std_err, std_out=std_out))
+        raise Exception("Return {return_code} != 0 \n"
+                        "std_err:{std_err}\n"
+                        "std_out:{std_out}".format(return_code=return_code,
+                                                   std_err=std_err,
+                                                   std_out=std_out))
 
 
 OUTPUT_FORMAT = ('{replica_set:<RS}' '{replica_type:<12}' '{hostport}')
@@ -4376,23 +4353,19 @@ def replica_mappings(**args):
                     except KeyError:
                         sg = '??VPC??'
 
-                    output.append(
-                        format_str_extended.format(
-                            replica_set=replica_set,
-                            replica_type=rtype,
-                            hostport=':'.join([inst['host'], str(inst['port'])
-                                               ]),
-                            az=az,
-                            hw=hw,
-                            sg=sg,
-                            id=id))
+                    output.append(format_str_extended.format(
+                        replica_set=replica_set,
+                        replica_type=rtype,
+                        hostport=':'.join([inst['host'], str(inst['port'])]),
+                        az=az,
+                        hw=hw,
+                        sg=sg,
+                        id=id))
                 else:
-                    output.append(
-                        format_str.format(
-                            replica_set=replica_set,
-                            replica_type=rtype,
-                            hostport=':'.join([inst['host'], str(inst['port'])
-                                               ])))
+                    output.append(format_str.format(
+                        replica_set=replica_set,
+                        replica_type=rtype,
+                        hostport=':'.join([inst['host'], str(inst['port'])])))
 
     output.sort()
     print '\n'.join(output)
@@ -4495,8 +4468,8 @@ def restore_instance(restore_source, destination, no_repl, date, add_to_zk,
         log.info('Removing any existing MySQL data')
         delete_mysql_data(destination.port)
 
-        log.info('Unpacking {rfile} into {ddir}'.format(
-            rfile=restore_file, ddir=datadir))
+        log.info('Unpacking {rfile} into {ddir}'.format(rfile=restore_file,
+                                                        ddir=datadir))
         xbstream_unpack(restore_file, destination.port, restore_source,
                         restore_size)
 
@@ -4521,10 +4494,9 @@ def restore_instance(restore_source, destination, no_repl, date, add_to_zk,
         restore_log_update = {'restore_status': 'OK'}
 
         log.info('Running MySQL upgrade')
-        start_mysql(
-            destination.port,
-            options=DEFAULTS_FILE_EXTRA_ARG.format(
-                defaults_file=MYSQL_NOREPL_CNF_FILE))
+        start_mysql(destination.port,
+                    options=DEFAULTS_FILE_EXTRA_ARG.format(
+                        defaults_file=MYSQL_NOREPL_CNF_FILE))
 
         if master == get_metadata_from_backup_file(restore_file)[0]:
             log.info('Pulling replication info from restore to backup source')
@@ -4542,12 +4514,11 @@ def restore_instance(restore_source, destination, no_repl, date, add_to_zk,
         setup_semisync_plugins(destination)
 
         # Try to configure replication.
-        change_master(
-            destination,
-            master,
-            binlog_file,
-            binlog_pos,
-            no_start=(no_repl == 'SKIP'))
+        change_master(destination,
+                      master,
+                      binlog_file,
+                      binlog_pos,
+                      no_start=(no_repl == 'SKIP'))
         wait_replication_catch_up(destination)
         restart_pt_daemons(destination.port)
 
@@ -4609,8 +4580,8 @@ def find_a_backup_to_restore(source, destination, date):
     else:
         replica_set = destination.get_zk_replica_set()[0]
         for role in REPLICA_TYPES:
-            possible_sources.append(
-                zk.get_mysql_instance_from_replica_set(replica_set, role))
+            possible_sources.append(zk.get_mysql_instance_from_replica_set(
+                replica_set, role))
     log.info('Replica set detected as {replica_set}'.format(
         replica_set=replica_set))
     log.info('Possible source hosts:{possible_sources}'.format(
@@ -4640,8 +4611,8 @@ def find_a_backup_to_restore(source, destination, date):
             except:
                 log.info('No backup found on in s3 for host {source} '
                          ' on date {date}'
-                         ''.format(
-                             source=possible_source, date=restore_date))
+                         ''.format(source=possible_source,
+                                   date=restore_date))
 
     if not restore_file:
         raise Exception('Could not find a backup to restore')
@@ -4752,8 +4723,8 @@ def launch_amazon_mysql_server(hostname,
     """
     args, _, _, values = inspect.getargvalues(inspect.currentframe())
     for param in args:
-        log.info("Requested {param} = {value}".format(
-            param=param, value=values[param]))
+        log.info("Requested {param} = {value}".format(param=param,
+                                                      value=values[param]))
 
     config = {'key_name': PEM_KEY,
               'placement': availability_zone,
@@ -4791,9 +4762,8 @@ def launch_amazon_mysql_server(hostname,
     if hiera_config not in SUPPORTED_HIERA_CONFIGS:
         raise Exception('Hiera config {hiera_config} is not supported.'
                         'Supported configs are: {supported}'
-                        ''.format(
-                            hiera_config=hiera_config,
-                            supported=SUPPORTED_HIERA_CONFIGS))
+                        ''.format(hiera_config=hiera_config,
+                                  supported=SUPPORTED_HIERA_CONFIGS))
     config['user_data'] = ('#cloud-config\n'
                            'pinfo_team: {pinfo_team}\n'
                            'pinfo_env: {pinfo_env}\n'
@@ -4802,12 +4772,11 @@ def launch_amazon_mysql_server(hostname,
                            'raid: true\n'
                            'raid_fs: xfs\n'
                            'raid_mount: {raid_mount}'
-                           ''.format(
-                               pinfo_team=PINFO_TEAM,
-                               pinfo_env=PINFO_ENV,
-                               raid_mount=RAID_MOUNT,
-                               hiera_config=hiera_config,
-                               hostname=hostname))
+                           ''.format(pinfo_team=PINFO_TEAM,
+                                     pinfo_env=PINFO_ENV,
+                                     raid_mount=RAID_MOUNT,
+                                     hiera_config=hiera_config,
+                                     hostname=hostname))
 
     log.info('Config for new server:\n{config}'.format(config=config))
     conn = get_mysqlops_connections()
@@ -4843,11 +4812,12 @@ def get_subnet_from_sg(sg, az):
         raise Exception('Could not determine subnet for sg:{sg}'.format(sg=sg))
     vpc_az_subnet = VPC_AZ_SUBNET_MAP[vpc_subnet][az]
 
-    log.info(
-        'Will use subnet "{vpc_az_subnet}" in "{vpc_subnet}" based upon '
-        'security group {sg} and availibility zone {az}'
-        ''.format(
-            vpc_az_subnet=vpc_az_subnet, vpc_subnet=vpc_subnet, sg=sg, az=az))
+    log.info('Will use subnet "{vpc_az_subnet}" in "{vpc_subnet}" based upon '
+             'security group {sg} and availibility zone {az}'
+             ''.format(vpc_az_subnet=vpc_az_subnet,
+                       vpc_subnet=vpc_subnet,
+                       sg=sg,
+                       az=az))
     return (vpc_subnet, vpc_az_subnet)
 
 
@@ -4918,9 +4888,8 @@ def launch_replacement_db_host(original_server,
                 log.info("A replacement already exists, but was launched "
                          "{days} days ago. The timeout for servers builds is "
                          "{timeout} days so we are automatically setting "
-                         "replace_again.".format(
-                             days=age_of_replacement.days,
-                             timeout=SERVER_BUILD_TIMEOUT))
+                         "replace_again.".format(days=age_of_replacement.days,
+                                                 timeout=SERVER_BUILD_TIMEOUT))
                 replace_again = True
 
     # Pull some information from cmdb.
@@ -4974,15 +4943,13 @@ def launch_replacement_db_host(original_server,
                          'configuration'.format(key=key))
             else:
                 log.info('Overriding {key} to value {new} from {old}'
-                         ''.format(
-                             key=key,
-                             old=replacement_config[key],
-                             new=overrides[key]))
+                         ''.format(key=key,
+                                   old=replacement_config[key],
+                                   new=overrides[key]))
                 reasons.add('changing {key} from {old} to '
-                            '{new}'.format(
-                                key=key,
-                                old=replacement_config[key],
-                                new=overrides[key]))
+                            '{new}'.format(key=key,
+                                           old=replacement_config[key],
+                                           new=overrides[key]))
                 replacement_config[key] = overrides[key]
                 config_overridden = True
 
@@ -5057,7 +5024,8 @@ def find_unused_server_name(replica_set, conn, dry_run):
             continue
 
         if (len(host.host_identifier) == 1 and
-                ord(host.host_identifier) in range(ord('a'), ord('z'))):
+                ord(host.host_identifier) in range(
+                    ord('a'), ord('z'))):
             # old style hostname
             continue
 
@@ -5245,11 +5213,11 @@ def vpc_migration(replacement_config, overrides):
         raise Exception(
             'VPC security group {vpc_sg} is not a valid replacement '
             'for classic security group {classic_sg}. Valid options are:'
-            '{options}'.format(
-                vpc_sg=overrides['vpc_security_group'],
-                classic_sg=replacement_config['classic_security_group'],
-                options=VPC_MIGRATION_MAP[replacement_config[
-                    'classic_security_group']]))
+            '{options}'.format(vpc_sg=overrides['vpc_security_group'],
+                               classic_sg=replacement_config[
+                                   'classic_security_group'],
+                               options=VPC_MIGRATION_MAP[replacement_config[
+                                   'classic_security_group']]))
 
 
 @contextmanager
@@ -5352,8 +5320,9 @@ def safe_upload(precursor_procs,
     devnull = open(os.devnull, 'w')
     try:
         term_path = get_term_file()
-        repeater = subprocess.Popen(
-            [get_exec_path(), term_path], stdin=stdin, stdout=subprocess.PIPE)
+        repeater = subprocess.Popen([get_exec_path(), term_path],
+                                    stdin=stdin,
+                                    stdout=subprocess.PIPE)
         uploader = subprocess.Popen(
             [S3_SCRIPT, 'put', '-k', urllib.quote_plus(key), '-b', bucket],
             stdin=repeater.stdout,
@@ -5369,9 +5338,9 @@ def safe_upload(precursor_procs,
                 elif ret != 0:
                     raise Exception(
                         '{proc_id}: {proc} encountered an error'
-                        ''.format(
-                            proc_id=multiprocessing.current_process().name,
-                            proc=proc))
+                        ''.format(proc_id=multiprocessing.current_process(
+                        ).name,
+                                  proc=proc))
 
             # if we have success up to here, *and the term path does not exist* we
             # should run the check function and create the term_path.
@@ -5479,8 +5448,8 @@ def get_all_mysql_grants():
         privileges = role['privileges']
 
         for user in role['users']:
-            key = '`{user}`@`{host}`'.format(
-                user=user['username'], host=source_hosts)
+            key = '`{user}`@`{host}`'.format(user=user['username'],
+                                             host=source_hosts)
 
             if key in grants.keys():
                 raise AuthError('Duplicate username defined for %s' % key)
@@ -5549,21 +5518,19 @@ def connect_mysql(instance, role='admin'):
         socket = get_cnf_setting('socket', instance.port)
         username = 'root'
         password = ''
-        db = MySQLdb.connect(
-            unix_socket=socket,
-            user=username,
-            passwd=password,
-            cursorclass=MySQLdb.cursors.DictCursor)
+        db = MySQLdb.connect(unix_socket=socket,
+                             user=username,
+                             passwd=password,
+                             cursorclass=MySQLdb.cursors.DictCursor)
 
     else:
         username, password = get_mysql_user_for_role(role)
-        db = MySQLdb.connect(
-            host=instance.hostname,
-            port=instance.port,
-            user=username,
-            passwd=password,
-            cursorclass=MySQLdb.cursors.DictCursor,
-            connect_timeout=CONNECT_TIMEOUT)
+        db = MySQLdb.connect(host=instance.hostname,
+                             port=instance.port,
+                             user=username,
+                             passwd=password,
+                             cursorclass=MySQLdb.cursors.DictCursor,
+                             connect_timeout=CONNECT_TIMEOUT)
     return db
 
 
@@ -5727,8 +5694,8 @@ def get_binlog_archiving_lag(instance):
            "WHERE hostname= %(hostname)s  AND "
            "      port = %(port)s "
            "ORDER BY binlog_creation DESC "
-           "LIMIT 1;").format(
-               db=METADATA_DB, tbl=BINLOG_ARCHIVING_TABLE_NAME)
+           "LIMIT 1;").format(db=METADATA_DB,
+                              tbl=BINLOG_ARCHIVING_TABLE_NAME)
     params = {'hostname': instance.hostname, 'port': instance.port}
     cursor.execute(sql, params)
     res = cursor.fetchone()
@@ -5797,12 +5764,12 @@ def get_dbs(instance):
     cursor = conn.cursor()
     ret = set()
 
-    cursor.execute(' '.join(
-        ("SELECT schema_name", "FROM information_schema.schemata",
-         "WHERE schema_name NOT IN('mysql',",
-         "                         'information_schema',",
-         "                         'performance_schema',",
-         "                         'test')", "ORDER BY schema_name")))
+    cursor.execute(' '.join((
+        "SELECT schema_name", "FROM information_schema.schemata",
+        "WHERE schema_name NOT IN('mysql',",
+        "                         'information_schema',",
+        "                         'performance_schema',",
+        "                         'test')", "ORDER BY schema_name")))
     dbs = cursor.fetchall()
     for db in dbs:
         ret.add(db['schema_name'])
@@ -5836,8 +5803,7 @@ def does_table_exist(instance, db, table):
         # If it doesn't work, we can't know anything about the
         # state of the table.
         log.info('Ignoring an error checking for existance of '
-                 '{db}.{table}'.format(
-                     db=db, table=table))
+                 '{db}.{table}'.format(db=db, table=table))
 
     return table_exists
 
@@ -6116,8 +6082,8 @@ def show_create_table(instance, db, table, standardize=True):
     cursor = conn.cursor()
 
     try:
-        cursor.execute('SHOW CREATE TABLE `{db}`.`{table}`'.format(
-            table=table, db=db))
+        cursor.execute('SHOW CREATE TABLE `{db}`.`{table}`'.format(table=table,
+                                                                   db=db))
         ret = cursor.fetchone()['Create Table']
         if standardize is True:
             ret = re.sub('AUTO_INCREMENT=[0-9]+ ', '', ret)
@@ -6205,8 +6171,8 @@ def setup_replication(new_master, new_replica):
     new_slave - A hostaddr object for the new slave
     """
     log.info('Setting {new_replica} as a replica of new master '
-             '{new_master}'.format(
-                 new_master=new_master, new_replica=new_replica))
+             '{new_master}'.format(new_master=new_master,
+                                   new_replica=new_replica))
     new_master_coordinates = get_master_status(new_master)
     change_master(new_replica, new_master, new_master_coordinates['File'],
                   new_master_coordinates['Position'])
@@ -6393,8 +6359,8 @@ def wait_replication_catch_up(slave_hostaddr):
         if replication['sbm'] < catch_up_sbm:
             log.info('Replication computed seconds behind master {sbm} < '
                      '{catch_up_sbm}, which is "good enough".'
-                     ''.format(
-                         sbm=replication['sbm'], catch_up_sbm=catch_up_sbm))
+                     ''.format(sbm=replication['sbm'],
+                               catch_up_sbm=catch_up_sbm))
             return
 
         # last_sbm is set at the end of the first execution and should always
@@ -6416,10 +6382,9 @@ def wait_replication_catch_up(slave_hostaddr):
                 sleep_duration = 60
             log.info('Replication is lagged by {sbm} seconds, waiting '
                      'for < {catch_up}. Guestimate time to catch up: {eta}'
-                     ''.format(
-                         sbm=replication['sbm'],
-                         catch_up=catch_up_sbm,
-                         eta=str(remaining_time)))
+                     ''.format(sbm=replication['sbm'],
+                               catch_up=catch_up_sbm,
+                               eta=str(remaining_time)))
         else:
             # first time through
             log.info('Replication is lagged by {sbm} seconds.'
@@ -6446,31 +6411,28 @@ def assert_replication_unlagged(instance, lag_tolerance, dead_master=False):
     if lag_tolerance == REPLICATION_TOLERANCE_NONE:
         if replication['sql_bytes'] != 0:
             problems.add('Replica {r} is not fully synced, bytes behind: {b}'
-                         ''.format(
-                             r=instance, b=replication['sql_bytes']))
+                         ''.format(r=instance,
+                                   b=replication['sql_bytes']))
     elif lag_tolerance == REPLICATION_TOLERANCE_NORMAL:
         if replication['sbm'] > NORMAL_HEARTBEAT_LAG:
             problems.add(
                 'Replica {r} has heartbeat lag {sbm} > {sbm_limit} seconds'
-                ''.format(
-                    sbm=replication['sbm'],
-                    sbm_limit=NORMAL_HEARTBEAT_LAG,
-                    r=instance))
+                ''.format(sbm=replication['sbm'],
+                          sbm_limit=NORMAL_HEARTBEAT_LAG,
+                          r=instance))
 
         if replication['io_bytes'] > NORMAL_IO_LAG:
             problems.add('Replica {r} has IO lag {io_bytes} > {io_limit} bytes'
-                         ''.format(
-                             io_bytes=replication['io_bytes'],
-                             io_limit=NORMAL_IO_LAG,
-                             r=instance))
+                         ''.format(io_bytes=replication['io_bytes'],
+                                   io_limit=NORMAL_IO_LAG,
+                                   r=instance))
     elif lag_tolerance == REPLICATION_TOLERANCE_LOOSE:
         if replication['sbm'] > LOOSE_HEARTBEAT_LAG:
             problems.addi(
                 'Replica {r} has heartbeat lag {sbm} > {sbm_limit} seconds'
-                ''.format(
-                    sbm=replication['sbm'],
-                    sbm_limit=LOOSE_HEARTBEAT_LAG,
-                    r=instance))
+                ''.format(sbm=replication['sbm'],
+                          sbm_limit=LOOSE_HEARTBEAT_LAG,
+                          r=instance))
     else:
         problems.add('Unkown lag_tolerance mode: {m}'.format(m=lag_tolerance))
 
@@ -6510,10 +6472,9 @@ def assert_replication_sanity(instance, checks=ALL_REPLICATION_CHECKS):
             slave_status['Master_Port']))))
         if expected_master != actual_master:
             problems.add('Master is {actual} rather than expected {expected}'
-                         'for replica {r}'.format(
-                             actual=actual_master,
-                             expected=expected_master,
-                             r=instance))
+                         'for replica {r}'.format(actual=actual_master,
+                                                  expected=expected_master,
+                                                  r=instance))
 
     if problems:
         raise Exception(', '.join(problems))
@@ -7074,8 +7035,8 @@ def start_mysql(port, options=''):
     log.info(cmd)
     shell_exec(cmd)
     log.info('Waiting for MySQL on port {port} to start, '
-             'tailing error log {log_error}'.format(
-                 port=port, log_error=log_error))
+             'tailing error log {log_error}'.format(port=port,
+                                                    log_error=log_error))
     ret = tail_mysql_log_for_start_stop(log_error, error_start)
     if ret != MYSQL_STARTED:
         raise Exception('It appears MySQL shutdown rather than started up')
@@ -7092,8 +7053,8 @@ def tail_mysql_log_for_start_stop(log_error, start_pos=0):
     an int - if MySQL has started 0, if MySQL has ended 1
     """
     log.info('Tailing MySQL error log {log_error} starting from position '
-             '{start_pos}'.format(
-                 log_error=log_error, start_pos=start_pos))
+             '{start_pos}'.format(log_error=log_error,
+                                  start_pos=start_pos))
     start = time.time()
     err = None
     while True:
@@ -7151,8 +7112,8 @@ def upgrade_auth_tables(port):
     Args:
     port - the port of the instance on localhost to act on
     """
-    start_mysql(
-        port, DEFAULTS_FILE_ARG.format(defaults_file=MYSQL_UPGRADE_CNF_FILE))
+    start_mysql(port,
+                DEFAULTS_FILE_ARG.format(defaults_file=MYSQL_UPGRADE_CNF_FILE))
     socket = get_cnf_setting('socket', port)
     username, password = get_mysql_user_for_role('admin')
     cmd = ''.join((MYSQL_UPGRADE, ' ', '--upgrade-system-tables ', '-S ',
@@ -7378,8 +7339,8 @@ class MysqlZookeeper:
                             config[replica_set][rtype]['port']):
                         return (replica_set, rtype)
         raise Exception('{instance} is not in zk for replication '
-                        'role(s): {rtypes}'.format(
-                            instance=instance, rtypes=rtypes))
+                        'role(s): {rtypes}'.format(instance=instance,
+                                                   rtypes=rtypes))
 
     def get_host_shard_map(self, repl_type=REPLICA_ROLE_MASTER):
         """ Get a mapping of what shards exist on MySQL master servers
@@ -7589,8 +7550,10 @@ def shell_exec(cmd):
     std_err - Standard error results from the execution of the command
     return_code - Return code from the execution of the command
     """
-    proc = subprocess.Popen(
-        cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc = subprocess.Popen(cmd,
+                            shell=True,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE)
     proc.wait()
     std_out = proc.stdout.read()
     std_err = proc.stderr.read()
@@ -7641,8 +7604,9 @@ def change_owner(directory, user, group):
 
     """
     path = os.path.realpath(directory)
-    cmd = '/bin/chown -R {user}:{group} {path}'.format(
-        user=user, group=group, path=path)
+    cmd = '/bin/chown -R {user}:{group} {path}'.format(user=user,
+                                                       group=group,
+                                                       path=path)
     log.debug(cmd)
     (out, err, ret) = shell_exec(cmd)
     if ret != 0:
@@ -7658,8 +7622,8 @@ def change_perms(directory, numeric_perms):
     numeric_perms - The numeric permissions desired
     """
     path = os.path.realpath(directory)
-    cmd = '/bin/chmod -R {perms} {path}'.format(
-        perms=str(numeric_perms), path=path)
+    cmd = '/bin/chmod -R {perms} {path}'.format(perms=str(numeric_perms),
+                                                path=path)
     log.debug(cmd)
     (out, err, ret) = shell_exec(cmd)
     if ret != 0:
@@ -7838,8 +7802,8 @@ def parse_xtrabackup_slave_info(datadir):
     binlog_pos = int(res.group(1))
 
     log.info('Master info: binlog_file: {binlog_file},'
-             ' binlog_pos: {binlog_pos}'.format(
-                 binlog_file=binlog_file, binlog_pos=binlog_pos))
+             ' binlog_pos: {binlog_pos}'.format(binlog_file=binlog_file,
+                                                binlog_pos=binlog_pos))
     return (binlog_file, binlog_pos)
 
 
@@ -7867,8 +7831,8 @@ def parse_xtrabackup_binlog_info(datadir):
     binlog_pos = int(fields[1].strip())
 
     log.info('Master info: binlog_file: {binlog_file},'
-             ' binlog_pos: {binlog_pos}'.format(
-                 binlog_file=binlog_file, binlog_pos=binlog_pos))
+             ' binlog_pos: {binlog_pos}'.format(binlog_file=binlog_file,
+                                                binlog_pos=binlog_pos))
     return (binlog_file, binlog_pos)
 
 
@@ -7913,25 +7877,23 @@ def logical_backup_instance(instance, timestamp):
         timestamp=time.strftime('%Y-%m-%d-%H:%M:%S', timestamp),
         backup_type=BACKUP_TYPE_LOGICAL)
     (dump_user, dump_pass) = get_mysql_user_for_role(USER_ROLE_MYSQLDUMP)
-    dump_cmd = MYSQLDUMP_CMD.format(
-        dump_user=dump_user,
-        dump_pass=dump_pass,
-        host=instance.hostname,
-        port=instance.port)
+    dump_cmd = MYSQLDUMP_CMD.format(dump_user=dump_user,
+                                    dump_pass=dump_pass,
+                                    host=instance.hostname,
+                                    port=instance.port)
     procs = dict()
     try:
-        procs['mysqldump'] = subprocess.Popen(
-            dump_cmd.split(), stdout=subprocess.PIPE)
-        procs['pigz'] = subprocess.Popen(
-            PIGZ, stdin=procs['mysqldump'].stdout, stdout=subprocess.PIPE)
+        procs['mysqldump'] = subprocess.Popen(dump_cmd.split(),
+                                              stdout=subprocess.PIPE)
+        procs['pigz'] = subprocess.Popen(PIGZ,
+                                         stdin=procs['mysqldump'].stdout,
+                                         stdout=subprocess.PIPE)
         log.info('Uploading backup to {buk}/{key}'
-                 ''.format(
-                     buk=S3_BUCKET, key=dump_file))
-        safe_upload(
-            precursor_procs=procs,
-            stdin=procs['pigz'].stdout,
-            bucket=S3_BUCKET,
-            key=dump_file)
+                 ''.format(buk=S3_BUCKET, key=dump_file))
+        safe_upload(precursor_procs=procs,
+                    stdin=procs['pigz'].stdout,
+                    bucket=S3_BUCKET,
+                    key=dump_file)
         log.info('mysqldump was successful')
     except:
         kill_precursor_procs(procs)
@@ -7969,15 +7931,13 @@ def xtrabackup_instance(instance, timestamp):
             stdout=subprocess.PIPE,
             stderr=tmp_log_handle)
         log.info('Uploading backup to {buk}/{loc}'
-                 ''.format(
-                     buk=S3_BUCKET, loc=backup_file))
-        safe_upload(
-            precursor_procs=procs,
-            stdin=procs['xtrabackup'].stdout,
-            bucket=S3_BUCKET,
-            key=backup_file,
-            check_func=check_xtrabackup_log,
-            check_arg=tmp_log)
+                 ''.format(buk=S3_BUCKET, loc=backup_file))
+        safe_upload(precursor_procs=procs,
+                    stdin=procs['xtrabackup'].stdout,
+                    bucket=S3_BUCKET,
+                    key=backup_file,
+                    check_func=check_xtrabackup_log,
+                    check_arg=tmp_log)
         log.info('Xtrabackup was successful')
     except:
         kill_precursor_procs(procs)
@@ -8016,14 +7976,13 @@ def create_xtrabackup_command(instance, timestamp, tmp_log):
         cnf_group = 'mysqld{port}'.format(port=instance.port)
     datadir = get_cnf_setting('datadir', instance.port)
     (xtra_user, xtra_pass) = get_mysql_user_for_role(USER_ROLE_XTRABACKUP)
-    return XTRABACKUP_CMD.format(
-        datadir=datadir,
-        xtra_user=xtra_user,
-        xtra_pass=xtra_pass,
-        cnf=cnf,
-        cnf_group=cnf_group,
-        port=instance.port,
-        tmp_log=tmp_log).split()
+    return XTRABACKUP_CMD.format(datadir=datadir,
+                                 xtra_user=xtra_user,
+                                 xtra_pass=xtra_pass,
+                                 cnf=cnf,
+                                 cnf_group=cnf_group,
+                                 port=instance.port,
+                                 tmp_log=tmp_log).split()
 
 
 def xbstream_unpack(xbstream, port, restore_source, size=None):
@@ -8038,10 +7997,9 @@ def xbstream_unpack(xbstream, port, restore_source, size=None):
     datadir = get_cnf_setting('datadir', port)
 
     cmd = ('{s3_script} get --no-md5 -b {bucket} -k {xbstream} '
-           '2>/dev/null ').format(
-               s3_script=S3_SCRIPT,
-               bucket=S3_BUCKET,
-               xbstream=urllib.quote_plus(xbstream))
+           '2>/dev/null ').format(s3_script=S3_SCRIPT,
+                                  bucket=S3_BUCKET,
+                                  xbstream=urllib.quote_plus(xbstream))
     if size:
         cmd = ' | '.join((cmd, '{pv} -s {size}'.format(pv=PV, size=str(size))))
     # And finally pipe everything into xbstream to unpack it
@@ -8069,11 +8027,14 @@ def innobackup_decompress(port, threads=8):
     out_log = os.path.join(datadir, 'xtrabackup-decompress.log')
 
     with open(err_log, 'w+') as err_handle, open(out_log, 'w') as out_handle:
-        verbose = '{cmd} 2>{err_log} >{out_log}'.format(
-            cmd=cmd, err_log=err_log, out_log=out_log)
+        verbose = '{cmd} 2>{err_log} >{out_log}'.format(cmd=cmd,
+                                                        err_log=err_log,
+                                                        out_log=out_log)
         log.info(verbose)
-        decompress = subprocess.Popen(
-            cmd, shell=True, stdout=out_handle, stderr=err_handle)
+        decompress = subprocess.Popen(cmd,
+                                      shell=True,
+                                      stdout=out_handle,
+                                      stderr=err_handle)
         if decompress.wait() != 0:
             raise Exception('Fatal error: innobackupex decompress '
                             'did not return 0')
@@ -8124,8 +8085,8 @@ def get_s3_backup(hostaddr, date=None, backup_type=BACKUP_TYPE_XBSTREAM):
     Returns:
     filename - The path to the most recent backup file
     """
-    prefix = 'mysql-{host}-{port}'.format(
-        host=hostaddr.hostname, port=hostaddr.port)
+    prefix = 'mysql-{host}-{port}'.format(host=hostaddr.hostname,
+                                          port=hostaddr.port)
     if date:
         prefix = ''.join((prefix, '-', date))
     log.debug('looking for backup with prefix {prefix}'.format(prefix=prefix))
@@ -8146,8 +8107,8 @@ def get_s3_backup(hostaddr, date=None, backup_type=BACKUP_TYPE_XBSTREAM):
                '{instance}').format(instance=hostaddr)
         raise Exception(msg)
     log.debug('Found a s3 backup {s3_path} with a size of '
-              '{size}'.format(
-                  s3_path=latest_backup.name, size=latest_backup.size))
+              '{size}'.format(s3_path=latest_backup.name,
+                              size=latest_backup.size))
     return (latest_backup.name, latest_backup.size)
 
 
@@ -8162,12 +8123,11 @@ def restore_logical(s3_key, size):
     cmd = ('{s3_script} get --no-md5 -b {bucket} -k {s3_key} 2>/dev/null'
            '| {pv} -s {size}'
            '| zcat '
-           '| mysql ').format(
-               s3_script=S3_SCRIPT,
-               bucket=S3_BUCKET,
-               s3_key=urllib.quote_plus(s3_key),
-               pv=PV,
-               size=size)
+           '| mysql ').format(s3_script=S3_SCRIPT,
+                              bucket=S3_BUCKET,
+                              s3_key=urllib.quote_plus(s3_key),
+                              pv=PV,
+                              size=size)
     log.info(cmd)
     import_proc = subprocess.Popen(cmd, shell=True)
     if import_proc.wait() != 0:
@@ -8299,15 +8259,15 @@ def rotate_binlogs_if_needed(port, dry_run):
     age = (datetime.datetime.utcnow() - creation).seconds
     if age > MAX_AGE:
         log.info('Age of current binlog is {age} which is greater than '
-                 ' MAX_AGE ({MAX_AGE})'.format(
-                     age=age, MAX_AGE=MAX_AGE))
+                 ' MAX_AGE ({MAX_AGE})'.format(age=age,
+                                               MAX_AGE=MAX_AGE))
         if not dry_run:
             log.info('Flushing bin log')
             flush_master_log(instance)
     else:
         log.info('Age of current binlog is {age} which is less than '
-                 ' MAX_AGE ({MAX_AGE})'.format(
-                     age=age, MAX_AGE=MAX_AGE))
+                 ' MAX_AGE ({MAX_AGE})'.format(age=age,
+                                               MAX_AGE=MAX_AGE))
 
 
 BINLOG_ARCHIVING_TABLE = """CREATE TABLE IF NOT EXISTS {db}.{tbl} (
@@ -8414,8 +8374,8 @@ def upload_binlog(instance, binlog, dry_run):
     """
     s3_upload_path = s3_binlog_path(instance, binlog)
     log.info('Local file {local_file} will uploaded to {s3_upload_path}'
-             ''.format(
-                 local_file=binlog, s3_upload_path=s3_upload_path))
+             ''.format(local_file=binlog,
+                       s3_upload_path=s3_upload_path))
 
     if dry_run:
         log.info('In dry_run mode, skipping compression and upload')
@@ -8423,13 +8383,12 @@ def upload_binlog(instance, binlog, dry_run):
 
     procs = dict()
     try:
-        procs['lzop'] = subprocess.Popen(
-            ['lzop', binlog, '--to-stdout'], stdout=subprocess.PIPE)
-        safe_upload(
-            precursor_procs=procs,
-            stdin=procs['lzop'].stdout,
-            bucket=S3_BINLOG_BUCKET,
-            key=s3_upload_path)
+        procs['lzop'] = subprocess.Popen(['lzop', binlog, '--to-stdout'],
+                                         stdout=subprocess.PIPE)
+        safe_upload(precursor_procs=procs,
+                    stdin=procs['lzop'].stdout,
+                    bucket=S3_BINLOG_BUCKET,
+                    key=s3_upload_path)
     except:
         log.debug('In exception handling for failed binlog upload')
         kill_precursor_procs(procs)
@@ -8453,9 +8412,8 @@ def check_upload_procs(procs, term_path):
     for proc in ['lzop', 'repeater', 'upload']:
         if (proc == 'repeater' and success and not os.path.exists(term_path)):
             log.debug('creating term file {term_path}'
-                      ''.format(
-                          proc_id=multiprocessing.current_process().name,
-                          term_path=term_path))
+                      ''.format(proc_id=multiprocessing.current_process().name,
+                                term_path=term_path))
             open(term_path, 'w').close()
 
         ret = procs[proc].poll()
@@ -8485,8 +8443,8 @@ def log_binlog_upload(instance, binlog):
            "    port = %(port)s, "
            "    binlog = %(binlog)s, "
            "    binlog_creation = %(binlog_creation)s, "
-           "    uploaded = NOW() ").format(
-               metadata_db=METADATA_DB, tbl=BINLOG_ARCHIVING_TABLE_NAME)
+           "    uploaded = NOW() ").format(metadata_db=METADATA_DB,
+                                           tbl=BINLOG_ARCHIVING_TABLE_NAME)
     metadata = {'hostname': instance.hostname,
                 'port': str(instance.port),
                 'binlog': os.path.basename(binlog),
@@ -8510,8 +8468,8 @@ def get_logged_binlog_uploads(instance):
            "FROM {metadata_db}.{tbl} "
            "WHERE hostname = %(hostname)s AND "
            "      port = %(port)s "
-           "".format(
-               metadata_db=METADATA_DB, tbl=BINLOG_ARCHIVING_TABLE_NAME))
+           "".format(metadata_db=METADATA_DB,
+                     tbl=BINLOG_ARCHIVING_TABLE_NAME))
     cursor.execute(sql, {'hostname': instance.hostname,
                          'port': str(instance.port)})
     ret = set()
@@ -8535,15 +8493,13 @@ def ensure_binlog_archiving_table_sanity(instance):
     cursor = conn.cursor()
     if not does_table_exist(master, METADATA_DB, BINLOG_ARCHIVING_TABLE_NAME):
         log.debug('Creating missing metadata table')
-        cursor.execute(
-            BINLOG_ARCHIVING_TABLE.format(
-                db=METADATA_DB, tbl=BINLOG_ARCHIVING_TABLE_NAME))
+        cursor.execute(BINLOG_ARCHIVING_TABLE.format(
+            db=METADATA_DB, tbl=BINLOG_ARCHIVING_TABLE_NAME))
     sql = ("DELETE FROM {metadata_db}.{tbl} "
            "WHERE binlog_creation < now() - INTERVAL {d} DAY"
-           "").format(
-               metadata_db=METADATA_DB,
-               tbl=BINLOG_ARCHIVING_TABLE_NAME,
-               d=(S3_BINLOG_RETENTION + 1))
+           "").format(metadata_db=METADATA_DB,
+                      tbl=BINLOG_ARCHIVING_TABLE_NAME,
+                      d=(S3_BINLOG_RETENTION + 1))
     log.info(sql)
     cursor.execute(sql)
     conn.commit()

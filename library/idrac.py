@@ -123,8 +123,8 @@ class Idrac(object):
         if self.run_command(
                 'config -g cfgRemoteHosts -o cfgRhostsSyslogEnable 1'):
             self.run_command(
-                'config -g cfgRemoteHosts -o cfgRhostsSyslogServer1 {0}'.
-                format(syslog_ip))
+                'config -g cfgRemoteHosts -o cfgRhostsSyslogServer1 {0}'.format(
+                    syslog_ip))
 
     def export_xml(self, xml_file):
         return self.run_command('hwinventory export -f %s ' % xml_file)
@@ -171,8 +171,8 @@ class Idrac(object):
         uid = user[username]['index']
         if uid:
             self.run_command(
-                'config -g cfgUserAdmin -o cfgUserAdminUserName -i {0} ""'.
-                format(uid))
+                'config -g cfgUserAdmin -o cfgUserAdminUserName -i {0} ""'.format(
+                    uid))
         else:
             return False
 
@@ -184,8 +184,8 @@ class Idrac(object):
         uid = user[username]['index']
         if uid:
             self.run_command(
-                'config -g cfgUserAdmin -o cfgUserAdminPassword -i {0} {1}'.
-                format(uid, password))
+                'config -g cfgUserAdmin -o cfgUserAdminPassword -i {0} {1}'.format(
+                    uid, password))
         else:
             return False
 
@@ -217,8 +217,8 @@ class Idrac(object):
 
         uid = sorted(list(set(range(2, 12)) - _uids), reverse=True).pop()
         if not self.run_command(
-                'config -g cfgUserAdmin -o cfgUserAdminUserName -i {0} {1}'.
-                format(uid, username)):
+                'config -g cfgUserAdmin -o cfgUserAdminUserName -i {0} {1}'.format(
+                    uid, username)):
             self.delete_user(self, username, uid)
             return False
         if not self.set_permissions(username, permissions, uid):
@@ -271,8 +271,8 @@ class Idrac(object):
                 permission += int(privileges[perm], 16)
 
         return self.run_command(
-            'config -g cfgUserAdmin -o cfgUserAdminPrivilege -i {0} 0x{1:08X}'.
-            format(uid, permission))
+            'config -g cfgUserAdmin -o cfgUserAdminPrivilege -i {0} 0x{1:08X}'.format(
+                uid, permission))
 
     def get_disk(self):
         return self.run_command('raid get pdisks -o')

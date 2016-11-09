@@ -12,8 +12,8 @@ class jenkins:
         self.password = jenkins_config.get('password')
         if self.jenkins_url is not None:
             try:
-                self.jenkins = Jenkins(
-                    self.jenkins_url, auth=(self.user, self.password))
+                self.jenkins = Jenkins(self.jenkins_url,
+                                       auth=(self.user, self.password))
             except Exception as e:
                 log_error(e)
 
@@ -61,8 +61,11 @@ class jenkins:
             return '-b(branch) need'
         if package is None:
             return '-p(package) need'
-        return self.jenkins.create_copy(
-            job, template, repo=repo, branch=branch, package=package)
+        return self.jenkins.create_copy(job,
+                                        template,
+                                        repo=repo,
+                                        branch=branch,
+                                        package=package)
 
     def build(self, req, resp):
         job = req.get_param(name='j')

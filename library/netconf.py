@@ -9,15 +9,14 @@ import xmltodict
 class Netconf:
     def __init__(self, host, device):
         device_config = netconf_config.get(device)
-        self.connect = manager.connect(
-            host=host,
-            port=device_config.get('port'),
-            username=device_config.get('user'),
-            password=device_config.get('password'),
-            hostkey_verify=False,
-            allow_agent=False,
-            look_for_keys=False,
-            device_params={'name': '%s' % device})
+        self.connect = manager.connect(host=host,
+                                       port=device_config.get('port'),
+                                       username=device_config.get('user'),
+                                       password=device_config.get('password'),
+                                       hostkey_verify=False,
+                                       allow_agent=False,
+                                       look_for_keys=False,
+                                       device_params={'name': '%s' % device})
 
     @staticmethod
     def find_in_data(query, ele, ns='http://www.h3c.com/netconf/data:1.0'):

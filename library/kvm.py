@@ -447,8 +447,9 @@ class wvmConnection(object):
                 elif self.type == CONN_SOCKET:
                     self.__connect_socket()
                 else:
-                    raise ValueError('"{type}" is not a valid connection type'.
-                                     format(type=self.type))
+                    raise ValueError(
+                        '"{type}" is not a valid connection type'.format(
+                            type=self.type))
 
                 if self.connected:
                     # do some preprocessing of the connection:
@@ -601,8 +602,9 @@ class wvmConnection(object):
         else:
             type_str = u'invalid_type'
 
-        return u'qemu+{type}://{user}@{host}/system'.format(
-            type=type_str, user=self.login, host=self.host)
+        return u'qemu+{type}://{user}@{host}/system'.format(type=type_str,
+                                                            user=self.login,
+                                                            host=self.host)
 
     def __repr__(self):
         return '<wvmConnection {connection_str}>'.format(
@@ -797,8 +799,8 @@ class wvmConnect(object):
             xml = dev.XMLDesc(0)
             dev_type = util.get_xml_path(xml, '/device/capability/@type')
             if dev_type == 'net':
-                netdevice.append(
-                    util.get_xml_path(xml, '/device/capability/interface'))
+                netdevice.append(util.get_xml_path(
+                    xml, '/device/capability/interface'))
         return netdevice
 
     def get_host_instances(self):
@@ -874,9 +876,9 @@ class wvmHostDetails(wvmConnect):
         info.append(self.wvm.getInfo()[0])
         info.append(self.wvm.getInfo()[1] * 1048576)
         info.append(self.wvm.getInfo()[2])
-        info.append(
-            util.get_xml_path(
-                self.wvm.getSysinfo(0), func=util.cpu_version))
+        info.append(util.get_xml_path(
+            self.wvm.getSysinfo(0),
+            func=util.cpu_version))
         info.append(self.wvm.getURI())
         return info
 

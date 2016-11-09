@@ -1,14 +1,14 @@
 #!/usr/bin/python
 # -*- coding:utf8 -*-
 
-server_url      = "http://127.0.0.1:8000"
-feedback_url    = 'http://127.0.0.1:8000/feedback'
-host_info_url   = 'http://127.0.0.1:8000/cmdb/hostinfo'
-host_info_file  = '/etc/host_info.json'
-etcd_list       = ['10.3.138.23:4001']
-etcd_prefix     = '/ops'
-script_path     = '/opt/scripts'
-pidfile         = "/var/run/ops.pid"
+server_url = "http://127.0.0.1:8000"
+feedback_url = 'http://127.0.0.1:8000/feedback'
+host_info_url = 'http://127.0.0.1:8000/cmdb/hostinfo'
+host_info_file = '/etc/host_info.json'
+etcd_list = ['10.3.138.23:4001']
+etcd_prefix = '/ops'
+script_path = '/opt/scripts'
+pidfile = "/var/run/ops.pid"
 client_log_file = '/var/log/ops.log'
 
 import os
@@ -376,7 +376,7 @@ class Common(Daemon):
             '.', '')[-8:] + str(uid)[-4:]
         return request_id.replace('.', '')
 
-    def url_fetch(self, url, data=None, timeout=30):
+    def url_fetch(self, url, data=None, timeout=30, httpCmd='POST'):
         html = ''
         try:
             uid = os.getuid()
@@ -411,6 +411,7 @@ class Common(Daemon):
             request.add_header('Hostname', self.get_hostname())
             request.add_header('Request-id', self.request_id(uid, server_ip))
             request.add_data(body)
+            request.get_method = lambda: httpCmd
             html = urllib2.urlopen(request).read()
 
             charset = re.compile(
@@ -426,7 +427,7 @@ class Common(Daemon):
             else:
                 print e
 
-            logger.error(e)
+            logger.error(str(e))
         return html
 
     def parse_argv(self, argv):
@@ -683,7 +684,7 @@ if __name__ == '__main__':
         if 'daemon' == ctl:
             data = util.parse_argv(sys.argv[2:])
             opt = None
-            if len(data) !=0:
+            if len(data) != 0:
                 opt = data.get('s')
             if 'start' == opt:
                 print "ops daemon start"

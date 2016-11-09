@@ -96,10 +96,9 @@ class Connection(object):
         # This is pretty convoluted. urllib.urlencode does almost the same
         # and is faster, so if we switched signature version we could do
         # that instead
-        canonicalized_query_string = '&'.join(
-            ['%s=%s' % (self._percent_encode(k, encoding),
-                        self._percent_encode(v, encoding))
-             for k, v in sorted_params])
+        canonicalized_query_string = '&'.join(['%s=%s' % (
+            self._percent_encode(k, encoding),
+            self._percent_encode(v, encoding)) for k, v in sorted_params])
 
         string_to_sign = 'GET&%2F&' + self._percent_encode(
             canonicalized_query_string, encoding)
@@ -1197,8 +1196,8 @@ class EcsConnection(Connection):
 
         for resp in self.get(params, paginated=True):
             for item in resp['InstanceStatuses']['InstanceStatus']:
-                instance_status.append(
-                    InstanceStatus(item['InstanceId'], item['Status']))
+                instance_status.append(InstanceStatus(item['InstanceId'], item[
+                    'Status']))
         return instance_status
 
     def get_all_instance_ids(self, zone_id=None):
@@ -1936,28 +1935,28 @@ class EcsConnection(Connection):
 
         for resp in self.get(params, paginated=True):
             for disk in resp['Disks']['Disk']:
-                disks.append(
-                    Disk(disk['DiskId'], disk['Type'], disk['Category'], disk[
-                        'Size'], dateutil.parser.parse(disk['AttachedTime']) if
-                         disk['AttachedTime'] != '' else None, dateutil.parser.
-                         parse(disk['CreationTime']) if disk['CreationTime'] !=
-                         '' else None, disk['DeleteAutoSnapshot'] == 'true'
-                         if disk['DeleteAutoSnapshot'] != '' else None, disk[
-                             'DeleteWithInstance'] == 'true'
-                         if disk['DeleteWithInstance'] != '' else None, disk[
-                             'Description'] if disk['Description'] != '' else
-                         None, dateutil.parser.parse(disk['DetachedTime']) if
-                         disk['DetachedTime'] != '' else None, disk['Device']
-                         if disk['Device'] != '' else None, disk['ImageId']
-                         if disk['ImageId'] != '' else None, disk['InstanceId']
-                         if disk['InstanceId'] != '' else None,
-                         disk['OperationLocks']['OperationLock'], disk[
-                             'Portable'] == 'true' if disk['Portable'] != ''
-                         else None, disk['ProductCode'] if disk['ProductCode']
-                         != '' else None, disk['SourceSnapshotId']
-                         if disk['SourceSnapshotId'] != '' else None, disk[
-                             'Status'] if disk['Status'] != '' else None, disk[
-                                 'ZoneId'] if disk['ZoneId'] != '' else None))
+                disks.append(Disk(
+                    disk['DiskId'], disk['Type'], disk['Category'], disk[
+                        'Size'], dateutil.parser.parse(disk['AttachedTime'])
+                    if disk['AttachedTime'] != '' else None,
+                    dateutil.parser.parse(disk['CreationTime'])
+                    if disk['CreationTime'] != '' else None, disk[
+                        'DeleteAutoSnapshot'] == 'true'
+                    if disk['DeleteAutoSnapshot'] != '' else None, disk[
+                        'DeleteWithInstance'] == 'true'
+                    if disk['DeleteWithInstance'] != '' else None, disk[
+                        'Description'] if disk['Description'] != '' else None,
+                    dateutil.parser.parse(disk['DetachedTime'])
+                    if disk['DetachedTime'] != '' else None, disk['Device']
+                    if disk['Device'] != '' else None, disk['ImageId']
+                    if disk['ImageId'] != '' else None, disk['InstanceId'] if
+                    disk['InstanceId'] != '' else None, disk['OperationLocks'][
+                        'OperationLock'], disk['Portable'] == 'true'
+                    if disk['Portable'] != '' else None, disk['ProductCode']
+                    if disk['ProductCode'] != '' else None, disk[
+                        'SourceSnapshotId'] if disk['SourceSnapshotId'] != ''
+                    else None, disk['Status'] if disk['Status'] != '' else
+                    None, disk['ZoneId'] if disk['ZoneId'] != '' else None))
         return disks
 
     def describe_instance_types(self):
@@ -1968,10 +1967,9 @@ class EcsConnection(Connection):
         instance_types = []
         resp = self.get({'Action': 'DescribeInstanceTypes'})
         for instance_type in resp['InstanceTypes']['InstanceType']:
-            instance_types.append(
-                InstanceType(instance_type['InstanceTypeId'], int(
-                    instance_type['CpuCoreCount']), int(instance_type[
-                        'MemorySize'])))
+            instance_types.append(InstanceType(instance_type[
+                'InstanceTypeId'], int(instance_type['CpuCoreCount']), int(
+                    instance_type['MemorySize'])))
 
         return instance_types
 
@@ -2062,14 +2060,14 @@ class EcsConnection(Connection):
 
         for resp in self.get(params, paginated=True):
             for snapshot in resp['Snapshots']['Snapshot']:
-                snapshots.append(
-                    Snapshot(snapshot['SnapshotId'], snapshot.get(
-                        'SnapshotName', None), int(snapshot['Progress'][:-1]),
-                             dateutil.parser.parse(snapshot['CreationTime']),
-                             snapshot.get('Description', None),
-                             snapshot.get('SourceDiskId', None), snapshot.get(
-                                 'SourceDiskType', None), int(
-                                     snapshot.get('SourceDiskSize', None))))
+                snapshots.append(Snapshot(
+                    snapshot['SnapshotId'], snapshot.get('SnapshotName', None),
+                    int(snapshot['Progress'][:-1]), dateutil.parser.parse(
+                        snapshot['CreationTime']), snapshot.get(
+                            'Description', None), snapshot.get(
+                                'SourceDiskId', None), snapshot.get(
+                                    'SourceDiskType', None), int(snapshot.get(
+                                        'SourceDiskSize', None))))
 
         return snapshots
 
@@ -2157,14 +2155,13 @@ class EcsConnection(Connection):
 
         for resp in self.get(params, paginated=True):
             for item in resp['Images']['Image']:
-                images.append(
-                    Image(item['ImageId'], item['ImageVersion'] if
-                          'ImageVersion' in item else None, item['ImageName'],
-                          item['Description'] if 'Description' in item else
-                          None, int(item['Size']) if 'Size' in item else None,
-                          item['Architecture'] if 'Architecture' in item else
-                          None, item['ImageOwnerAlias'], item['OSName']
-                          if 'OSName' in item else None))
+                images.append(Image(
+                    item['ImageId'], item['ImageVersion'] if 'ImageVersion' in
+                    item else None, item['ImageName'], item['Description']
+                    if 'Description' in item else None, int(item['Size'])
+                    if 'Size' in item else None, item['Architecture'] if
+                    'Architecture' in item else None, item['ImageOwnerAlias'],
+                    item['OSName'] if 'OSName' in item else None))
 
         return images
 
@@ -2230,16 +2227,16 @@ class EcsConnection(Connection):
 
         # Create the snapshot.
         log_debug('Creating snapshot for system disk %s' % system_disk.disk_id)
-        snapshot_id = self.create_snapshot(
-            instance_id, system_disk.disk_id, timeout_secs=timeout_secs)
+        snapshot_id = self.create_snapshot(instance_id,
+                                           system_disk.disk_id,
+                                           timeout_secs=timeout_secs)
 
         # Create the image.
         log_debug('Creating image from snapshot %s', snapshot_id)
-        image_id = self.create_image(
-            snapshot_id,
-            image_version=image_version,
-            description=description,
-            os_name=os_name)
+        image_id = self.create_image(snapshot_id,
+                                     image_version=image_version,
+                                     description=description,
+                                     os_name=os_name)
         time.sleep(30)
 
         return (snapshot_id, image_id)
@@ -2253,9 +2250,8 @@ class EcsConnection(Connection):
         for resp in self.get({'Action': 'DescribeSecurityGroups'},
                              paginated=True):
             for item in resp['SecurityGroups']['SecurityGroup']:
-                infos.append(
-                    SecurityGroupInfo(item['SecurityGroupId'], item[
-                        'Description'] if 'Description' in item else None))
+                infos.append(SecurityGroupInfo(item['SecurityGroupId'], item[
+                    'Description'] if 'Description' in item else None))
 
         return infos
 
@@ -2291,17 +2287,15 @@ class EcsConnection(Connection):
                                 'NicType': 'intranet'})
         permissions = []
         for p in outside_resp['Permissions']['Permission']:
-            permissions.append(
-                SecurityGroupPermission(p['IpProtocol'], p['PortRange'], p[
-                    'SourceCidrIp'] if 'SourceCidrIp' in p else None, p[
-                        'SourceGroupId'] if 'SourceGroupId' in p else None, p[
-                            'Policy'], p['NicType']))
+            permissions.append(SecurityGroupPermission(
+                p['IpProtocol'], p['PortRange'], p['SourceCidrIp']
+                if 'SourceCidrIp' in p else None, p['SourceGroupId']
+                if 'SourceGroupId' in p else None, p['Policy'], p['NicType']))
         for p in inside_resp['Permissions']['Permission']:
-            permissions.append(
-                SecurityGroupPermission(p['IpProtocol'], p['PortRange'], p[
-                    'SourceCidrIp'] if 'SourceCidrIp' in p else None, p[
-                        'SourceGroupId'] if 'SourceGroupId' in p else None, p[
-                            'Policy'], p['NicType']))
+            permissions.append(SecurityGroupPermission(
+                p['IpProtocol'], p['PortRange'], p['SourceCidrIp']
+                if 'SourceCidrIp' in p else None, p['SourceGroupId']
+                if 'SourceGroupId' in p else None, p['Policy'], p['NicType']))
 
         return SecurityGroup(outside_resp['RegionId'],
                              outside_resp['SecurityGroupId'],
@@ -2329,13 +2323,12 @@ class EcsConnection(Connection):
             source_cidr_ip (str): Source IP address range.
             policy (str): Accept, Drop or Reject. Default: Accept.
         """
-        self._add_security_rule(
-            security_group_id,
-            ip_protocol,
-            port_range,
-            source_cidr_ip=source_cidr_ip,
-            policy=policy,
-            nic_type='internet')
+        self._add_security_rule(security_group_id,
+                                ip_protocol,
+                                port_range,
+                                source_cidr_ip=source_cidr_ip,
+                                policy=policy,
+                                nic_type='internet')
 
     def add_internal_cidr_ip_rule(self,
                                   security_group_id,
@@ -2351,13 +2344,12 @@ class EcsConnection(Connection):
             source_cidr_ip (str): Source IP address range.
             policy (str): Accept, Drop or Reject. Default: Accept.
         """
-        self._add_security_rule(
-            security_group_id,
-            ip_protocol,
-            port_range,
-            source_cidr_ip=source_cidr_ip,
-            policy=policy,
-            nic_type='intranet')
+        self._add_security_rule(security_group_id,
+                                ip_protocol,
+                                port_range,
+                                source_cidr_ip=source_cidr_ip,
+                                policy=policy,
+                                nic_type='intranet')
 
     def add_group_rule(self,
                        security_group_id,
@@ -2373,13 +2365,12 @@ class EcsConnection(Connection):
             source_group_id (str): Source security group.
             policy (str): Accept, Drop or Reject. Default: Accept.
         """
-        self._add_security_rule(
-            security_group_id,
-            ip_protocol,
-            port_range,
-            source_group_id=source_group_id,
-            policy=policy,
-            nic_type='intranet')
+        self._add_security_rule(security_group_id,
+                                ip_protocol,
+                                port_range,
+                                source_group_id=source_group_id,
+                                policy=policy,
+                                nic_type='intranet')
 
     def _add_security_rule(self,
                            security_group_id,
@@ -2430,13 +2421,12 @@ class EcsConnection(Connection):
             source_cidr_ip (str): Source IP address range.
             policy (str): Accept, Drop or Reject. Default: Accept.
         """
-        self._remove_security_rule(
-            security_group_id,
-            ip_protocol,
-            port_range,
-            source_cidr_ip=source_cidr_ip,
-            policy=policy,
-            nic_type='internet')
+        self._remove_security_rule(security_group_id,
+                                   ip_protocol,
+                                   port_range,
+                                   source_cidr_ip=source_cidr_ip,
+                                   policy=policy,
+                                   nic_type='internet')
 
     def remove_internal_cidr_ip_rule(self,
                                      security_group_id,
@@ -2452,13 +2442,12 @@ class EcsConnection(Connection):
             source_cidr_ip (str): Source IP address range.
             policy (str): Accept, Drop or Reject. Default: Accept.
         """
-        self._remove_security_rule(
-            security_group_id,
-            ip_protocol,
-            port_range,
-            source_cidr_ip=source_cidr_ip,
-            policy=policy,
-            nic_type='intranet')
+        self._remove_security_rule(security_group_id,
+                                   ip_protocol,
+                                   port_range,
+                                   source_cidr_ip=source_cidr_ip,
+                                   policy=policy,
+                                   nic_type='intranet')
 
     def remove_group_rule(self,
                           security_group_id,
@@ -2474,13 +2463,12 @@ class EcsConnection(Connection):
             source_group_id (str): Source security group.
             policy (str): Accept, Drop or Reject. Default: Accept.
         """
-        self._remove_security_rule(
-            security_group_id,
-            ip_protocol,
-            port_range,
-            source_group_id=source_group_id,
-            policy=policy,
-            nic_type='intranet')
+        self._remove_security_rule(security_group_id,
+                                   ip_protocol,
+                                   port_range,
+                                   source_group_id=source_group_id,
+                                   policy=policy,
+                                   nic_type='intranet')
 
     def _remove_security_rule(self,
                               security_group_id,
@@ -2650,9 +2638,8 @@ class RdsConnection(Connection):
             params['InstanceNetworkType'] = instance_network_type
 
         for item in self.get(params)['Items']['DBInstance']:
-            dbinstance_status.append(
-                RDSInstanceStatus(item['DBInstanceId'], item[
-                    'DBInstanceStatus']))
+            dbinstance_status.append(RDSInstanceStatus(item[
+                'DBInstanceId'], item['DBInstanceStatus']))
         return dbinstance_status
 
     def get_all_dbinstance_ids(self, region_id=None):
@@ -3210,15 +3197,14 @@ class SlbConnection(Connection):
         if 'ConnectPort' not in resp:
             resp['ConnectPort'] = resp['BackendServerPort']
 
-        return TCPListener(
-            load_balancer_id,
-            int(resp['ListenerPort']),
-            int(resp['BackendServerPort']),
-            listener_status=resp['Status'],
-            scheduler=resp['Scheduler'] or None,
-            health_check=resp['HealthCheck'] == 'on',
-            connect_port=int(resp['ConnectPort']) or None,
-            persistence_timeout=int(resp['PersistenceTimeout']))
+        return TCPListener(load_balancer_id,
+                           int(resp['ListenerPort']),
+                           int(resp['BackendServerPort']),
+                           listener_status=resp['Status'],
+                           scheduler=resp['Scheduler'] or None,
+                           health_check=resp['HealthCheck'] == 'on',
+                           connect_port=int(resp['ConnectPort']) or None,
+                           persistence_timeout=int(resp['PersistenceTimeout']))
 
     def get_http_listener(self, load_balancer_id, listener_port):
         """Get the HTTP Listener from an SLB ID and port
@@ -3235,19 +3221,19 @@ class SlbConnection(Connection):
         }
         resp = self.get(params)
 
-        return HTTPListener(
-            load_balancer_id,
-            int(resp['ListenerPort']),
-            int(resp['BackendServerPort']),
-            listener_status=resp['Status'] or None,
-            scheduler=resp['Scheduler'] or None,
-            health_check=resp['HealthCheck'] == 'on',
-            x_forwarded_for=resp['XForwardedFor'] == 'on',
-            sticky_session=resp['StickySession'] == 'on',
-            sticky_session_type=resp['StickySessionapiType'] or None,
-            cookie=resp['Cookie'] or None,
-            domain=resp['Domain'] or None,
-            uri=resp['URI'])
+        return HTTPListener(load_balancer_id,
+                            int(resp['ListenerPort']),
+                            int(resp['BackendServerPort']),
+                            listener_status=resp['Status'] or None,
+                            scheduler=resp['Scheduler'] or None,
+                            health_check=resp['HealthCheck'] == 'on',
+                            x_forwarded_for=resp['XForwardedFor'] == 'on',
+                            sticky_session=resp['StickySession'] == 'on',
+                            sticky_session_type=resp['StickySessionapiType'] or
+                            None,
+                            cookie=resp['Cookie'] or None,
+                            domain=resp['Domain'] or None,
+                            uri=resp['URI'])
 
     def create_tcp_listener(self,
                             load_balancer_id,
@@ -3593,11 +3579,10 @@ class SlbConnection(Connection):
         for listener in resp['Listeners']['Listener']:
             backends = []
             for bs in listener['BackendServers']['BackendServer']:
-                backends.append(
-                    BackendServerStatus(bs['ServerId'], bs[
-                        'ServerHealthStatus']))
-            listeners.append(
-                ListenerStatus(listener['ListenerPort'], backends))
+                backends.append(BackendServerStatus(bs['ServerId'], bs[
+                    'ServerHealthStatus']))
+            listeners.append(ListenerStatus(listener['ListenerPort'],
+                                            backends))
 
         return listeners
 

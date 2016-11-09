@@ -195,32 +195,29 @@ class Snmp:
     _session = None
 
     def __init__(self):
-        self._session = netsnmp.Session(
-            Version=self.version,
-            Community=self.community,
-            UseNumeric=self.useNumeric)
+        self._session = netsnmp.Session(Version=self.version,
+                                        Community=self.community,
+                                        UseNumeric=self.useNumeric)
 
     def dest(self, destination):
         self.destination = destination
 
     def get(self, oid):
         var = netsnmp.Varbind(oid)
-        ret = netsnmp.snmpget(
-            var,
-            Version=self.version,
-            Community=self.community,
-            UseNumeric=self.useNumeric,
-            DestHost=self.destination)
+        ret = netsnmp.snmpget(var,
+                              Version=self.version,
+                              Community=self.community,
+                              UseNumeric=self.useNumeric,
+                              DestHost=self.destination)
         return ret[0]
 
     def walk(self, oid, format=None):
         var = netsnmp.VarList(netsnmp.Varbind(oid))
-        ret = netsnmp.snmpwalk(
-            var,
-            Version=self.version,
-            Community=self.community,
-            UseNumeric=self.useNumeric,
-            DestHost=self.destination)
+        ret = netsnmp.snmpwalk(var,
+                               Version=self.version,
+                               Community=self.community,
+                               UseNumeric=self.useNumeric,
+                               DestHost=self.destination)
 
         if format == "values":
             return [var[i].val for i in range(len(var))]
@@ -334,13 +331,13 @@ class Switch:
             vendor = self.getVendor()
         if vendor == "cisco":
             # get all known vlans
-            vlans = self._snmp.walk(
-                self.OID['cam']['cisco']['vlan_state'], format="keys")
+            vlans = self._snmp.walk(self.OID['cam']['cisco']['vlan_state'],
+                                    format="keys")
 
             if translateInterface:
                 # get all known interfaces
-                interfaces = self._snmp.walk(
-                    self.OID['interface']['name'], format="dict")
+                interfaces = self._snmp.walk(self.OID['interface']['name'],
+                                             format="dict")
 
             # for each vlan: get known mac addresses and bridge ports
             macs = []
@@ -381,13 +378,13 @@ class Switch:
         elif vendor == "juniper":
             bridge = self._snmp.walk(
                 self.OID['cam']['juniper']['bridge_interface'], format='dict')
-            vlan = self._snmp.walk(
-                self.OID['cam']['juniper']['vlan_tags'], format='dict')
+            vlan = self._snmp.walk(self.OID['cam']['juniper']['vlan_tags'],
+                                   format='dict')
 
             if translateInterface:
                 # get all known interfaces
-                interfaces = self._snmp.walk(
-                    self.OID['interface']['name'], format="dict")
+                interfaces = self._snmp.walk(self.OID['interface']['name'],
+                                             format="dict")
 
             port = [(
                 x[0][28:] + "." + x[1], bridge[x[3]]
@@ -439,8 +436,8 @@ class Switch:
 
             if translateInterface:
                 # get all known interfaces
-                interfaces = self._snmp.walk(
-                    self.OID['interface']['name'], format="dict")
+                interfaces = self._snmp.walk(self.OID['interface']['name'],
+                                             format="dict")
 
             macs = []
             for i in mac:

@@ -59,11 +59,14 @@ class Device(BaseModel):
     fqdn = CharField(null=True)
     logic_area = CharField(null=True)
     operator = CharField()
-    rack = ForeignKeyField(
-        db_column='rack_id', rel_model=Rack, to_field='rack_id')
+    rack = ForeignKeyField(db_column='rack_id',
+                           rel_model=Rack,
+                           to_field='rack_id')
     remarks = CharField(null=True)
-    room = ForeignKeyField(
-        db_column='room_id', null=True, rel_model=Room, to_field='room')
+    room = ForeignKeyField(db_column='room_id',
+                           null=True,
+                           rel_model=Room,
+                           to_field='room')
     seat = IntegerField()
     sn = CharField(null=True)
     template = IntegerField(db_column='template_id', index=True, null=True)
@@ -82,8 +85,9 @@ class DeviceTemplate(BaseModel):
     disk = IntegerField(null=True)
     disk_detail = TextField(null=True)
     kernel = CharField(null=True)
-    manufacturer = IntegerField(
-        db_column='manufacturer_id', index=True, null=True)
+    manufacturer = IntegerField(db_column='manufacturer_id',
+                                index=True,
+                                null=True)
     memory = IntegerField(null=True)
     os = CharField(null=True)
     price = IntegerField(null=True)
@@ -121,10 +125,14 @@ class Manufacturer(BaseModel):
 
 class Seat(BaseModel):
     create_timestamp = DateTimeField(null=True)
-    rack = ForeignKeyField(
-        db_column='rack_id', null=True, rel_model=Rack, to_field='rack_id')
-    room = ForeignKeyField(
-        db_column='room_id', null=True, rel_model=Room, to_field='room')
+    rack = ForeignKeyField(db_column='rack_id',
+                           null=True,
+                           rel_model=Rack,
+                           to_field='rack_id')
+    room = ForeignKeyField(db_column='room_id',
+                           null=True,
+                           rel_model=Room,
+                           to_field='room')
     seat = IntegerField(null=True)
     seat_id = PrimaryKeyField()
 
@@ -141,8 +149,10 @@ class Segment(BaseModel):
     logic_area = CharField(null=True)
     netmask = CharField()
     remarks = CharField(null=True)
-    room = ForeignKeyField(
-        db_column='room_id', null=True, rel_model=Room, to_field='room')
+    room = ForeignKeyField(db_column='room_id',
+                           null=True,
+                           rel_model=Room,
+                           to_field='room')
     segment = PrimaryKeyField(db_column='segment_id')
     segment_ip = CharField()
     status = CharField()
@@ -157,16 +167,19 @@ class Segment(BaseModel):
 class SegmentIpPool(BaseModel):
     assigned = CharField()
     ip = CharField(unique=True)
-    segment = ForeignKeyField(
-        db_column='segment_id', rel_model=Segment, to_field='segment')
+    segment = ForeignKeyField(db_column='segment_id',
+                              rel_model=Segment,
+                              to_field='segment')
 
     class Meta:
         db_table = 'segment_ip_pool'
 
 
 class ServerTag(BaseModel):
-    assets = ForeignKeyField(
-        db_column='assets_id', null=True, rel_model=Device, to_field='assets')
+    assets = ForeignKeyField(db_column='assets_id',
+                             null=True,
+                             rel_model=Device,
+                             to_field='assets')
     create_timestamp = DateTimeField()
     server_tag = PrimaryKeyField(db_column='server_tag_id')
     server_tag_key = CharField(null=True)
@@ -179,11 +192,10 @@ class ServerTag(BaseModel):
 
 class ServerTagUser(BaseModel):
     create_timestamp = DateTimeField()
-    server_tag = ForeignKeyField(
-        db_column='server_tag_id',
-        null=True,
-        rel_model=ServerTag,
-        to_field='server_tag')
+    server_tag = ForeignKeyField(db_column='server_tag_id',
+                                 null=True,
+                                 rel_model=ServerTag,
+                                 to_field='server_tag')
     uid = IntegerField(null=True)
     user_name = CharField(null=True)
     user_tag = PrimaryKeyField(db_column='user_tag_id')

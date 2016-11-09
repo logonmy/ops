@@ -94,8 +94,8 @@ class kvm:
             return '-m(memory) need'
         if disk is None:
             return '-d(disk) need'
-        query = Flavor.update(
-            vcpu=cpu, memory=memory, disk=disk).where(Flavor.label == label)
+        query = Flavor.update(vcpu=cpu, memory=memory,
+                              disk=disk).where(Flavor.label == label)
         return query.execute()
 
     def add_flavor(self, req, resp):
@@ -133,7 +133,10 @@ class kvm:
     def list_strategy(self, req, resp):
         return self.strategy
 
-    def _get_client(self, req, instance_count=1, room=None,
+    def _get_client(self,
+                    req,
+                    instance_count=1,
+                    room=None,
                     strategy='max_use'):
         if instance_count > 1:
             result = []
@@ -414,12 +417,11 @@ class kvm:
         live = kvm_config.get('migrate_live')
         instance = wvmInstance(host=host, conn=self.conn, vname=name)
         to_instance = wvmInstances(host=to_host, conn=self.conn)
-        return to_instance.moveto(
-            conn=instance,
-            name=name,
-            live=live,
-            unsafe=unsafe,
-            undefine=undefine)
+        return to_instance.moveto(conn=instance,
+                                  name=name,
+                                  live=live,
+                                  unsafe=unsafe,
+                                  undefine=undefine)
 
     def create_storage_pool(self, req, resp):
         host = req.get_param(name='h')
@@ -470,12 +472,11 @@ class kvm:
             return '--volume_name(volume_name) need'
         disksize = req.get_param(name='disksize') or kvm_config.get('disksize')
         format = req.get_param(name='format') or 'xfs'
-        return self._create_volume(
-            host=host,
-            volume_name=volume_name,
-            disksize=disksize,
-            storage_pool=storage_pool,
-            format=format)
+        return self._create_volume(host=host,
+                                   volume_name=volume_name,
+                                   disksize=disksize,
+                                   storage_pool=storage_pool,
+                                   format=format)
 
     def update_volumes(self, req, resp):
         host = req.get_param(name='h')
@@ -586,12 +587,11 @@ class kvm:
             exist = instance.get_volume_path(volume=volume_name)
             if exist:
                 return volume_name
-            instance.create_volume(
-                storage=storage_pool,
-                name=volume_name,
-                size=disksize,
-                format=format,
-                metadata=metadata)
+            instance.create_volume(storage=storage_pool,
+                                   name=volume_name,
+                                   size=disksize,
+                                   format=format,
+                                   metadata=metadata)
             if format in ['xfs', 'ext4']:
                 ssh_result = ssh_remote_execute(
                     host=host,
@@ -618,15 +618,14 @@ class kvm:
         vlan_id = req.get_param(name='vlan_id')
         bond_mode = req.get_param(
             name='bond_mode') or kvm_config.get('bond_mode')
-        return self._create_network(
-            host=host,
-            itype=itype,
-            iface_name=iface_name,
-            netdev=netdev,
-            ipv4_type=ipv4_type,
-            ipv4_addr=ipv4_addr,
-            vlan_id=vlan_id,
-            bond_mode=bond_mode)
+        return self._create_network(host=host,
+                                    itype=itype,
+                                    iface_name=iface_name,
+                                    netdev=netdev,
+                                    ipv4_type=ipv4_type,
+                                    ipv4_addr=ipv4_addr,
+                                    vlan_id=vlan_id,
+                                    bond_mode=bond_mode)
 
     def _create_network(self,
                         host,
@@ -659,14 +658,13 @@ class kvm:
                     return iface_name
             except Exception as e:
                 log_error(e)
-                inter_instance.create_iface(
-                    name=iface_name,
-                    itype=itype,
-                    netdev=netdev,
-                    vlan_id=vlan_id,
-                    bond_mode=bond_mode,
-                    ipv4_type=ipv4_type,
-                    ipv4_addr=ipv4_addr)
+                inter_instance.create_iface(name=iface_name,
+                                            itype=itype,
+                                            netdev=netdev,
+                                            vlan_id=vlan_id,
+                                            bond_mode=bond_mode,
+                                            ipv4_type=ipv4_type,
+                                            ipv4_addr=ipv4_addr)
                 return iface_name
         except Exception as e:
             log_error(e)
@@ -739,10 +737,13 @@ class kvm:
         netdev = req.get_param(name='netdev') or kvm_config.get('netdev')
         vlan_id = req.get_param(name='vlan_id')
 
-        hosts = self._get_client(
-            req, instance_count=instance_count, room=room, strategy=strategy)
-        ips = self._get_ip(
-            network_pool=network_pool, count=instance_count, room=room)
+        hosts = self._get_client(req,
+                                 instance_count=instance_count,
+                                 room=room,
+                                 strategy=strategy)
+        ips = self._get_ip(network_pool=network_pool,
+                           count=instance_count,
+                           room=room)
 
         if len(ips) < instance_count:
             return 'not have enough IP ,only have %d IP' % len(ips)
@@ -800,16 +801,15 @@ class kvm:
 
         result = []
         try:
-            res = self.__create_instance_common(
-                host=host,
-                name=name,
-                flavor=flavor,
-                ipv4_addr=ipv4_addr,
-                root_image=root_image,
-                storage_pool=storage_pool,
-                bridge=bridge,
-                netdev=netdev,
-                vlan_id=vlan_id)
+            res = self.__create_instance_common(host=host,
+                                                name=name,
+                                                flavor=flavor,
+                                                ipv4_addr=ipv4_addr,
+                                                root_image=root_image,
+                                                storage_pool=storage_pool,
+                                                bridge=bridge,
+                                                netdev=netdev,
+                                                vlan_id=vlan_id)
             result.append(res)
             return result
         except Exception as e:
@@ -848,21 +848,19 @@ class kvm:
         try:
 
             ###network
-            self._create_network(
-                host=host,
-                itype='bridge',
-                iface_name=bridge,
-                netdev=netdev,
-                ipv4_type='static',
-                ipv4_addr=ipv4_addr,
-                vlan_id=vlan_id)
+            self._create_network(host=host,
+                                 itype='bridge',
+                                 iface_name=bridge,
+                                 netdev=netdev,
+                                 ipv4_type='static',
+                                 ipv4_addr=ipv4_addr,
+                                 vlan_id=vlan_id)
             ###volume
-            self._create_volume(
-                host=host,
-                volume_name=name,
-                disksize=disksize,
-                storage_pool=storage_pool,
-                format=format)
+            self._create_volume(host=host,
+                                volume_name=name,
+                                disksize=disksize,
+                                storage_pool=storage_pool,
+                                format=format)
             #copy base_image
             base_dir = kvm_config.get('kvm_data_rootdir') + '/' + name
             base_image = base_dir + '/' + uuid + '.qcow2'
@@ -875,14 +873,13 @@ class kvm:
             root_image = base_image
 
             ###create
-            instance.create_instance(
-                name=name,
-                vcpu=vcpu,
-                memory=memory,
-                root_image=root_image,
-                uuid=uuid,
-                mac=mac,
-                bridge=bridge)
+            instance.create_instance(name=name,
+                                     vcpu=vcpu,
+                                     memory=memory,
+                                     root_image=root_image,
+                                     uuid=uuid,
+                                     mac=mac,
+                                     bridge=bridge)
             vminstance = wvmInstance(host=host, conn=self.conn, vname=name)
             vminstance.start()
             vminstance.set_autostart(flag=2)
@@ -946,9 +943,8 @@ class kvm:
             return '--vcpu(vcpu) need'
 
         instance = wvmInstance(host=host, conn=self.conn, vname=vname)
-        return instance.change_settings(
-            description=description,
-            cur_memory=cur_memory,
-            memory=memory,
-            cur_vcpu=cur_vcpu,
-            vcpu=vcpu)
+        return instance.change_settings(description=description,
+                                        cur_memory=cur_memory,
+                                        memory=memory,
+                                        cur_vcpu=cur_vcpu,
+                                        vcpu=vcpu)

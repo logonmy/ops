@@ -90,7 +90,8 @@ class Deploy:
             return '--package_type need'
 
         return DeployTemplate.update(
-            package_uri=package_uri, package_type=package_type).where(
+            package_uri=package_uri,
+            package_type=package_type).where(
                 DeployTemplate.server_tag == server_tag).execute()
 
     def del_template(self, req, resp):
@@ -149,19 +150,19 @@ class Deploy:
         version = req.get_param(name='version')
 
         #create job
-        Jobs.insert(
-            group_list=server_group,
-            job=job_id,
-            operator=operator,
-            template=template_id,
-            release_version=version).execute()
+        Jobs.insert(group_list=server_group,
+                    job=job_id,
+                    operator=operator,
+                    template=template_id,
+                    release_version=version).execute()
         #create task
         for key, item in enumerate(server_group):
             lb_ip = item
             app_ip_list = server_group.get(lb_ip)
             for app_ip in app_ip_list:
-                Tasks.insert(
-                    job=job_id, group=lb_ip, server_ip=app_ip).execute()
+                Tasks.insert(job=job_id,
+                             group=lb_ip,
+                             server_ip=app_ip).execute()
         #threadpool task for every group
         self._do_job(job_id=job_id)
 

@@ -58,11 +58,13 @@ class Users(BaseModel):
 class Acknowledges(BaseModel):
     acknowledgeid = BigIntegerField(primary_key=True)
     clock = IntegerField(index=True)
-    eventid = ForeignKeyField(
-        db_column='eventid', rel_model=Events, to_field='eventid')
+    eventid = ForeignKeyField(db_column='eventid',
+                              rel_model=Events,
+                              to_field='eventid')
     message = CharField()
-    userid = ForeignKeyField(
-        db_column='userid', rel_model=Users, to_field='userid')
+    userid = ForeignKeyField(db_column='userid',
+                             rel_model=Users,
+                             to_field='userid')
 
     class Meta:
         db_table = 'acknowledges'
@@ -111,27 +113,30 @@ class MediaType(BaseModel):
 
 
 class Alerts(BaseModel):
-    actionid = ForeignKeyField(
-        db_column='actionid', rel_model=Actions, to_field='actionid')
+    actionid = ForeignKeyField(db_column='actionid',
+                               rel_model=Actions,
+                               to_field='actionid')
     alertid = BigIntegerField(primary_key=True)
     alerttype = IntegerField()
     clock = IntegerField(index=True)
     error = CharField()
     esc_step = IntegerField()
-    eventid = ForeignKeyField(
-        db_column='eventid', rel_model=Events, to_field='eventid')
-    mediatypeid = ForeignKeyField(
-        db_column='mediatypeid',
-        null=True,
-        rel_model=MediaType,
-        to_field='mediatypeid')
+    eventid = ForeignKeyField(db_column='eventid',
+                              rel_model=Events,
+                              to_field='eventid')
+    mediatypeid = ForeignKeyField(db_column='mediatypeid',
+                                  null=True,
+                                  rel_model=MediaType,
+                                  to_field='mediatypeid')
     message = TextField()
     retries = IntegerField()
     sendto = CharField()
     status = IntegerField()
     subject = CharField()
-    userid = ForeignKeyField(
-        db_column='userid', null=True, rel_model=Users, to_field='userid')
+    userid = ForeignKeyField(db_column='userid',
+                             null=True,
+                             rel_model=Users,
+                             to_field='userid')
 
     class Meta:
         db_table = 'alerts'
@@ -176,28 +181,25 @@ class Hosts(BaseModel):
     maintenance_from = IntegerField()
     maintenance_status = IntegerField()
     maintenance_type = IntegerField()
-    maintenanceid = ForeignKeyField(
-        db_column='maintenanceid',
-        null=True,
-        rel_model=Maintenances,
-        to_field='maintenanceid')
+    maintenanceid = ForeignKeyField(db_column='maintenanceid',
+                                    null=True,
+                                    rel_model=Maintenances,
+                                    to_field='maintenanceid')
     name = CharField(index=True)
-    proxy_hostid = ForeignKeyField(
-        db_column='proxy_hostid',
-        null=True,
-        rel_model='self',
-        to_field='hostid')
+    proxy_hostid = ForeignKeyField(db_column='proxy_hostid',
+                                   null=True,
+                                   rel_model='self',
+                                   to_field='hostid')
     snmp_available = IntegerField()
     snmp_disable_until = IntegerField()
     snmp_error = CharField()
     snmp_errors_from = IntegerField()
     status = IntegerField(index=True)
-    templateid = ForeignKeyField(
-        db_column='templateid',
-        null=True,
-        rel_model='self',
-        related_name='hosts_templateid_set',
-        to_field='hostid')
+    templateid = ForeignKeyField(db_column='templateid',
+                                 null=True,
+                                 rel_model='self',
+                                 related_name='hosts_templateid_set',
+                                 to_field='hostid')
     tls_accept = IntegerField()
     tls_connect = IntegerField()
     tls_issuer = CharField()
@@ -212,8 +214,9 @@ class Hosts(BaseModel):
 class Interface(BaseModel):
     bulk = IntegerField()
     dns = CharField()
-    hostid = ForeignKeyField(
-        db_column='hostid', rel_model=Hosts, to_field='hostid')
+    hostid = ForeignKeyField(db_column='hostid',
+                             rel_model=Hosts,
+                             to_field='hostid')
     interfaceid = BigIntegerField(primary_key=True)
     ip = CharField()
     main = IntegerField()
@@ -247,13 +250,13 @@ class Items(BaseModel):
     flags = IntegerField()
     formula = CharField()
     history = IntegerField()
-    hostid = ForeignKeyField(
-        db_column='hostid', rel_model=Hosts, to_field='hostid')
-    interfaceid = ForeignKeyField(
-        db_column='interfaceid',
-        null=True,
-        rel_model=Interface,
-        to_field='interfaceid')
+    hostid = ForeignKeyField(db_column='hostid',
+                             rel_model=Hosts,
+                             to_field='hostid')
+    interfaceid = ForeignKeyField(db_column='interfaceid',
+                                  null=True,
+                                  rel_model=Interface,
+                                  to_field='interfaceid')
     inventory_link = IntegerField()
     ipmi_sensor = CharField()
     itemid = BigIntegerField(primary_key=True)
@@ -280,19 +283,20 @@ class Items(BaseModel):
     snmpv3_securityname = CharField()
     state = IntegerField()
     status = IntegerField(index=True)
-    templateid = ForeignKeyField(
-        db_column='templateid', null=True, rel_model='self', to_field='itemid')
+    templateid = ForeignKeyField(db_column='templateid',
+                                 null=True,
+                                 rel_model='self',
+                                 to_field='itemid')
     trapper_hosts = CharField()
     trends = IntegerField()
     type = IntegerField()
     units = CharField()
     username = CharField()
     value_type = IntegerField()
-    valuemapid = ForeignKeyField(
-        db_column='valuemapid',
-        null=True,
-        rel_model=Valuemaps,
-        to_field='valuemapid')
+    valuemapid = ForeignKeyField(db_column='valuemapid',
+                                 null=True,
+                                 rel_model=Valuemaps,
+                                 to_field='valuemapid')
 
     class Meta:
         db_table = 'items'
@@ -301,14 +305,14 @@ class Items(BaseModel):
 
 class ApplicationPrototype(BaseModel):
     application_prototypeid = BigIntegerField(primary_key=True)
-    itemid = ForeignKeyField(
-        db_column='itemid', rel_model=Items, to_field='itemid')
+    itemid = ForeignKeyField(db_column='itemid',
+                             rel_model=Items,
+                             to_field='itemid')
     name = CharField()
-    templateid = ForeignKeyField(
-        db_column='templateid',
-        null=True,
-        rel_model='self',
-        to_field='application_prototypeid')
+    templateid = ForeignKeyField(db_column='templateid',
+                                 null=True,
+                                 rel_model='self',
+                                 to_field='application_prototypeid')
 
     class Meta:
         db_table = 'application_prototype'
@@ -317,8 +321,9 @@ class ApplicationPrototype(BaseModel):
 class Applications(BaseModel):
     applicationid = BigIntegerField(primary_key=True)
     flags = IntegerField()
-    hostid = ForeignKeyField(
-        db_column='hostid', rel_model=Hosts, to_field='hostid')
+    hostid = ForeignKeyField(db_column='hostid',
+                             rel_model=Hosts,
+                             to_field='hostid')
     name = CharField()
 
     class Meta:
@@ -332,10 +337,9 @@ class ApplicationDiscovery(BaseModel):
         db_column='application_prototypeid',
         rel_model=ApplicationPrototype,
         to_field='application_prototypeid')
-    applicationid = ForeignKeyField(
-        db_column='applicationid',
-        rel_model=Applications,
-        to_field='applicationid')
+    applicationid = ForeignKeyField(db_column='applicationid',
+                                    rel_model=Applications,
+                                    to_field='applicationid')
     lastcheck = IntegerField()
     name = CharField()
     ts_delete = IntegerField()
@@ -346,15 +350,13 @@ class ApplicationDiscovery(BaseModel):
 
 class ApplicationTemplate(BaseModel):
     application_templateid = BigIntegerField(primary_key=True)
-    applicationid = ForeignKeyField(
-        db_column='applicationid',
-        rel_model=Applications,
-        to_field='applicationid')
-    templateid = ForeignKeyField(
-        db_column='templateid',
-        rel_model=Applications,
-        related_name='applications_templateid_set',
-        to_field='applicationid')
+    applicationid = ForeignKeyField(db_column='applicationid',
+                                    rel_model=Applications,
+                                    to_field='applicationid')
+    templateid = ForeignKeyField(db_column='templateid',
+                                 rel_model=Applications,
+                                 related_name='applications_templateid_set',
+                                 to_field='applicationid')
 
     class Meta:
         db_table = 'application_template'
@@ -370,8 +372,9 @@ class Auditlog(BaseModel):
     resourceid = BigIntegerField()
     resourcename = CharField()
     resourcetype = IntegerField()
-    userid = ForeignKeyField(
-        db_column='userid', rel_model=Users, to_field='userid')
+    userid = ForeignKeyField(db_column='userid',
+                             rel_model=Users,
+                             to_field='userid')
 
     class Meta:
         db_table = 'auditlog'
@@ -380,8 +383,9 @@ class Auditlog(BaseModel):
 
 class AuditlogDetails(BaseModel):
     auditdetailid = BigIntegerField(primary_key=True)
-    auditid = ForeignKeyField(
-        db_column='auditid', rel_model=Auditlog, to_field='auditid')
+    auditid = ForeignKeyField(db_column='auditid',
+                              rel_model=Auditlog,
+                              to_field='auditid')
     field_name = CharField()
     newvalue = TextField()
     oldvalue = TextField()
@@ -398,11 +402,10 @@ class AutoregHost(BaseModel):
     listen_dns = CharField()
     listen_ip = CharField()
     listen_port = IntegerField()
-    proxy_hostid = ForeignKeyField(
-        db_column='proxy_hostid',
-        null=True,
-        rel_model=Hosts,
-        to_field='hostid')
+    proxy_hostid = ForeignKeyField(db_column='proxy_hostid',
+                                   null=True,
+                                   rel_model=Hosts,
+                                   to_field='hostid')
 
     class Meta:
         db_table = 'autoreg_host'
@@ -410,8 +413,9 @@ class AutoregHost(BaseModel):
 
 
 class Conditions(BaseModel):
-    actionid = ForeignKeyField(
-        db_column='actionid', rel_model=Actions, to_field='actionid')
+    actionid = ForeignKeyField(db_column='actionid',
+                               rel_model=Actions,
+                               to_field='actionid')
     conditionid = BigIntegerField(primary_key=True)
     conditiontype = IntegerField()
     operator = IntegerField()
@@ -443,18 +447,18 @@ class Usrgrp(BaseModel):
 
 
 class Config(BaseModel):
-    alert_usrgrpid = ForeignKeyField(
-        db_column='alert_usrgrpid',
-        null=True,
-        rel_model=Usrgrp,
-        to_field='usrgrpid')
+    alert_usrgrpid = ForeignKeyField(db_column='alert_usrgrpid',
+                                     null=True,
+                                     rel_model=Usrgrp,
+                                     to_field='usrgrpid')
     authentication_type = IntegerField()
     blink_period = IntegerField()
     configid = BigIntegerField(primary_key=True)
     default_inventory_mode = IntegerField()
     default_theme = CharField()
-    discovery_groupid = ForeignKeyField(
-        db_column='discovery_groupid', rel_model=Groups, to_field='groupid')
+    discovery_groupid = ForeignKeyField(db_column='discovery_groupid',
+                                        rel_model=Groups,
+                                        to_field='groupid')
     dropdown_first_entry = IntegerField()
     dropdown_first_remember = IntegerField()
     event_ack_enable = IntegerField()
@@ -529,11 +533,10 @@ class Drules(BaseModel):
     iprange = CharField()
     name = CharField(unique=True)
     nextcheck = IntegerField()
-    proxy_hostid = ForeignKeyField(
-        db_column='proxy_hostid',
-        null=True,
-        rel_model=Hosts,
-        to_field='hostid')
+    proxy_hostid = ForeignKeyField(db_column='proxy_hostid',
+                                   null=True,
+                                   rel_model=Hosts,
+                                   to_field='hostid')
     status = IntegerField()
 
     class Meta:
@@ -542,8 +545,9 @@ class Drules(BaseModel):
 
 class Dchecks(BaseModel):
     dcheckid = BigIntegerField(primary_key=True)
-    druleid = ForeignKeyField(
-        db_column='druleid', rel_model=Drules, to_field='druleid')
+    druleid = ForeignKeyField(db_column='druleid',
+                              rel_model=Drules,
+                              to_field='druleid')
     key_ = CharField()
     ports = CharField()
     snmp_community = CharField()
@@ -563,8 +567,9 @@ class Dchecks(BaseModel):
 
 class Dhosts(BaseModel):
     dhostid = BigIntegerField(primary_key=True)
-    druleid = ForeignKeyField(
-        db_column='druleid', rel_model=Drules, to_field='druleid')
+    druleid = ForeignKeyField(db_column='druleid',
+                              rel_model=Drules,
+                              to_field='druleid')
     lastdown = IntegerField()
     lastup = IntegerField()
     status = IntegerField()
@@ -574,10 +579,12 @@ class Dhosts(BaseModel):
 
 
 class Dservices(BaseModel):
-    dcheckid = ForeignKeyField(
-        db_column='dcheckid', rel_model=Dchecks, to_field='dcheckid')
-    dhostid = ForeignKeyField(
-        db_column='dhostid', rel_model=Dhosts, to_field='dhostid')
+    dcheckid = ForeignKeyField(db_column='dcheckid',
+                               rel_model=Dchecks,
+                               to_field='dcheckid')
+    dhostid = ForeignKeyField(db_column='dhostid',
+                              rel_model=Dhosts,
+                              to_field='dhostid')
     dns = CharField()
     dserviceid = BigIntegerField(primary_key=True)
     ip = CharField()
@@ -626,8 +633,9 @@ class Expressions(BaseModel):
     expression = CharField()
     expression_type = IntegerField()
     expressionid = BigIntegerField(primary_key=True)
-    regexpid = ForeignKeyField(
-        db_column='regexpid', rel_model=Regexps, to_field='regexpid')
+    regexpid = ForeignKeyField(db_column='regexpid',
+                               rel_model=Regexps,
+                               to_field='regexpid')
 
     class Meta:
         db_table = 'expressions'
@@ -643,11 +651,10 @@ class Triggers(BaseModel):
     priority = IntegerField()
     state = IntegerField()
     status = IntegerField(index=True)
-    templateid = ForeignKeyField(
-        db_column='templateid',
-        null=True,
-        rel_model='self',
-        to_field='triggerid')
+    templateid = ForeignKeyField(db_column='templateid',
+                                 null=True,
+                                 rel_model='self',
+                                 to_field='triggerid')
     triggerid = BigIntegerField(primary_key=True)
     type = IntegerField()
     url = CharField()
@@ -661,11 +668,13 @@ class Triggers(BaseModel):
 class Functions(BaseModel):
     function = CharField()
     functionid = BigIntegerField(primary_key=True)
-    itemid = ForeignKeyField(
-        db_column='itemid', rel_model=Items, to_field='itemid')
+    itemid = ForeignKeyField(db_column='itemid',
+                             rel_model=Items,
+                             to_field='itemid')
     parameter = CharField()
-    triggerid = ForeignKeyField(
-        db_column='triggerid', rel_model=Triggers, to_field='triggerid')
+    triggerid = ForeignKeyField(db_column='triggerid',
+                                rel_model=Triggers,
+                                to_field='triggerid')
 
     class Meta:
         db_table = 'functions'
@@ -701,23 +710,23 @@ class Graphs(BaseModel):
     show_legend = IntegerField()
     show_triggers = IntegerField()
     show_work_period = IntegerField()
-    templateid = ForeignKeyField(
-        db_column='templateid',
-        null=True,
-        rel_model='self',
-        to_field='graphid')
+    templateid = ForeignKeyField(db_column='templateid',
+                                 null=True,
+                                 rel_model='self',
+                                 to_field='graphid')
     width = IntegerField()
     yaxismax = FloatField()
     yaxismin = FloatField()
-    ymax_itemid = ForeignKeyField(
-        db_column='ymax_itemid', null=True, rel_model=Items, to_field='itemid')
+    ymax_itemid = ForeignKeyField(db_column='ymax_itemid',
+                                  null=True,
+                                  rel_model=Items,
+                                  to_field='itemid')
     ymax_type = IntegerField()
-    ymin_itemid = ForeignKeyField(
-        db_column='ymin_itemid',
-        null=True,
-        rel_model=Items,
-        related_name='items_ymin_itemid_set',
-        to_field='itemid')
+    ymin_itemid = ForeignKeyField(db_column='ymin_itemid',
+                                  null=True,
+                                  rel_model=Items,
+                                  related_name='items_ymin_itemid_set',
+                                  to_field='itemid')
     ymin_type = IntegerField()
 
     class Meta:
@@ -725,16 +734,14 @@ class Graphs(BaseModel):
 
 
 class GraphDiscovery(BaseModel):
-    graphid = ForeignKeyField(
-        db_column='graphid',
-        primary_key=True,
-        rel_model=Graphs,
-        to_field='graphid')
-    parent_graphid = ForeignKeyField(
-        db_column='parent_graphid',
-        rel_model=Graphs,
-        related_name='graphs_parent_graphid_set',
-        to_field='graphid')
+    graphid = ForeignKeyField(db_column='graphid',
+                              primary_key=True,
+                              rel_model=Graphs,
+                              to_field='graphid')
+    parent_graphid = ForeignKeyField(db_column='parent_graphid',
+                                     rel_model=Graphs,
+                                     related_name='graphs_parent_graphid_set',
+                                     to_field='graphid')
 
     class Meta:
         db_table = 'graph_discovery'
@@ -763,10 +770,12 @@ class GraphsItems(BaseModel):
     color = CharField()
     drawtype = IntegerField()
     gitemid = BigIntegerField(primary_key=True)
-    graphid = ForeignKeyField(
-        db_column='graphid', rel_model=Graphs, to_field='graphid')
-    itemid = ForeignKeyField(
-        db_column='itemid', rel_model=Items, to_field='itemid')
+    graphid = ForeignKeyField(db_column='graphid',
+                              rel_model=Graphs,
+                              to_field='graphid')
+    itemid = ForeignKeyField(db_column='itemid',
+                             rel_model=Items,
+                             to_field='itemid')
     sortorder = IntegerField()
     type = IntegerField()
     yaxisside = IntegerField()
@@ -777,27 +786,28 @@ class GraphsItems(BaseModel):
 
 class GroupPrototype(BaseModel):
     group_prototypeid = BigIntegerField(primary_key=True)
-    groupid = ForeignKeyField(
-        db_column='groupid', null=True, rel_model=Groups, to_field='groupid')
-    hostid = ForeignKeyField(
-        db_column='hostid', rel_model=Hosts, to_field='hostid')
+    groupid = ForeignKeyField(db_column='groupid',
+                              null=True,
+                              rel_model=Groups,
+                              to_field='groupid')
+    hostid = ForeignKeyField(db_column='hostid',
+                             rel_model=Hosts,
+                             to_field='hostid')
     name = CharField()
-    templateid = ForeignKeyField(
-        db_column='templateid',
-        null=True,
-        rel_model='self',
-        to_field='group_prototypeid')
+    templateid = ForeignKeyField(db_column='templateid',
+                                 null=True,
+                                 rel_model='self',
+                                 to_field='group_prototypeid')
 
     class Meta:
         db_table = 'group_prototype'
 
 
 class GroupDiscovery(BaseModel):
-    groupid = ForeignKeyField(
-        db_column='groupid',
-        primary_key=True,
-        rel_model=Groups,
-        to_field='groupid')
+    groupid = ForeignKeyField(db_column='groupid',
+                              primary_key=True,
+                              rel_model=Groups,
+                              to_field='groupid')
     lastcheck = IntegerField()
     name = CharField()
     parent_group_prototypeid = ForeignKeyField(
@@ -875,23 +885,20 @@ class HistoryUint(BaseModel):
 
 class HostDiscovery(BaseModel):
     host = CharField()
-    hostid = ForeignKeyField(
-        db_column='hostid',
-        primary_key=True,
-        rel_model=Hosts,
-        to_field='hostid')
+    hostid = ForeignKeyField(db_column='hostid',
+                             primary_key=True,
+                             rel_model=Hosts,
+                             to_field='hostid')
     lastcheck = IntegerField()
-    parent_hostid = ForeignKeyField(
-        db_column='parent_hostid',
-        null=True,
-        rel_model=Hosts,
-        related_name='hosts_parent_hostid_set',
-        to_field='hostid')
-    parent_itemid = ForeignKeyField(
-        db_column='parent_itemid',
-        null=True,
-        rel_model=Items,
-        to_field='itemid')
+    parent_hostid = ForeignKeyField(db_column='parent_hostid',
+                                    null=True,
+                                    rel_model=Hosts,
+                                    related_name='hosts_parent_hostid_set',
+                                    to_field='hostid')
+    parent_itemid = ForeignKeyField(db_column='parent_itemid',
+                                    null=True,
+                                    rel_model=Items,
+                                    to_field='itemid')
     ts_delete = IntegerField()
 
     class Meta:
@@ -914,11 +921,10 @@ class HostInventory(BaseModel):
     host_netmask = CharField()
     host_networks = TextField()
     host_router = CharField()
-    hostid = ForeignKeyField(
-        db_column='hostid',
-        primary_key=True,
-        rel_model=Hosts,
-        to_field='hostid')
+    hostid = ForeignKeyField(db_column='hostid',
+                             primary_key=True,
+                             rel_model=Hosts,
+                             to_field='hostid')
     hw_arch = CharField()
     installer_name = CharField()
     inventory_mode = IntegerField()
@@ -981,8 +987,9 @@ class HostInventory(BaseModel):
 
 
 class Hostmacro(BaseModel):
-    hostid = ForeignKeyField(
-        db_column='hostid', rel_model=Hosts, to_field='hostid')
+    hostid = ForeignKeyField(db_column='hostid',
+                             rel_model=Hosts,
+                             to_field='hostid')
     hostmacroid = BigIntegerField(primary_key=True)
     macro = CharField()
     value = CharField()
@@ -993,11 +1000,13 @@ class Hostmacro(BaseModel):
 
 
 class HostsGroups(BaseModel):
-    groupid = ForeignKeyField(
-        db_column='groupid', rel_model=Groups, to_field='groupid')
+    groupid = ForeignKeyField(db_column='groupid',
+                              rel_model=Groups,
+                              to_field='groupid')
     hostgroupid = BigIntegerField(primary_key=True)
-    hostid = ForeignKeyField(
-        db_column='hostid', rel_model=Hosts, to_field='hostid')
+    hostid = ForeignKeyField(db_column='hostid',
+                             rel_model=Hosts,
+                             to_field='hostid')
 
     class Meta:
         db_table = 'hosts_groups'
@@ -1005,11 +1014,13 @@ class HostsGroups(BaseModel):
 
 
 class HostsTemplates(BaseModel):
-    hostid = ForeignKeyField(
-        db_column='hostid', rel_model=Hosts, to_field='hostid')
+    hostid = ForeignKeyField(db_column='hostid',
+                             rel_model=Hosts,
+                             to_field='hostid')
     hosttemplateid = BigIntegerField(primary_key=True)
-    templateid = ForeignKeyField(
-        db_column='templateid', rel_model='self', to_field='hostid')
+    templateid = ForeignKeyField(db_column='templateid',
+                                 rel_model='self',
+                                 to_field='hostid')
 
     class Meta:
         db_table = 'hosts_templates'
@@ -1028,16 +1039,16 @@ class Housekeeper(BaseModel):
 
 class Httptest(BaseModel):
     agent = CharField()
-    applicationid = ForeignKeyField(
-        db_column='applicationid',
-        null=True,
-        rel_model=Applications,
-        to_field='applicationid')
+    applicationid = ForeignKeyField(db_column='applicationid',
+                                    null=True,
+                                    rel_model=Applications,
+                                    to_field='applicationid')
     authentication = IntegerField()
     delay = IntegerField()
     headers = TextField()
-    hostid = ForeignKeyField(
-        db_column='hostid', rel_model=Hosts, to_field='hostid')
+    hostid = ForeignKeyField(db_column='hostid',
+                             rel_model=Hosts,
+                             to_field='hostid')
     http_password = CharField()
     http_proxy = CharField()
     http_user = CharField()
@@ -1049,11 +1060,10 @@ class Httptest(BaseModel):
     ssl_key_file = CharField()
     ssl_key_password = CharField()
     status = IntegerField(index=True)
-    templateid = ForeignKeyField(
-        db_column='templateid',
-        null=True,
-        rel_model='self',
-        to_field='httptestid')
+    templateid = ForeignKeyField(db_column='templateid',
+                                 null=True,
+                                 rel_model='self',
+                                 to_field='httptestid')
     variables = TextField()
     verify_host = IntegerField()
     verify_peer = IntegerField()
@@ -1067,8 +1077,9 @@ class Httpstep(BaseModel):
     follow_redirects = IntegerField()
     headers = TextField()
     httpstepid = BigIntegerField(primary_key=True)
-    httptestid = ForeignKeyField(
-        db_column='httptestid', rel_model=Httptest, to_field='httptestid')
+    httptestid = ForeignKeyField(db_column='httptestid',
+                                 rel_model=Httptest,
+                                 to_field='httptestid')
     name = CharField()
     no = IntegerField()
     posts = TextField()
@@ -1084,11 +1095,13 @@ class Httpstep(BaseModel):
 
 
 class Httpstepitem(BaseModel):
-    httpstepid = ForeignKeyField(
-        db_column='httpstepid', rel_model=Httpstep, to_field='httpstepid')
+    httpstepid = ForeignKeyField(db_column='httpstepid',
+                                 rel_model=Httpstep,
+                                 to_field='httpstepid')
     httpstepitemid = BigIntegerField(primary_key=True)
-    itemid = ForeignKeyField(
-        db_column='itemid', rel_model=Items, to_field='itemid')
+    itemid = ForeignKeyField(db_column='itemid',
+                             rel_model=Items,
+                             to_field='itemid')
     type = IntegerField()
 
     class Meta:
@@ -1097,11 +1110,13 @@ class Httpstepitem(BaseModel):
 
 
 class Httptestitem(BaseModel):
-    httptestid = ForeignKeyField(
-        db_column='httptestid', rel_model=Httptest, to_field='httptestid')
+    httptestid = ForeignKeyField(db_column='httptestid',
+                                 rel_model=Httptest,
+                                 to_field='httptestid')
     httptestitemid = BigIntegerField(primary_key=True)
-    itemid = ForeignKeyField(
-        db_column='itemid', rel_model=Items, to_field='itemid')
+    itemid = ForeignKeyField(db_column='itemid',
+                             rel_model=Items,
+                             to_field='itemid')
     type = IntegerField()
 
     class Meta:
@@ -1120,8 +1135,9 @@ class Images(BaseModel):
 
 
 class IconMap(BaseModel):
-    default_iconid = ForeignKeyField(
-        db_column='default_iconid', rel_model=Images, to_field='imageid')
+    default_iconid = ForeignKeyField(db_column='default_iconid',
+                                     rel_model=Images,
+                                     to_field='imageid')
     iconmapid = BigIntegerField(primary_key=True)
     name = CharField(unique=True)
 
@@ -1131,10 +1147,12 @@ class IconMap(BaseModel):
 
 class IconMapping(BaseModel):
     expression = CharField()
-    iconid = ForeignKeyField(
-        db_column='iconid', rel_model=Images, to_field='imageid')
-    iconmapid = ForeignKeyField(
-        db_column='iconmapid', rel_model=IconMap, to_field='iconmapid')
+    iconid = ForeignKeyField(db_column='iconid',
+                             rel_model=Images,
+                             to_field='imageid')
+    iconmapid = ForeignKeyField(db_column='iconmapid',
+                                rel_model=IconMap,
+                                to_field='iconmapid')
     iconmappingid = BigIntegerField(primary_key=True)
     inventory_link = IntegerField()
     sortorder = IntegerField()
@@ -1155,11 +1173,10 @@ class Ids(BaseModel):
 
 
 class InterfaceDiscovery(BaseModel):
-    interfaceid = ForeignKeyField(
-        db_column='interfaceid',
-        primary_key=True,
-        rel_model=Interface,
-        to_field='interfaceid')
+    interfaceid = ForeignKeyField(db_column='interfaceid',
+                                  primary_key=True,
+                                  rel_model=Interface,
+                                  to_field='interfaceid')
     parent_interfaceid = ForeignKeyField(
         db_column='parent_interfaceid',
         rel_model=Interface,
@@ -1176,8 +1193,9 @@ class ItemApplicationPrototype(BaseModel):
         rel_model=ApplicationPrototype,
         to_field='application_prototypeid')
     item_application_prototypeid = BigIntegerField(primary_key=True)
-    itemid = ForeignKeyField(
-        db_column='itemid', rel_model=Items, to_field='itemid')
+    itemid = ForeignKeyField(db_column='itemid',
+                             rel_model=Items,
+                             to_field='itemid')
 
     class Meta:
         db_table = 'item_application_prototype'
@@ -1186,8 +1204,9 @@ class ItemApplicationPrototype(BaseModel):
 
 class ItemCondition(BaseModel):
     item_conditionid = BigIntegerField(primary_key=True)
-    itemid = ForeignKeyField(
-        db_column='itemid', rel_model=Items, to_field='itemid')
+    itemid = ForeignKeyField(db_column='itemid',
+                             rel_model=Items,
+                             to_field='itemid')
     macro = CharField()
     operator = IntegerField()
     value = CharField()
@@ -1198,15 +1217,15 @@ class ItemCondition(BaseModel):
 
 class ItemDiscovery(BaseModel):
     itemdiscoveryid = BigIntegerField(primary_key=True)
-    itemid = ForeignKeyField(
-        db_column='itemid', rel_model=Items, to_field='itemid')
+    itemid = ForeignKeyField(db_column='itemid',
+                             rel_model=Items,
+                             to_field='itemid')
     key_ = CharField()
     lastcheck = IntegerField()
-    parent_itemid = ForeignKeyField(
-        db_column='parent_itemid',
-        rel_model=Items,
-        related_name='items_parent_itemid_set',
-        to_field='itemid')
+    parent_itemid = ForeignKeyField(db_column='parent_itemid',
+                                    rel_model=Items,
+                                    related_name='items_parent_itemid_set',
+                                    to_field='itemid')
     ts_delete = IntegerField()
 
     class Meta:
@@ -1215,13 +1234,13 @@ class ItemDiscovery(BaseModel):
 
 
 class ItemsApplications(BaseModel):
-    applicationid = ForeignKeyField(
-        db_column='applicationid',
-        rel_model=Applications,
-        to_field='applicationid')
+    applicationid = ForeignKeyField(db_column='applicationid',
+                                    rel_model=Applications,
+                                    to_field='applicationid')
     itemappid = BigIntegerField(primary_key=True)
-    itemid = ForeignKeyField(
-        db_column='itemid', rel_model=Items, to_field='itemid')
+    itemid = ForeignKeyField(db_column='itemid',
+                             rel_model=Items,
+                             to_field='itemid')
 
     class Meta:
         db_table = 'items_applications'
@@ -1229,13 +1248,13 @@ class ItemsApplications(BaseModel):
 
 
 class MaintenancesGroups(BaseModel):
-    groupid = ForeignKeyField(
-        db_column='groupid', rel_model=Groups, to_field='groupid')
+    groupid = ForeignKeyField(db_column='groupid',
+                              rel_model=Groups,
+                              to_field='groupid')
     maintenance_groupid = BigIntegerField(primary_key=True)
-    maintenanceid = ForeignKeyField(
-        db_column='maintenanceid',
-        rel_model=Maintenances,
-        to_field='maintenanceid')
+    maintenanceid = ForeignKeyField(db_column='maintenanceid',
+                                    rel_model=Maintenances,
+                                    to_field='maintenanceid')
 
     class Meta:
         db_table = 'maintenances_groups'
@@ -1243,13 +1262,13 @@ class MaintenancesGroups(BaseModel):
 
 
 class MaintenancesHosts(BaseModel):
-    hostid = ForeignKeyField(
-        db_column='hostid', rel_model=Hosts, to_field='hostid')
+    hostid = ForeignKeyField(db_column='hostid',
+                             rel_model=Hosts,
+                             to_field='hostid')
     maintenance_hostid = BigIntegerField(primary_key=True)
-    maintenanceid = ForeignKeyField(
-        db_column='maintenanceid',
-        rel_model=Maintenances,
-        to_field='maintenanceid')
+    maintenanceid = ForeignKeyField(db_column='maintenanceid',
+                                    rel_model=Maintenances,
+                                    to_field='maintenanceid')
 
     class Meta:
         db_table = 'maintenances_hosts'
@@ -1273,14 +1292,12 @@ class Timeperiods(BaseModel):
 
 class MaintenancesWindows(BaseModel):
     maintenance_timeperiodid = BigIntegerField(primary_key=True)
-    maintenanceid = ForeignKeyField(
-        db_column='maintenanceid',
-        rel_model=Maintenances,
-        to_field='maintenanceid')
-    timeperiodid = ForeignKeyField(
-        db_column='timeperiodid',
-        rel_model=Timeperiods,
-        to_field='timeperiodid')
+    maintenanceid = ForeignKeyField(db_column='maintenanceid',
+                                    rel_model=Maintenances,
+                                    to_field='maintenanceid')
+    timeperiodid = ForeignKeyField(db_column='timeperiodid',
+                                   rel_model=Timeperiods,
+                                   to_field='timeperiodid')
 
     class Meta:
         db_table = 'maintenances_windows'
@@ -1291,8 +1308,9 @@ class Mappings(BaseModel):
     mappingid = BigIntegerField(primary_key=True)
     newvalue = CharField()
     value = CharField()
-    valuemapid = ForeignKeyField(
-        db_column='valuemapid', rel_model=Valuemaps, to_field='valuemapid')
+    valuemapid = ForeignKeyField(db_column='valuemapid',
+                                 rel_model=Valuemaps,
+                                 to_field='valuemapid')
 
     class Meta:
         db_table = 'mappings'
@@ -1301,13 +1319,15 @@ class Mappings(BaseModel):
 class Media(BaseModel):
     active = IntegerField()
     mediaid = BigIntegerField(primary_key=True)
-    mediatypeid = ForeignKeyField(
-        db_column='mediatypeid', rel_model=MediaType, to_field='mediatypeid')
+    mediatypeid = ForeignKeyField(db_column='mediatypeid',
+                                  rel_model=MediaType,
+                                  to_field='mediatypeid')
     period = CharField()
     sendto = CharField()
     severity = IntegerField()
-    userid = ForeignKeyField(
-        db_column='userid', rel_model=Users, to_field='userid')
+    userid = ForeignKeyField(db_column='userid',
+                             rel_model=Users,
+                             to_field='userid')
 
     class Meta:
         db_table = 'media'
@@ -1318,22 +1338,27 @@ class Scripts(BaseModel):
     confirmation = CharField()
     description = TextField()
     execute_on = IntegerField()
-    groupid = ForeignKeyField(
-        db_column='groupid', null=True, rel_model=Groups, to_field='groupid')
+    groupid = ForeignKeyField(db_column='groupid',
+                              null=True,
+                              rel_model=Groups,
+                              to_field='groupid')
     host_access = IntegerField()
     name = CharField(unique=True)
     scriptid = BigIntegerField(primary_key=True)
     type = IntegerField()
-    usrgrpid = ForeignKeyField(
-        db_column='usrgrpid', null=True, rel_model=Usrgrp, to_field='usrgrpid')
+    usrgrpid = ForeignKeyField(db_column='usrgrpid',
+                               null=True,
+                               rel_model=Usrgrp,
+                               to_field='usrgrpid')
 
     class Meta:
         db_table = 'scripts'
 
 
 class Operations(BaseModel):
-    actionid = ForeignKeyField(
-        db_column='actionid', rel_model=Actions, to_field='actionid')
+    actionid = ForeignKeyField(db_column='actionid',
+                               rel_model=Actions,
+                               to_field='actionid')
     esc_period = IntegerField()
     esc_step_from = IntegerField()
     esc_step_to = IntegerField()
@@ -1349,20 +1374,18 @@ class Opcommand(BaseModel):
     authtype = IntegerField()
     command = TextField()
     execute_on = IntegerField()
-    operationid = ForeignKeyField(
-        db_column='operationid',
-        primary_key=True,
-        rel_model=Operations,
-        to_field='operationid')
+    operationid = ForeignKeyField(db_column='operationid',
+                                  primary_key=True,
+                                  rel_model=Operations,
+                                  to_field='operationid')
     password = CharField()
     port = CharField()
     privatekey = CharField()
     publickey = CharField()
-    scriptid = ForeignKeyField(
-        db_column='scriptid',
-        null=True,
-        rel_model=Scripts,
-        to_field='scriptid')
+    scriptid = ForeignKeyField(db_column='scriptid',
+                               null=True,
+                               rel_model=Scripts,
+                               to_field='scriptid')
     type = IntegerField()
     username = CharField()
 
@@ -1371,22 +1394,27 @@ class Opcommand(BaseModel):
 
 
 class OpcommandGrp(BaseModel):
-    groupid = ForeignKeyField(
-        db_column='groupid', rel_model=Groups, to_field='groupid')
+    groupid = ForeignKeyField(db_column='groupid',
+                              rel_model=Groups,
+                              to_field='groupid')
     opcommand_grpid = BigIntegerField(primary_key=True)
-    operationid = ForeignKeyField(
-        db_column='operationid', rel_model=Operations, to_field='operationid')
+    operationid = ForeignKeyField(db_column='operationid',
+                                  rel_model=Operations,
+                                  to_field='operationid')
 
     class Meta:
         db_table = 'opcommand_grp'
 
 
 class OpcommandHst(BaseModel):
-    hostid = ForeignKeyField(
-        db_column='hostid', null=True, rel_model=Hosts, to_field='hostid')
+    hostid = ForeignKeyField(db_column='hostid',
+                             null=True,
+                             rel_model=Hosts,
+                             to_field='hostid')
     opcommand_hstid = BigIntegerField(primary_key=True)
-    operationid = ForeignKeyField(
-        db_column='operationid', rel_model=Operations, to_field='operationid')
+    operationid = ForeignKeyField(db_column='operationid',
+                                  rel_model=Operations,
+                                  to_field='operationid')
 
     class Meta:
         db_table = 'opcommand_hst'
@@ -1395,8 +1423,9 @@ class OpcommandHst(BaseModel):
 class Opconditions(BaseModel):
     conditiontype = IntegerField()
     opconditionid = BigIntegerField(primary_key=True)
-    operationid = ForeignKeyField(
-        db_column='operationid', rel_model=Operations, to_field='operationid')
+    operationid = ForeignKeyField(db_column='operationid',
+                                  rel_model=Operations,
+                                  to_field='operationid')
     operator = IntegerField()
     value = CharField()
 
@@ -1405,10 +1434,12 @@ class Opconditions(BaseModel):
 
 
 class Opgroup(BaseModel):
-    groupid = ForeignKeyField(
-        db_column='groupid', rel_model=Groups, to_field='groupid')
-    operationid = ForeignKeyField(
-        db_column='operationid', rel_model=Operations, to_field='operationid')
+    groupid = ForeignKeyField(db_column='groupid',
+                              rel_model=Groups,
+                              to_field='groupid')
+    operationid = ForeignKeyField(db_column='operationid',
+                                  rel_model=Operations,
+                                  to_field='operationid')
     opgroupid = BigIntegerField(primary_key=True)
 
     class Meta:
@@ -1418,11 +1449,10 @@ class Opgroup(BaseModel):
 
 class Opinventory(BaseModel):
     inventory_mode = IntegerField()
-    operationid = ForeignKeyField(
-        db_column='operationid',
-        primary_key=True,
-        rel_model=Operations,
-        to_field='operationid')
+    operationid = ForeignKeyField(db_column='operationid',
+                                  primary_key=True,
+                                  rel_model=Operations,
+                                  to_field='operationid')
 
     class Meta:
         db_table = 'opinventory'
@@ -1430,17 +1460,15 @@ class Opinventory(BaseModel):
 
 class Opmessage(BaseModel):
     default_msg = IntegerField()
-    mediatypeid = ForeignKeyField(
-        db_column='mediatypeid',
-        null=True,
-        rel_model=MediaType,
-        to_field='mediatypeid')
+    mediatypeid = ForeignKeyField(db_column='mediatypeid',
+                                  null=True,
+                                  rel_model=MediaType,
+                                  to_field='mediatypeid')
     message = TextField()
-    operationid = ForeignKeyField(
-        db_column='operationid',
-        primary_key=True,
-        rel_model=Operations,
-        to_field='operationid')
+    operationid = ForeignKeyField(db_column='operationid',
+                                  primary_key=True,
+                                  rel_model=Operations,
+                                  to_field='operationid')
     subject = CharField()
 
     class Meta:
@@ -1448,11 +1476,13 @@ class Opmessage(BaseModel):
 
 
 class OpmessageGrp(BaseModel):
-    operationid = ForeignKeyField(
-        db_column='operationid', rel_model=Operations, to_field='operationid')
+    operationid = ForeignKeyField(db_column='operationid',
+                                  rel_model=Operations,
+                                  to_field='operationid')
     opmessage_grpid = BigIntegerField(primary_key=True)
-    usrgrpid = ForeignKeyField(
-        db_column='usrgrpid', rel_model=Usrgrp, to_field='usrgrpid')
+    usrgrpid = ForeignKeyField(db_column='usrgrpid',
+                               rel_model=Usrgrp,
+                               to_field='usrgrpid')
 
     class Meta:
         db_table = 'opmessage_grp'
@@ -1460,11 +1490,13 @@ class OpmessageGrp(BaseModel):
 
 
 class OpmessageUsr(BaseModel):
-    operationid = ForeignKeyField(
-        db_column='operationid', rel_model=Operations, to_field='operationid')
+    operationid = ForeignKeyField(db_column='operationid',
+                                  rel_model=Operations,
+                                  to_field='operationid')
     opmessage_usrid = BigIntegerField(primary_key=True)
-    userid = ForeignKeyField(
-        db_column='userid', rel_model=Users, to_field='userid')
+    userid = ForeignKeyField(db_column='userid',
+                             rel_model=Users,
+                             to_field='userid')
 
     class Meta:
         db_table = 'opmessage_usr'
@@ -1472,11 +1504,13 @@ class OpmessageUsr(BaseModel):
 
 
 class Optemplate(BaseModel):
-    operationid = ForeignKeyField(
-        db_column='operationid', rel_model=Operations, to_field='operationid')
+    operationid = ForeignKeyField(db_column='operationid',
+                                  rel_model=Operations,
+                                  to_field='operationid')
     optemplateid = BigIntegerField(primary_key=True)
-    templateid = ForeignKeyField(
-        db_column='templateid', rel_model=Hosts, to_field='hostid')
+    templateid = ForeignKeyField(db_column='templateid',
+                                 rel_model=Hosts,
+                                 to_field='hostid')
 
     class Meta:
         db_table = 'optemplate'
@@ -1489,8 +1523,9 @@ class Profiles(BaseModel):
     profileid = BigIntegerField(primary_key=True)
     source = CharField()
     type = IntegerField()
-    userid = ForeignKeyField(
-        db_column='userid', rel_model=Users, to_field='userid')
+    userid = ForeignKeyField(db_column='userid',
+                             rel_model=Users,
+                             to_field='userid')
     value = BigIntegerField(db_column='value_id')
     value_int = IntegerField()
     value_str = CharField()
@@ -1551,8 +1586,9 @@ class ProxyHistory(BaseModel):
 
 
 class Rights(BaseModel):
-    groupid = ForeignKeyField(
-        db_column='groupid', rel_model=Usrgrp, to_field='usrgrpid')
+    groupid = ForeignKeyField(db_column='groupid',
+                              rel_model=Usrgrp,
+                              to_field='usrgrpid')
     id = ForeignKeyField(db_column='id', rel_model=Groups, to_field='groupid')
     permission = IntegerField()
     rightid = BigIntegerField(primary_key=True)
@@ -1566,10 +1602,14 @@ class Screens(BaseModel):
     name = CharField()
     private = IntegerField()
     screenid = BigIntegerField(primary_key=True)
-    templateid = ForeignKeyField(
-        db_column='templateid', null=True, rel_model=Hosts, to_field='hostid')
-    userid = ForeignKeyField(
-        db_column='userid', null=True, rel_model=Users, to_field='userid')
+    templateid = ForeignKeyField(db_column='templateid',
+                                 null=True,
+                                 rel_model=Hosts,
+                                 to_field='hostid')
+    userid = ForeignKeyField(db_column='userid',
+                             null=True,
+                             rel_model=Users,
+                             to_field='userid')
     vsize = IntegerField()
 
     class Meta:
@@ -1578,11 +1618,13 @@ class Screens(BaseModel):
 
 class ScreenUser(BaseModel):
     permission = IntegerField()
-    screenid = ForeignKeyField(
-        db_column='screenid', rel_model=Screens, to_field='screenid')
+    screenid = ForeignKeyField(db_column='screenid',
+                               rel_model=Screens,
+                               to_field='screenid')
     screenuserid = BigIntegerField(primary_key=True)
-    userid = ForeignKeyField(
-        db_column='userid', rel_model=Users, to_field='userid')
+    userid = ForeignKeyField(db_column='userid',
+                             rel_model=Users,
+                             to_field='userid')
 
     class Meta:
         db_table = 'screen_user'
@@ -1591,11 +1633,13 @@ class ScreenUser(BaseModel):
 
 class ScreenUsrgrp(BaseModel):
     permission = IntegerField()
-    screenid = ForeignKeyField(
-        db_column='screenid', rel_model=Screens, to_field='screenid')
+    screenid = ForeignKeyField(db_column='screenid',
+                               rel_model=Screens,
+                               to_field='screenid')
     screenusrgrpid = BigIntegerField(primary_key=True)
-    usrgrpid = ForeignKeyField(
-        db_column='usrgrpid', rel_model=Usrgrp, to_field='usrgrpid')
+    usrgrpid = ForeignKeyField(db_column='usrgrpid',
+                               rel_model=Usrgrp,
+                               to_field='usrgrpid')
 
     class Meta:
         db_table = 'screen_usrgrp'
@@ -1613,8 +1657,9 @@ class ScreensItems(BaseModel):
     resourceid = BigIntegerField()
     resourcetype = IntegerField()
     rowspan = IntegerField()
-    screenid = ForeignKeyField(
-        db_column='screenid', rel_model=Screens, to_field='screenid')
+    screenid = ForeignKeyField(db_column='screenid',
+                               rel_model=Screens,
+                               to_field='screenid')
     screenitemid = BigIntegerField(primary_key=True)
     sort_triggers = IntegerField()
     style = IntegerField()
@@ -1636,11 +1681,10 @@ class Services(BaseModel):
     showsla = IntegerField()
     sortorder = IntegerField()
     status = IntegerField()
-    triggerid = ForeignKeyField(
-        db_column='triggerid',
-        null=True,
-        rel_model=Triggers,
-        to_field='triggerid')
+    triggerid = ForeignKeyField(db_column='triggerid',
+                                null=True,
+                                rel_model=Triggers,
+                                to_field='triggerid')
 
     class Meta:
         db_table = 'services'
@@ -1649,8 +1693,9 @@ class Services(BaseModel):
 class ServiceAlarms(BaseModel):
     clock = IntegerField(index=True)
     servicealarmid = BigIntegerField(primary_key=True)
-    serviceid = ForeignKeyField(
-        db_column='serviceid', rel_model=Services, to_field='serviceid')
+    serviceid = ForeignKeyField(db_column='serviceid',
+                                rel_model=Services,
+                                to_field='serviceid')
     value = IntegerField()
 
     class Meta:
@@ -1660,13 +1705,13 @@ class ServiceAlarms(BaseModel):
 
 class ServicesLinks(BaseModel):
     linkid = BigIntegerField(primary_key=True)
-    servicedownid = ForeignKeyField(
-        db_column='servicedownid', rel_model=Services, to_field='serviceid')
-    serviceupid = ForeignKeyField(
-        db_column='serviceupid',
-        rel_model=Services,
-        related_name='services_serviceupid_set',
-        to_field='serviceid')
+    servicedownid = ForeignKeyField(db_column='servicedownid',
+                                    rel_model=Services,
+                                    to_field='serviceid')
+    serviceupid = ForeignKeyField(db_column='serviceupid',
+                                  rel_model=Services,
+                                  related_name='services_serviceupid_set',
+                                  to_field='serviceid')
     soft = IntegerField()
 
     class Meta:
@@ -1676,8 +1721,9 @@ class ServicesLinks(BaseModel):
 
 class ServicesTimes(BaseModel):
     note = CharField()
-    serviceid = ForeignKeyField(
-        db_column='serviceid', rel_model=Services, to_field='serviceid')
+    serviceid = ForeignKeyField(db_column='serviceid',
+                                rel_model=Services,
+                                to_field='serviceid')
     timeid = BigIntegerField(primary_key=True)
     ts_from = IntegerField()
     ts_to = IntegerField()
@@ -1692,8 +1738,9 @@ class Sessions(BaseModel):
     lastaccess = IntegerField()
     sessionid = CharField(primary_key=True)
     status = IntegerField()
-    userid = ForeignKeyField(
-        db_column='userid', rel_model=Users, to_field='userid')
+    userid = ForeignKeyField(db_column='userid',
+                             rel_model=Users,
+                             to_field='userid')
 
     class Meta:
         db_table = 'sessions'
@@ -1705,8 +1752,9 @@ class Slideshows(BaseModel):
     name = CharField(unique=True)
     private = IntegerField()
     slideshowid = BigIntegerField(primary_key=True)
-    userid = ForeignKeyField(
-        db_column='userid', rel_model=Users, to_field='userid')
+    userid = ForeignKeyField(db_column='userid',
+                             rel_model=Users,
+                             to_field='userid')
 
     class Meta:
         db_table = 'slideshows'
@@ -1714,11 +1762,13 @@ class Slideshows(BaseModel):
 
 class Slides(BaseModel):
     delay = IntegerField()
-    screenid = ForeignKeyField(
-        db_column='screenid', rel_model=Screens, to_field='screenid')
+    screenid = ForeignKeyField(db_column='screenid',
+                               rel_model=Screens,
+                               to_field='screenid')
     slideid = BigIntegerField(primary_key=True)
-    slideshowid = ForeignKeyField(
-        db_column='slideshowid', rel_model=Slideshows, to_field='slideshowid')
+    slideshowid = ForeignKeyField(db_column='slideshowid',
+                                  rel_model=Slideshows,
+                                  to_field='slideshowid')
     step = IntegerField()
 
     class Meta:
@@ -1727,11 +1777,13 @@ class Slides(BaseModel):
 
 class SlideshowUser(BaseModel):
     permission = IntegerField()
-    slideshowid = ForeignKeyField(
-        db_column='slideshowid', rel_model=Slideshows, to_field='slideshowid')
+    slideshowid = ForeignKeyField(db_column='slideshowid',
+                                  rel_model=Slideshows,
+                                  to_field='slideshowid')
     slideshowuserid = BigIntegerField(primary_key=True)
-    userid = ForeignKeyField(
-        db_column='userid', rel_model=Users, to_field='userid')
+    userid = ForeignKeyField(db_column='userid',
+                             rel_model=Users,
+                             to_field='userid')
 
     class Meta:
         db_table = 'slideshow_user'
@@ -1740,11 +1792,13 @@ class SlideshowUser(BaseModel):
 
 class SlideshowUsrgrp(BaseModel):
     permission = IntegerField()
-    slideshowid = ForeignKeyField(
-        db_column='slideshowid', rel_model=Slideshows, to_field='slideshowid')
+    slideshowid = ForeignKeyField(db_column='slideshowid',
+                                  rel_model=Slideshows,
+                                  to_field='slideshowid')
     slideshowusrgrpid = BigIntegerField(primary_key=True)
-    usrgrpid = ForeignKeyField(
-        db_column='usrgrpid', rel_model=Usrgrp, to_field='usrgrpid')
+    usrgrpid = ForeignKeyField(db_column='usrgrpid',
+                               rel_model=Usrgrp,
+                               to_field='usrgrpid')
 
     class Meta:
         db_table = 'slideshow_usrgrp'
@@ -1752,11 +1806,10 @@ class SlideshowUsrgrp(BaseModel):
 
 
 class Sysmaps(BaseModel):
-    backgroundid = ForeignKeyField(
-        db_column='backgroundid',
-        null=True,
-        rel_model=Images,
-        to_field='imageid')
+    backgroundid = ForeignKeyField(db_column='backgroundid',
+                                   null=True,
+                                   rel_model=Images,
+                                   to_field='imageid')
     expand_macros = IntegerField()
     expandproblem = IntegerField()
     grid_align = IntegerField()
@@ -1764,11 +1817,10 @@ class Sysmaps(BaseModel):
     grid_size = IntegerField()
     height = IntegerField()
     highlight = IntegerField()
-    iconmapid = ForeignKeyField(
-        db_column='iconmapid',
-        null=True,
-        rel_model=IconMap,
-        to_field='iconmapid')
+    iconmapid = ForeignKeyField(db_column='iconmapid',
+                                null=True,
+                                rel_model=IconMap,
+                                to_field='iconmapid')
     label_format = IntegerField()
     label_location = IntegerField()
     label_string_host = CharField()
@@ -1788,8 +1840,9 @@ class Sysmaps(BaseModel):
     severity_min = IntegerField()
     show_unack = IntegerField()
     sysmapid = BigIntegerField(primary_key=True)
-    userid = ForeignKeyField(
-        db_column='userid', rel_model=Users, to_field='userid')
+    userid = ForeignKeyField(db_column='userid',
+                             rel_model=Users,
+                             to_field='userid')
     width = IntegerField()
 
     class Meta:
@@ -1803,34 +1856,32 @@ class SysmapsElements(BaseModel):
     elementsubtype = IntegerField()
     elementtype = IntegerField()
     height = IntegerField()
-    iconid_disabled = ForeignKeyField(
-        db_column='iconid_disabled',
-        null=True,
-        rel_model=Images,
-        to_field='imageid')
+    iconid_disabled = ForeignKeyField(db_column='iconid_disabled',
+                                      null=True,
+                                      rel_model=Images,
+                                      to_field='imageid')
     iconid_maintenance = ForeignKeyField(
         db_column='iconid_maintenance',
         null=True,
         rel_model=Images,
         related_name='images_iconid_maintenance_set',
         to_field='imageid')
-    iconid_off = ForeignKeyField(
-        db_column='iconid_off',
-        null=True,
-        rel_model=Images,
-        related_name='images_iconid_off_set',
-        to_field='imageid')
-    iconid_on = ForeignKeyField(
-        db_column='iconid_on',
-        null=True,
-        rel_model=Images,
-        related_name='images_iconid_on_set',
-        to_field='imageid')
+    iconid_off = ForeignKeyField(db_column='iconid_off',
+                                 null=True,
+                                 rel_model=Images,
+                                 related_name='images_iconid_off_set',
+                                 to_field='imageid')
+    iconid_on = ForeignKeyField(db_column='iconid_on',
+                                null=True,
+                                rel_model=Images,
+                                related_name='images_iconid_on_set',
+                                to_field='imageid')
     label = CharField()
     label_location = IntegerField()
     selementid = BigIntegerField(primary_key=True)
-    sysmapid = ForeignKeyField(
-        db_column='sysmapid', rel_model=Sysmaps, to_field='sysmapid')
+    sysmapid = ForeignKeyField(db_column='sysmapid',
+                               rel_model=Sysmaps,
+                               to_field='sysmapid')
     use_iconmap = IntegerField()
     viewtype = IntegerField()
     width = IntegerField()
@@ -1843,10 +1894,9 @@ class SysmapsElements(BaseModel):
 
 class SysmapElementUrl(BaseModel):
     name = CharField()
-    selementid = ForeignKeyField(
-        db_column='selementid',
-        rel_model=SysmapsElements,
-        to_field='selementid')
+    selementid = ForeignKeyField(db_column='selementid',
+                                 rel_model=SysmapsElements,
+                                 to_field='selementid')
     sysmapelementurlid = BigIntegerField(primary_key=True)
     url = CharField()
 
@@ -1858,8 +1908,9 @@ class SysmapElementUrl(BaseModel):
 class SysmapUrl(BaseModel):
     elementtype = IntegerField()
     name = CharField()
-    sysmapid = ForeignKeyField(
-        db_column='sysmapid', rel_model=Sysmaps, to_field='sysmapid')
+    sysmapid = ForeignKeyField(db_column='sysmapid',
+                               rel_model=Sysmaps,
+                               to_field='sysmapid')
     sysmapurlid = BigIntegerField(primary_key=True)
     url = CharField()
 
@@ -1870,11 +1921,13 @@ class SysmapUrl(BaseModel):
 
 class SysmapUser(BaseModel):
     permission = IntegerField()
-    sysmapid = ForeignKeyField(
-        db_column='sysmapid', rel_model=Sysmaps, to_field='sysmapid')
+    sysmapid = ForeignKeyField(db_column='sysmapid',
+                               rel_model=Sysmaps,
+                               to_field='sysmapid')
     sysmapuserid = BigIntegerField(primary_key=True)
-    userid = ForeignKeyField(
-        db_column='userid', rel_model=Users, to_field='userid')
+    userid = ForeignKeyField(db_column='userid',
+                             rel_model=Users,
+                             to_field='userid')
 
     class Meta:
         db_table = 'sysmap_user'
@@ -1883,11 +1936,13 @@ class SysmapUser(BaseModel):
 
 class SysmapUsrgrp(BaseModel):
     permission = IntegerField()
-    sysmapid = ForeignKeyField(
-        db_column='sysmapid', rel_model=Sysmaps, to_field='sysmapid')
+    sysmapid = ForeignKeyField(db_column='sysmapid',
+                               rel_model=Sysmaps,
+                               to_field='sysmapid')
     sysmapusrgrpid = BigIntegerField(primary_key=True)
-    usrgrpid = ForeignKeyField(
-        db_column='usrgrpid', rel_model=Usrgrp, to_field='usrgrpid')
+    usrgrpid = ForeignKeyField(db_column='usrgrpid',
+                               rel_model=Usrgrp,
+                               to_field='usrgrpid')
 
     class Meta:
         db_table = 'sysmap_usrgrp'
@@ -1899,17 +1954,17 @@ class SysmapsLinks(BaseModel):
     drawtype = IntegerField()
     label = CharField()
     linkid = BigIntegerField(primary_key=True)
-    selementid1 = ForeignKeyField(
-        db_column='selementid1',
-        rel_model=SysmapsElements,
-        to_field='selementid')
+    selementid1 = ForeignKeyField(db_column='selementid1',
+                                  rel_model=SysmapsElements,
+                                  to_field='selementid')
     selementid2 = ForeignKeyField(
         db_column='selementid2',
         rel_model=SysmapsElements,
         related_name='sysmaps_elements_selementid2_set',
         to_field='selementid')
-    sysmapid = ForeignKeyField(
-        db_column='sysmapid', rel_model=Sysmaps, to_field='sysmapid')
+    sysmapid = ForeignKeyField(db_column='sysmapid',
+                               rel_model=Sysmaps,
+                               to_field='sysmapid')
 
     class Meta:
         db_table = 'sysmaps_links'
@@ -1918,11 +1973,13 @@ class SysmapsLinks(BaseModel):
 class SysmapsLinkTriggers(BaseModel):
     color = CharField()
     drawtype = IntegerField()
-    linkid = ForeignKeyField(
-        db_column='linkid', rel_model=SysmapsLinks, to_field='linkid')
+    linkid = ForeignKeyField(db_column='linkid',
+                             rel_model=SysmapsLinks,
+                             to_field='linkid')
     linktriggerid = BigIntegerField(primary_key=True)
-    triggerid = ForeignKeyField(
-        db_column='triggerid', rel_model=Triggers, to_field='triggerid')
+    triggerid = ForeignKeyField(db_column='triggerid',
+                                rel_model=Triggers,
+                                to_field='triggerid')
 
     class Meta:
         db_table = 'sysmaps_link_triggers'
@@ -1959,13 +2016,13 @@ class TrendsUint(BaseModel):
 
 class TriggerDepends(BaseModel):
     triggerdepid = BigIntegerField(primary_key=True)
-    triggerid_down = ForeignKeyField(
-        db_column='triggerid_down', rel_model=Triggers, to_field='triggerid')
-    triggerid_up = ForeignKeyField(
-        db_column='triggerid_up',
-        rel_model=Triggers,
-        related_name='triggers_triggerid_up_set',
-        to_field='triggerid')
+    triggerid_down = ForeignKeyField(db_column='triggerid_down',
+                                     rel_model=Triggers,
+                                     to_field='triggerid')
+    triggerid_up = ForeignKeyField(db_column='triggerid_up',
+                                   rel_model=Triggers,
+                                   related_name='triggers_triggerid_up_set',
+                                   to_field='triggerid')
 
     class Meta:
         db_table = 'trigger_depends'
@@ -1973,14 +2030,14 @@ class TriggerDepends(BaseModel):
 
 
 class TriggerDiscovery(BaseModel):
-    parent_triggerid = ForeignKeyField(
-        db_column='parent_triggerid', rel_model=Triggers, to_field='triggerid')
-    triggerid = ForeignKeyField(
-        db_column='triggerid',
-        primary_key=True,
-        rel_model=Triggers,
-        related_name='triggers_triggerid_set',
-        to_field='triggerid')
+    parent_triggerid = ForeignKeyField(db_column='parent_triggerid',
+                                       rel_model=Triggers,
+                                       to_field='triggerid')
+    triggerid = ForeignKeyField(db_column='triggerid',
+                                primary_key=True,
+                                rel_model=Triggers,
+                                related_name='triggers_triggerid_set',
+                                to_field='triggerid')
 
     class Meta:
         db_table = 'trigger_discovery'
@@ -1988,10 +2045,12 @@ class TriggerDiscovery(BaseModel):
 
 class UsersGroups(BaseModel):
     id = BigIntegerField(primary_key=True)
-    userid = ForeignKeyField(
-        db_column='userid', rel_model=Users, to_field='userid')
-    usrgrpid = ForeignKeyField(
-        db_column='usrgrpid', rel_model=Usrgrp, to_field='usrgrpid')
+    userid = ForeignKeyField(db_column='userid',
+                             rel_model=Users,
+                             to_field='userid')
+    usrgrpid = ForeignKeyField(db_column='usrgrpid',
+                               rel_model=Usrgrp,
+                               to_field='usrgrpid')
 
     class Meta:
         db_table = 'users_groups'

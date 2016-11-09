@@ -82,22 +82,20 @@ class dns:
         if t == 'cloudflare':
             try:
                 cloudflare = CloudFlare()
-                return cloudflare.add_record(
-                    domain=domain,
-                    record_type=record_type,
-                    name=name,
-                    content=content)
+                return cloudflare.add_record(domain=domain,
+                                             record_type=record_type,
+                                             name=name,
+                                             content=content)
             except Exception as e:
                 log_error(e)
                 raise Exception(e)
         elif t == 'dnspod':
             try:
                 dp = Dnspod()
-                return dp.add_record(
-                    domain=domain,
-                    record_type=record_type,
-                    name=name,
-                    content=content)
+                return dp.add_record(domain=domain,
+                                     record_type=record_type,
+                                     name=name,
+                                     content=content)
             except Exception as e:
                 log_error(e)
                 raise Exception(e)
@@ -116,8 +114,8 @@ class dns:
         if t == 'cloudflare':
             try:
                 cloudflare = CloudFlare()
-                return cloudflare.delete_record(
-                    domain=domain, record_id=record_id)
+                return cloudflare.delete_record(domain=domain,
+                                                record_id=record_id)
             except Exception as e:
                 log_error(e)
                 raise Exception(e)
@@ -152,22 +150,20 @@ class dns:
         if t == 'cloudflare':
             try:
                 cloudflare = CloudFlare()
-                return cloudflare.add_record(
-                    domain=domain,
-                    record_type=record_type,
-                    name=name,
-                    content=content)
+                return cloudflare.add_record(domain=domain,
+                                             record_type=record_type,
+                                             name=name,
+                                             content=content)
             except Exception as e:
                 log_error(e)
                 raise Exception(e)
         elif t == 'dnspod':
             try:
                 dp = Dnspod()
-                return dp.add_record(
-                    domain=domain,
-                    record_type=record_type,
-                    name=name,
-                    content=content)
+                return dp.add_record(domain=domain,
+                                     record_type=record_type,
+                                     name=name,
+                                     content=content)
             except Exception as e:
                 log_error(e)
                 raise Exception(e)

@@ -73,9 +73,8 @@ def translate_unit(unit):
 
 
 def getnumber(s):
-    num = float(
-        reduce(lambda x, y: x if len(x) > 0 else y, re.split(r'G|M|k|ms|s|us',
-                                                             s)))
+    num = float(reduce(lambda x, y: x if len(x) > 0 else y, re.split(
+        r'G|M|k|ms|s|us', s)))
     unit = reduce(lambda x, y: x if len(x) > 0 else y, re.split(r'[0-9.]*', s))
     unit_value = translate_unit(unit)
     return num * unit_value
@@ -245,8 +244,8 @@ def format(data):
     tot_aveqtime = data['tot_exectime'] / data['tot_count'] * 1000
     print(
         '{0[date]:10}  {0[time]:8}   {0[tot_count]:>12.0f}   {0[unique_queries]:>6.0f}   '
-        '{0[tot_exectime]:>9.0f}   {0[tot_locktime]:>9.0f}   {1:>12.5f}'.
-        format(data, tot_aveqtime))
+        '{0[tot_exectime]:>9.0f}   {0[tot_locktime]:>9.0f}   {1:>12.5f}'.format(
+            data, tot_aveqtime))
 
 
 def top_head(f, N):
@@ -411,13 +410,12 @@ def do_query_tag_report(query_tag, i, days, start, end, no_show_sql):
                 first = False
                 if not no_show_sql:
                     try:
-                        print(sqlparse.format(
-                            '\n'.join(sql),
-                            reindent=True,
-                            keyword_case='upper'))
+                        print(sqlparse.format('\n'.join(sql),
+                                              reindent=True,
+                                              keyword_case='upper'))
                     except IndexError, e:
-                        print(sqlparse.format(
-                            '\n'.join(sql), keyword_case='upper'))
+                        print(sqlparse.format('\n'.join(sql),
+                                              keyword_case='upper'))
                     print('')
 
                 print(

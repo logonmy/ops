@@ -32,5 +32,5 @@ class redisutil:
     def migrate(self, req, resp):
         pass
 
-    def query(self,req,resp):
-	pass
+    def query(self, req, resp):
+        pass

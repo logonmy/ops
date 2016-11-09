@@ -34,17 +34,16 @@ def do_log_history(req, resp):
     elif len(paths) == 1:
         func_name = paths[0]
     create_timestamp = datetime.now()
-    OperatorLog.insert(
-        request=request_id,
-        controller=ctrl_name,
-        exec_path=req.get_header(name='EXEC-PATH'),
-        func=func_name,
-        login_gid=req.get_header(name='LOGIN-GID'),
-        login_uid=req.get_header(name='LOGIN-UID'),
-        login_user=req.get_header(name='LOGIN-USER'),
-        post_data=json.dumps(req._params),
-        server_ip=req.get_header(name='SERVER-IP'),
-        create_timestamp=create_timestamp).execute()
+    OperatorLog.insert(request=request_id,
+                       controller=ctrl_name,
+                       exec_path=req.get_header(name='EXEC-PATH'),
+                       func=func_name,
+                       login_gid=req.get_header(name='LOGIN-GID'),
+                       login_uid=req.get_header(name='LOGIN-UID'),
+                       login_user=req.get_header(name='LOGIN-USER'),
+                       post_data=json.dumps(req._params),
+                       server_ip=req.get_header(name='SERVER-IP'),
+                       create_timestamp=create_timestamp).execute()
 
 
 #记录结果
@@ -54,7 +53,6 @@ def do_log_result(req, resp):
         return
     request_id = request_id[-20:]
     respone_timestamp = datetime.now()
-    OperatorLog.update(
-        result=json.dumps(resp.body),
-        respone_timestamp=respone_timestamp).where(
-            OperatorLog.request == request_id).execute()
+    OperatorLog.update(result=json.dumps(resp.body),
+                       respone_timestamp=respone_timestamp).where(
+                           OperatorLog.request == request_id).execute()

@@ -30,8 +30,9 @@ class Flavor(BaseModel):
 
 class Instance(BaseModel):
     create_timestamp = DateTimeField(null=True)
-    flavor = ForeignKeyField(
-        db_column='flavor_id', rel_model=Flavor, to_field='flavor')
+    flavor = ForeignKeyField(db_column='flavor_id',
+                             rel_model=Flavor,
+                             to_field='flavor')
     instance = PrimaryKeyField(db_column='instance_id')
     name = CharField(null=True)
     server_ip = CharField(null=True)
@@ -43,8 +44,9 @@ class Instance(BaseModel):
 
 class Jobs(BaseModel):
     create_timestamp = DateTimeField(null=True)
-    flavor = ForeignKeyField(
-        db_column='flavor_id', rel_model=Flavor, to_field='flavor')
+    flavor = ForeignKeyField(db_column='flavor_id',
+                             rel_model=Flavor,
+                             to_field='flavor')
     instance_count = CharField(null=True)
     ip_list = TextField(null=True)
     job = PrimaryKeyField(db_column='job_id')
@@ -61,8 +63,10 @@ class Jobs(BaseModel):
 class Tasks(BaseModel):
     create_timestamp = DateTimeField(null=True)
     group = CharField(null=True)
-    job = ForeignKeyField(
-        db_column='job_id', null=True, rel_model=Jobs, to_field='job')
+    job = ForeignKeyField(db_column='job_id',
+                          null=True,
+                          rel_model=Jobs,
+                          to_field='job')
     result_log = TextField(null=True)
     result_status = IntegerField(null=True)
     server_ip = CharField(null=True)

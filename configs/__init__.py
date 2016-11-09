@@ -112,10 +112,7 @@ docker_config = {
     'tlscacert': '../uploads/docker-ca.pem',
     'base_image': 'alpine'
 }
-etcd_config_cmd = {
-    'server' : '10.3.120.98',
-    'prefix' : '/ops'
-}
+etcd_config_cmd = {'server': '10.3.120.98', 'prefix': '/ops'}
 etcd_config = {
     'gz': {
         'endpoint': '',
@@ -173,14 +170,16 @@ netconf_config = {
 elasticsearch_config = {'hosts': ''}
 
 router_config = {
-    'device_type':'hp_comware', #hp_comware : h3c , cisco_ios : cisco #具体参考https://github.com/ktbyers/netmiko
+    'device_type':
+    'hp_comware',  #hp_comware : h3c , cisco_ios : cisco #具体参考https://github.com/ktbyers/netmiko
     'port': 22,
     'username': 'router',
     'password': '',
 }
 
 switch_config = {
-    'device_type':'hp_comware',#hp_comware : h3c , cisco_ios : cisco #具体参考https://github.com/ktbyers/netmiko
+    'device_type':
+    'hp_comware',  #hp_comware : h3c , cisco_ios : cisco #具体参考https://github.com/ktbyers/netmiko
     'port': 22,
     'username': 'switch',
     'password': '',

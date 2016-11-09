@@ -28,11 +28,10 @@ class Dnspod:
         }
         if params:
             req_params.update(params)
-        request = requests.post(
-            'https://api.dnspod.com/' + action_addr,
-            data=req_params,
-            headers=headers,
-            timeout=10)
+        request = requests.post('https://api.dnspod.com/' + action_addr,
+                                data=req_params,
+                                headers=headers,
+                                timeout=10)
         results = json.loads(request.text.decode('utf-8', 'ignore'))
 
         if results['status']['code'] != '1':

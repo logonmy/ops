@@ -18,13 +18,12 @@ from helpers.cache import r, cache
 class monitor:
     def __init__(self):
         try:
-            self.zapi = ZabbixAPI(
-                server=zabbix_config.get('server'), timeout=360)
+            self.zapi = ZabbixAPI(server=zabbix_config.get('server'),
+                                  timeout=360)
             self.zapi.session.verify = False
             self.zapi.timeout = 360
-            self.zapi.login(
-                user=zabbix_config.get('user'),
-                password=zabbix_config.get('password'))
+            self.zapi.login(user=zabbix_config.get('user'),
+                            password=zabbix_config.get('password'))
         except Exception as e:
             log_error(e)
 
@@ -139,8 +138,8 @@ class monitor:
             return hostid
         if not str(templateid).isdigit():
             return templateid
-        return self.zapi.host.massremove(
-            hostids=[hostid], templateids_clear=templateid)
+        return self.zapi.host.massremove(hostids=[hostid],
+                                         templateids_clear=templateid)
 
     def create_host_group(self, req, resp):
         groupnames = req.get_param(name='g')
@@ -192,8 +191,8 @@ class monitor:
                                            "filter":
                                            {"name": groupname}})[0]["groupid"]
         if hostid != '' and groupid != '':
-            return self.zapi.hostgroup.massremove(
-                groupids=[groupid], hostids=[hostid])
+            return self.zapi.hostgroup.massremove(groupids=[groupid],
+                                                  hostids=[hostid])
         else:
             return 'invalid group or hostname'
 
@@ -210,8 +209,8 @@ class monitor:
                                            "filter":
                                            {"name": groupname}})[0]["groupid"]
         if hostid != '' and groupid != '':
-            return self.zapi.hostgroup.massadd(
-                groups=[groupid], hosts=[hostid])
+            return self.zapi.hostgroup.massadd(groups=[groupid],
+                                               hosts=[hostid])
         else:
             return 'invalid group or hostname'
 
@@ -505,7 +504,8 @@ class monitor:
 
                 try:
                     self.zapi.hostinterface.update(
-                        interfaceid=h['interfaceid'], ip=actual_ip)
+                        interfaceid=h['interfaceid'],
+                        ip=actual_ip)
                 except ZabbixAPIException as e:
                     log_error(e)
         return result
@@ -616,11 +616,11 @@ class monitor:
         hostid = self.zapi.host.get(
             {"filter": {"host": hostname}})[0]["hostid"]
         try:
-            result.append(
-                self.zapi.template.massremove({"templateids": templateids,
-                                               "templateids_clear":
-                                               templateids,
-                                               "hostids": hostid}))
+            result.append(self.zapi.template.massremove({"templateids":
+                                                         templateids,
+                                                         "templateids_clear":
+                                                         templateids,
+                                                         "hostids": hostid}))
         except Exception as e:
             log_error(e)
             raise Exception(e)
@@ -641,10 +641,9 @@ class monitor:
         hostid = self.zapi.host.get(
             {"filter": {"host": hostname}})[0]["hostid"]
         try:
-            result.append(
-                self.zapi.template.massadd({"templates":
-                                            templates_id,
-                                            "hosts": hostid}))
+            result.append(self.zapi.template.massadd({"templates":
+                                                      templates_id,
+                                                      "hosts": hostid}))
         except Exception as e:
             log_error(e)
             raise Exception(e)
@@ -776,35 +775,33 @@ class monitor:
                 "applicationid"]
         try:
             if 'applicationid' in dir():
-                result.append(
-                    self.zapi.item.create({"name": name,
-                                           "key_": key,
-                                           "hostid": hostid,
-                                           "type": (type),
-                                           "interfaceid":
-                                           interfaceid,
-                                           "value_type": value_type,
-                                           "delay": delay,
-                                           "history": history,
-                                           "delta": delta,
-                                           "units": units,
-                                           "params": params,
-                                           "applications":
-                                           [applicationid]}))
+                result.append(self.zapi.item.create({"name": name,
+                                                     "key_": key,
+                                                     "hostid": hostid,
+                                                     "type": (type),
+                                                     "interfaceid":
+                                                     interfaceid,
+                                                     "value_type": value_type,
+                                                     "delay": delay,
+                                                     "history": history,
+                                                     "delta": delta,
+                                                     "units": units,
+                                                     "params": params,
+                                                     "applications":
+                                                     [applicationid]}))
             else:
-                result.append(
-                    self.zapi.item.create({"name": name,
-                                           "key_": key,
-                                           "hostid": hostid,
-                                           "type": (type),
-                                           "interfaceid":
-                                           interfaceid,
-                                           "value_type": value_type,
-                                           "delay": delay,
-                                           "history": history,
-                                           "delta": delta,
-                                           "units": units,
-                                           "params": params}))
+                result.append(self.zapi.item.create({"name": name,
+                                                     "key_": key,
+                                                     "hostid": hostid,
+                                                     "type": (type),
+                                                     "interfaceid":
+                                                     interfaceid,
+                                                     "value_type": value_type,
+                                                     "delay": delay,
+                                                     "history": history,
+                                                     "delta": delta,
+                                                     "units": units,
+                                                     "params": params}))
         except Exception as e:
             log_error(e)
             raise Exception(e)
@@ -862,8 +859,9 @@ class monitor:
         else:
             groups_id = ""
         if templates_id and groups_id:
-            self.zapi.host.massremove(
-                templates=templates_id, groups=groups_id, hosts=hostid)
+            self.zapi.host.massremove(templates=templates_id,
+                                      groups=groups_id,
+                                      hosts=hostid)
         elif templates_id and not groups_id:
             self.zapi.host.massremove(templates=templates_id, hostids=hostid)
         elif not templates_id and groups_id:
@@ -898,13 +896,12 @@ class monitor:
         else:
             groupids = ""
         if templateids and groupids:
-            self.zapi.host.massremove(
-                templateids_clear=templateids,
-                groupids=groupids,
-                hostids=hostid)
+            self.zapi.host.massremove(templateids_clear=templateids,
+                                      groupids=groupids,
+                                      hostids=hostid)
         elif templateids and not groupids:
-            self.zapi.host.massremove(
-                templateids_clear=templateids, hostids=hostid)
+            self.zapi.host.massremove(templateids_clear=templateids,
+                                      hostids=hostid)
         elif not templateids and groupids:
             self.zapi.host.massremove(groupids=groupids, hostids=hostid)
 
@@ -1233,33 +1230,31 @@ class monitor:
                                                {"host": templates.split(",")}})
         try:
             if proxy_id:
-                result.append(
-                    self.zapi.host.create({"host": hostname,
-                                           "groups": groups_id,
-                                           "templates": templates_id,
-                                           "interfaces": [{"type": 1,
-                                                           "main": 1,
-                                                           "useip":
-                                                           1,
-                                                           "ip": ip,
-                                                           "dns": "",
-                                                           "port":
-                                                           "10050"}],
-                                           "proxy_hostid": proxy_id,
-                                           "status": status}))
+                result.append(self.zapi.host.create({"host": hostname,
+                                                     "groups": groups_id,
+                                                     "templates": templates_id,
+                                                     "interfaces": [{"type": 1,
+                                                                     "main": 1,
+                                                                     "useip":
+                                                                     1,
+                                                                     "ip": ip,
+                                                                     "dns": "",
+                                                                     "port":
+                                                                     "10050"}],
+                                                     "proxy_hostid": proxy_id,
+                                                     "status": status}))
             else:
-                result.append(
-                    self.zapi.host.create({"host": hostname,
-                                           "groups": groups_id,
-                                           "templates": templates_id,
-                                           "interfaces":
-                                           [{"type": 1,
-                                             "main": 1,
-                                             "useip": 1,
-                                             "ip": ip,
-                                             "dns": "",
-                                             "port": "10050",
-                                             "status": status}]}))
+                result.append(self.zapi.host.create({"host": hostname,
+                                                     "groups": groups_id,
+                                                     "templates": templates_id,
+                                                     "interfaces":
+                                                     [{"type": 1,
+                                                       "main": 1,
+                                                       "useip": 1,
+                                                       "ip": ip,
+                                                       "dns": "",
+                                                       "port": "10050",
+                                                       "status": status}]}))
         except Exception as e:
             log_error(e)
             raise Exception(e)
@@ -1323,10 +1318,10 @@ class monitor:
             return '--time_till(time_till) need'
         result = []
 
-        time_from = int(
-            time.mktime(time.strptime(time_from, '%Y-%m-%d %H:%M:%S')))
-        time_till = int(
-            time.mktime(time.strptime(time_till, '%Y-%m-%d %H:%M:%S')))
+        time_from = int(time.mktime(time.strptime(time_from,
+                                                  '%Y-%m-%d %H:%M:%S')))
+        time_till = int(time.mktime(time.strptime(time_till,
+                                                  '%Y-%m-%d %H:%M:%S')))
 
         hostid = self.zapi.host.get({"host": hostname,
                                      "output": "hostid"})[0]["hostid"]
@@ -1340,14 +1335,13 @@ class monitor:
                                    "groupids": groupid})
         for key in item:
             result.append(key['name'])
-            result.append(
-                self.zapi.history.get({"output": ["value", "clock"],
-                                       "history": 0,
-                                       "itemids": key['itemid'],
-                                       "sortfield": "clock",
-                                       "sortorder": "DESC",
-                                       "time_from": time_from,
-                                       "time_till": time_till}))
+            result.append(self.zapi.history.get({"output": ["value", "clock"],
+                                                 "history": 0,
+                                                 "itemids": key['itemid'],
+                                                 "sortfield": "clock",
+                                                 "sortorder": "DESC",
+                                                 "time_from": time_from,
+                                                 "time_till": time_till}))
         return result
 
     def get_graph(self, req, resp):

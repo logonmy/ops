@@ -26,10 +26,11 @@ class CloudFlare:
         }
         if params:
             req_params.update(params)
-        request = requests.post('https://www.cloudflare.com/api_json.html',
-                                data=req_params,
-                                headers=headers,
-                                timeout=10)
+        request = requests.post(
+            'https://www.cloudflare.com/api_json.html',
+            data=req_params,
+            headers=headers,
+            timeout=10)
         results = json.loads(request.text.decode('utf-8'))
         if results['result'] != 'success':
             raise CloudFlareApiError(results['msg'])

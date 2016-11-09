@@ -110,10 +110,11 @@ class IPMIInspector(object):
         all_command += " -H " + hostname
         all_command += " -U " + user
         all_command += " -P " + password
-        child = subprocess.Popen(all_command,
-                                 shell=True,
-                                 stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE)
+        child = subprocess.Popen(
+            all_command,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
         output, error = child.communicate()
         if child.returncode == 0:
             return output
@@ -169,6 +170,6 @@ class IPMIInspector(object):
         sensor_list = self.get_sensor_list(host, "degrees C")
         for sensor in sensor_list:
             degree = Degree(name=sensor["name"])
-            stats = DegreeStats(temperature=sensor["value"],
-                                status=sensor["status"])
+            stats = DegreeStats(
+                temperature=sensor["value"], status=sensor["status"])
             yield (degree, stats)

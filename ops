@@ -276,10 +276,8 @@ class Command(object):
     def run(self, timeout=30):
         def target():
             logger.info(self.cmd)
-            self.process = subprocess.Popen(self.cmd,
-                                            shell=True,
-                                            stdout=self.result,
-                                            stderr=self.result)
+            self.process = subprocess.Popen(
+                self.cmd, shell=True, stdout=self.result, stderr=self.result)
             self.process.communicate()
 
         thread = threading.Thread(target=target)
@@ -390,9 +388,8 @@ class Common(Daemon):
                     else:  # file
                         f = open(data[v], 'r')
                         res = f.read()
-                        form.add_file('f',
-                                      filename=data[v],
-                                      fileHandle=StringIO(res))
+                        form.add_file(
+                            'f', filename=data[v], fileHandle=StringIO(res))
                         f.close()
 
             # Build the request
@@ -492,16 +489,18 @@ class Common(Daemon):
                 if not isinstance(self.etcd_list, list):
                     raise Exception("get etcd list error")
                 for host in self.etcd_list:
-                    self.url_fetch("http://%s/v2/keys%s/heartbeat" %
-                                   (host, self.etcd_prefix),
-                                   data={'ttl': 60,
-                                         'value': 'heartbeat'},
-                                   httpCmd='PUT')
-                    self.url_fetch("http://%s/v2/keys%s/servers" %
-                                   (host, self.etcd_prefix),
-                                   data={'ttl': 60,
-                                         'value': 'servers'},
-                                   httpCmd='PUT')
+                    self.url_fetch(
+                        "http://%s/v2/keys%s/heartbeat" %
+                        (host, self.etcd_prefix),
+                        data={'ttl': 60,
+                              'value': 'heartbeat'},
+                        httpCmd='PUT')
+                    self.url_fetch(
+                        "http://%s/v2/keys%s/servers" %
+                        (host, self.etcd_prefix),
+                        data={'ttl': 60,
+                              'value': 'servers'},
+                        httpCmd='PUT')
                 self.update_time = now
         except Exception as er:
             logger.error('get_etcd error:' + str(er))
@@ -513,11 +512,12 @@ class Common(Daemon):
         try:
             ip = self.get_one_ip()
             for host in self.etcd_list:
-                html = self.url_fetch("http://%s/v2/keys%s/heartbeat/%s" %
-                                      (host, self.etcd_prefix, ip),
-                                      data={'ttl': 60,
-                                            'value': '2333'},
-                                      httpCmd='PUT')
+                html = self.url_fetch(
+                    "http://%s/v2/keys%s/heartbeat/%s" %
+                    (host, self.etcd_prefix, ip),
+                    data={'ttl': 60,
+                          'value': '2333'},
+                    httpCmd='PUT')
                 if html != "":
                     break
         except Exception as er:

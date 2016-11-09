@@ -381,18 +381,20 @@ class TermLogRecorder(object):
             filepath = os.path.join(path, 'tty', date, filename + '.zip')
         password = str(uuid.uuid4())
         try:
-            record = TermLog(logPath=filepath,
-                             logPWD=password,
-                             filename=filename,
-                             history=json.dumps(self.CMD),
-                             timestamp=int(self.recoderStartTime)).save()
+            record = TermLog(
+                logPath=filepath,
+                logPWD=password,
+                filename=filename,
+                history=json.dumps(self.CMD),
+                timestamp=int(self.recoderStartTime)).save()
         except:
-            record = TermLog(logPath='locale',
-                             logPWD=password,
-                             log=json.dumps(self.log),
-                             filename=filename,
-                             history=json.dumps(self.CMD),
-                             timestamp=int(self.recoderStartTime)).save()
+            record = TermLog(
+                logPath='locale',
+                logPWD=password,
+                log=json.dumps(self.log),
+                filename=filename,
+                history=json.dumps(self.CMD),
+                timestamp=int(self.recoderStartTime)).save()
         try:
             del TermLogRecorder.loglist[str(self.id)]
         except KeyError:
@@ -508,18 +510,19 @@ class MyRunner(MyInventory):
         module_name: ansible module_name
         module_args: ansible module args
         """
-        hoc = Runner(module_name=module_name,
-                     module_args=module_args,
-                     timeout=timeout,
-                     inventory=self.inventory,
-                     private_key_file=private_key_file,
-                     pattern=pattern,
-                     forks=forks,
-                     become=become,
-                     become_method=become_method,
-                     become_user=become_user,
-                     become_pass=become_pass,
-                     transport=transport)
+        hoc = Runner(
+            module_name=module_name,
+            module_args=module_args,
+            timeout=timeout,
+            inventory=self.inventory,
+            private_key_file=private_key_file,
+            pattern=pattern,
+            forks=forks,
+            become=become,
+            become_method=become_method,
+            become_user=become_user,
+            become_pass=become_pass,
+            transport=transport)
         self.results_raw = hoc.run()
         logger.debug(self.results_raw)
         return self.results_raw
@@ -581,12 +584,13 @@ class Command(MyInventory):
             raise CommandValueError(
                 "module_name",
                 "module_name must be of the 'raw, command, shell'")
-        hoc = Runner(module_name=module_name,
-                     module_args=command,
-                     timeout=timeout,
-                     inventory=self.inventory,
-                     pattern=pattern,
-                     forks=forks, )
+        hoc = Runner(
+            module_name=module_name,
+            module_args=command,
+            timeout=timeout,
+            inventory=self.inventory,
+            pattern=pattern,
+            forks=forks, )
         self.results_raw = hoc.run()
 
     @property
@@ -714,17 +718,18 @@ class MyPlaybook(MyInventory):
         """
         stats = callbacks.AggregateStats()
         playbook_cb = callbacks.PlaybookCallbacks(verbose=utils.VERBOSITY)
-        runner_cb = callbacks.PlaybookRunnerCallbacks(stats,
-                                                      verbose=utils.VERBOSITY)
+        runner_cb = callbacks.PlaybookRunnerCallbacks(
+            stats, verbose=utils.VERBOSITY)
         playbook_path = os.path.join(ANSIBLE_DIR, playbook_relational_path)
 
-        pb = PlayBook(playbook=playbook_path,
-                      stats=stats,
-                      callbacks=playbook_cb,
-                      runner_callbacks=runner_cb,
-                      inventory=self.inventory,
-                      extra_vars=extra_vars,
-                      check=False)
+        pb = PlayBook(
+            playbook=playbook_path,
+            stats=stats,
+            callbacks=playbook_cb,
+            runner_callbacks=runner_cb,
+            inventory=self.inventory,
+            extra_vars=extra_vars,
+            check=False)
 
         self.results = pb.run()
 
@@ -862,8 +867,8 @@ class Tty(object):
             self.stream.feed(data)
             # 从虚拟屏幕中获取处理后的数据
             for line in reversed(self.screen.buffer):
-                line_data = "".join(map(
-                    operator.attrgetter("data"), line)).strip()
+                line_data = "".join(map(operator.attrgetter("data"),
+                                        line)).strip()
                 if len(line_data) > 0:
                     parser_result = self.command_parser(line_data)
                     if parser_result is not None:
@@ -939,11 +944,12 @@ class Tty(object):
         paramiko.util.log_to_file(LOG_DIR + '/' + self.user + "/ssh.log")
         try:
             try:
-                ssh.connect(self.ip,
-                            port=SSH_PORT,
-                            username=self.user,
-                            key_filename=key_filename,
-                            look_for_keys=False)
+                ssh.connect(
+                    self.ip,
+                    port=SSH_PORT,
+                    username=self.user,
+                    key_filename=key_filename,
+                    look_for_keys=False)
                 return ssh
             except (paramiko.ssh_exception.AuthenticationException,
                     paramiko.ssh_exception.SSHException):
@@ -1070,9 +1076,10 @@ class SshTty(Tty):
                             self.vim_flag = False
                             data = self.deal_command(data)[0:200]
                             if data is not None:
-                                TtyLog(datetime=datetime.datetime.now() -
-                                       datetime.timedelta(hours=8),
-                                       cmd=data).save()
+                                TtyLog(
+                                    datetime=datetime.datetime.now() -
+                                    datetime.timedelta(hours=8),
+                                    cmd=data).save()
                         data = ''
                         self.vim_data = ''
                         input_mode = False
@@ -1265,10 +1272,11 @@ class Nav(object):
                         color_print('命令不能为空...')
                         continue
                     runner.run('shell', command, pattern=pattern)
-                    ExecLog(host=asset_name_str,
-                            cmd=command,
-                            remote_ip=remote_ip,
-                            result=runner.results).save()
+                    ExecLog(
+                        host=asset_name_str,
+                        cmd=command,
+                        remote_ip=remote_ip,
+                        result=runner.results).save()
                     for k, v in runner.results.items():
                         if k == 'ok':
                             for host, output in v.items():
@@ -1318,11 +1326,12 @@ class Nav(object):
                                (tmp_dir, '/tmp'),
                                pattern=pattern)
                     ret = runner.results
-                    FileLog(host=asset_name_str,
-                            filename=filename_str,
-                            remote_ip=remote_ip,
-                            type='upload',
-                            result=ret).save()
+                    FileLog(
+                        host=asset_name_str,
+                        filename=filename_str,
+                        remote_ip=remote_ip,
+                        type='upload',
+                        result=ret).save()
                     logger.debug('Upload file: %s' % ret)
                     if ret.get('failed'):
                         error = '上传目录: %s \n上传失败: [ %s ] \n上传成功 [ %s ]' % (
@@ -1375,20 +1384,22 @@ class Nav(object):
                                    (file_path, tmp_dir),
                                    pattern=pattern)
                         ret = runner.results
-                        FileLog(host=asset_name_str,
-                                filename=file_path,
-                                type='download',
-                                remote_ip=remote_ip,
-                                result=ret).save()
+                        FileLog(
+                            host=asset_name_str,
+                            filename=file_path,
+                            type='download',
+                            remote_ip=remote_ip,
+                            result=ret).save()
                         logger.debug('Download file result: %s' % ret)
                         os.chdir('/tmp')
                         tmp_dir_name = os.path.basename(tmp_dir)
                         if not os.listdir(tmp_dir):
                             color_print('下载全部失败')
                             continue
-                        subprocess.call('tar czf %s.tar.gz %s && sz %s.tar.gz'
-                                        % (tmp_dir, tmp_dir_name, tmp_dir),
-                                        shell=True)
+                        subprocess.call(
+                            'tar czf %s.tar.gz %s && sz %s.tar.gz' %
+                            (tmp_dir, tmp_dir_name, tmp_dir),
+                            shell=True)
 
                         if ret.get('failed'):
                             error = '文件名称: %s \n下载失败: [ %s ] \n下载成功 [ %s ]' % \

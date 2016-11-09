@@ -78,11 +78,12 @@ class Request:
             if (debug):
                 print 'url:', req.url, '\n'
         else:
-            req = requests.post(url,
-                                data=params,
-                                files=files,
-                                timeout=Request.timeout,
-                                verify=False)
+            req = requests.post(
+                url,
+                data=params,
+                files=files,
+                timeout=Request.timeout,
+                verify=False)
             if (debug):
                 print 'url:', req.url, '\n'
 

@@ -113,17 +113,13 @@ class Qiniu(object):
         return Bucket(self, bucket)
 
     def generate_access_token(self, url, params=None):
-        return AccessToken(self.access_key,
-                           self.secret_key,
-                           url,
-                           params=params).token
+        return AccessToken(
+            self.access_key, self.secret_key, url, params=params).token
 
     def generate_upload_token(self, scope, ttl=3600):
         if scope not in self.upload_tokens:
-            self.upload_tokens[scope] = UploadToken(self.access_key,
-                                                    self.secret_key,
-                                                    scope,
-                                                    ttl=ttl)
+            self.upload_tokens[scope] = UploadToken(
+                self.access_key, self.secret_key, scope, ttl=ttl)
         return self.upload_tokens[scope].token
 
     def build_requests_headers(self, token):
@@ -136,12 +132,11 @@ class Qiniu(object):
     def api_call(self, url, params=None):
         token = self.generate_access_token(url, params=params)
         if params:
-            res = requests.post(url,
-                                data=params,
-                                headers=self.build_requests_headers(token))
+            res = requests.post(
+                url, data=params, headers=self.build_requests_headers(token))
         else:
-            res = requests.post(url,
-                                headers=self.build_requests_headers(token))
+            res = requests.post(
+                url, headers=self.build_requests_headers(token))
         assert res.status_code == 200, res
         return res.json() if res.text else ''
 
@@ -250,10 +245,8 @@ class Bucket(object):
         return self.cow.move(self._build_cp_mv_args(*args))
 
     def list_files(self, marker=None, limit=None, prefix=None):
-        return self.qiniu.list_files(self.bucket,
-                                     marker=marker,
-                                     limit=limit,
-                                     prefix=prefix)
+        return self.qiniu.list_files(
+            self.bucket, marker=marker, limit=limit, prefix=prefix)
 
     def _build_cp_mv_args(self, *args):
         return [self.bucket, args[0], self.bucket, args[1]]

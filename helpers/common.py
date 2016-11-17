@@ -49,14 +49,16 @@ def do_task(**post_data):
     log_debug(
         'task id  %d in hosts %s playbook %s return stdout %s ,stderr %s!' %
         (task_id, hosts, playbook, stdout, stderr))
-    return {'task_id': task_id,
-            'callback_url': callback,
-            'accept_key': acceptkey,
-            'hosts': hosts,
-            'playbook': playbook,
-            'stdout': stdout,
-            'stderr': stderr,
-            'returncode': rc}
+    return {
+        'task_id': task_id,
+        'callback_url': callback,
+        'accept_key': acceptkey,
+        'hosts': hosts,
+        'playbook': playbook,
+        'stdout': stdout,
+        'stderr': stderr,
+        'returncode': rc
+    }
 
 
 def callback_post(**result):

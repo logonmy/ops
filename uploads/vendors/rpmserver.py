@@ -35,7 +35,8 @@ handler = logging.handlers.RotatingFileHandler(
     backupCount=5)
 handler.setFormatter(
     logging.Formatter(
-        '%(asctime)s %(levelname)-8s[%(filename)s:%(lineno)d(%(funcName)s)] %(message)s'))
+        '%(asctime)s %(levelname)-8s[%(filename)s:%(lineno)d(%(funcName)s)] %(message)s'
+    ))
 mylggr.addHandler(handler)
 
 if not os.path.isdir(os.path.dirname(log_file)):
@@ -76,13 +77,15 @@ def do_task(**post_data):
 
     mylggr.debug('task id  %d return stdout %s ,stderr %s!' %
                  (task_id, stdout, stderr))
-    return {'task_id': task_id,
-            'callback_url': callback,
-            'accept_key': acceptkey,
-            'filename': filename,
-            'stdout': stdout,
-            'stderr': stderr,
-            'returncode': rc}
+    return {
+        'task_id': task_id,
+        'callback_url': callback,
+        'accept_key': acceptkey,
+        'filename': filename,
+        'stdout': stdout,
+        'stderr': stderr,
+        'returncode': rc
+    }
 
 
 def callback_post(**result):

@@ -17,11 +17,13 @@ def compare_proposed_to_running(proposed_config, running_config):
     final_config = proposed_config[:]
 
     # all commands starting with "no "
-    no_commands = [line.strip() for line in final_config
-                   if line.startswith('no ')]
+    no_commands = [
+        line.strip() for line in final_config if line.startswith('no ')
+    ]
     # all other commands
-    commands = [line.strip() for line in final_config
-                if not line.startswith('no ')]
+    commands = [
+        line.strip() for line in final_config if not line.startswith('no ')
+    ]
 
     # commands starting with "no " that have a matching line in running_config
     # which means that it shall be included in the final_config committed to

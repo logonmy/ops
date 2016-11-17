@@ -47,11 +47,13 @@ class CloudFlare:
         if record_type not in allowedTypes:
             raise CloudFlareApiError('Type ' + record_type +
                                      ' is not allowed!')
-        post_fields = {'z': domain,
-                       'type': record_type,
-                       'name': name,
-                       'content': content,
-                       'ttl': 1}
+        post_fields = {
+            'z': domain,
+            'type': record_type,
+            'name': name,
+            'content': content,
+            'ttl': 1
+        }
         cfResponse = self.__request('rec_new', post_fields)
         return cfResponse['response']['rec']['obj']['rec_id']
 
@@ -59,12 +61,14 @@ class CloudFlare:
         if record_type not in allowedTypes:
             raise CloudFlareApiError('Type ' + record_type +
                                      ' is not allowed!')
-        post_fields = {'id': record_id,
-                       'z': domain,
-                       'type': record_type,
-                       'name': name,
-                       'content': content,
-                       'ttl': 1}
+        post_fields = {
+            'id': record_id,
+            'z': domain,
+            'type': record_type,
+            'name': name,
+            'content': content,
+            'ttl': 1
+        }
         cf_response = self.__request('rec_edit', post_fields)
         return cf_response['response']['rec']['obj']['rec_id']
 

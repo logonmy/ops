@@ -158,34 +158,43 @@ class Nexus(Netconf):
 
     def add_secondary_ip_to_interface(self, interface_name, vrf_name, address,
                                       netmask_bits):
-        cmd_list = ['config t', 'interface %s' % interface_name,
-                    'no shutdown ; vrf member %s' % vrf_name,
-                    'ip address %s/%s secondary' % (address, netmask_bits)]
+        cmd_list = [
+            'config t', 'interface %s' % interface_name,
+            'no shutdown ; vrf member %s' % vrf_name,
+            'ip address %s/%s secondary' % (address, netmask_bits)
+        ]
         return self.exec_commond(cmd_list)
 
     def remove_bgp_neighbor(self, customer_asn_id, amazon_bgp_ip):
-        cmd_list = ['conf t ; router bgp %s' % customer_asn_id,
-                    'no neighbor %s' % amazon_bgp_ip]
+        cmd_list = [
+            'conf t ; router bgp %s' % customer_asn_id,
+            'no neighbor %s' % amazon_bgp_ip
+        ]
         return self.exec_commond(cmd_list)
 
     def configure_bgp(self, customer_asn_id, vrf_name, svm_cidr, amazon_bgp_ip,
                       amazon_asn_id, bgp_key):
-        cmd_list = ["conf t ; router bgp %s ;  vrf %s" %
-                    (customer_asn_id, vrf_name), "address-family ipv4 unicast",
-                    "network %s" % svm_cidr, "neighbor %s remote-as %s" %
-                    (amazon_bgp_ip, amazon_asn_id), "password 0 %s" % bgp_key,
-                    "address-family ipv4 unicast"]
+        cmd_list = [
+            "conf t ; router bgp %s ;  vrf %s" % (customer_asn_id, vrf_name),
+            "address-family ipv4 unicast", "network %s" % svm_cidr,
+            "neighbor %s remote-as %s" % (amazon_bgp_ip, amazon_asn_id),
+            "password 0 %s" % bgp_key, "address-family ipv4 unicast"
+        ]
         return self.exec_commond(cmd_list)
 
     def create_vlan_interface(self, vlan_id, vrf_name, address, netmask_bits):
-        cmd_list = ["conf t ; interface Vlan%s" % vlan_id,
-                    "no shutdown ; vrf member %s" % vrf_name,
-                    "ip address %s/%s" % (address, netmask_bits)]
+        cmd_list = [
+            "conf t ; interface Vlan%s" % vlan_id,
+            "no shutdown ; vrf member %s" % vrf_name,
+            "ip address %s/%s" % (address, netmask_bits)
+        ]
         return self.exec_commond(cmd_list)
 
     def allowVlanOnAllInterfaces(self, vlan_id):
-        cmd_list = ["conf t ; interface Eth1/1-32",
-                    " switchport trunk  allowed  vlan  add %s" % vlan_id]
+        cmd_list = [
+            "conf t ; interface Eth1/1-32",
+            " switchport trunk  allowed  vlan  add %s" % vlan_id
+        ]
         return self.exec_commond(cmd_list)
 
 

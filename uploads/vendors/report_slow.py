@@ -74,8 +74,8 @@ def translate_unit(unit):
 
 def getnumber(s):
     num = float(
-        reduce(lambda x, y: x if len(x) > 0 else y, re.split(r'G|M|k|ms|s|us',
-                                                             s)))
+        reduce(lambda x, y: x if len(x) > 0 else y,
+               re.split(r'G|M|k|ms|s|us', s)))
     unit = reduce(lambda x, y: x if len(x) > 0 else y, re.split(r'[0-9.]*', s))
     unit_value = translate_unit(unit)
     return num * unit_value
@@ -166,19 +166,30 @@ def get_top_level_data(data):
     top_data = {}
     overall = [l for l in data if 'Overall:' in l][0].split()
     timerange = [l for l in data if 'Time range:' in l][0].split()
-    exectime = [getnumber(d) for d in [l for l in data
-                                       if 'Exec time' in l][0].split()[3:]]
-    locktime = [getnumber(d) for d in [l for l in data
-                                       if 'Lock time' in l][0].split()[3:]]
-    rowsent = [getnumber(d) for d in [l for l in data
-                                      if 'Rows sent' in l][0].split()[3:]]
-    rowsaffecte = [getnumber(d)
-                   for d in [l for l in data
-                             if 'Rows affecte' in l][0].split()[3:]]
-    bytessent = [getnumber(d) for d in [l for l in data
-                                        if 'Bytes sent' in l][0].split()[3:]]
-    querysize = [getnumber(d) for d in [l for l in data
-                                        if 'Query size' in l][0].split()[3:]]
+    exectime = [
+        getnumber(d) for d in [l for l in data
+                               if 'Exec time' in l][0].split()[3:]
+    ]
+    locktime = [
+        getnumber(d) for d in [l for l in data
+                               if 'Lock time' in l][0].split()[3:]
+    ]
+    rowsent = [
+        getnumber(d) for d in [l for l in data
+                               if 'Rows sent' in l][0].split()[3:]
+    ]
+    rowsaffecte = [
+        getnumber(d) for d in [l for l in data
+                               if 'Rows affecte' in l][0].split()[3:]
+    ]
+    bytessent = [
+        getnumber(d) for d in [l for l in data
+                               if 'Bytes sent' in l][0].split()[3:]
+    ]
+    querysize = [
+        getnumber(d) for d in [l for l in data
+                               if 'Query size' in l][0].split()[3:]
+    ]
 
     top_data['tot_count'] = getnumber(overall[2])
     top_data['unique_queries'] = getnumber(overall[4])
@@ -257,7 +268,8 @@ def top_head(f, N):
     :return: list of data
     """
     p = re.compile(
-        r'Exec time|Current date:|Time range:|Overall|Lock time|Rows sent|Rows examined|Rows affecte|Bytes sent|Query size')
+        r'Exec time|Current date:|Time range:|Overall|Lock time|Rows sent|Rows examined|Rows affecte|Bytes sent|Query size'
+    )
     f.seek(0, 0)
     head = list(itertools.islice(f, N))
     data = [l.strip() for l in head if p.search(l)]
@@ -294,22 +306,30 @@ def get_query_data(data):
     try:
         qdata['count'] = getnumber([l for l in data
                                     if 'Count' in l][0].split()[3])
-        exectime = [getnumber(d) for d in [l for l in data
-                                           if 'Exec time' in l][0].split()[4:]]
-        locktime = [getnumber(d) for d in [l for l in data
-                                           if 'Lock time' in l][0].split()[4:]]
-        rowsent = [getnumber(d) for d in [l for l in data
-                                          if 'Rows sent' in l][0].split()[4:]]
+        exectime = [
+            getnumber(d) for d in [l for l in data
+                                   if 'Exec time' in l][0].split()[4:]
+        ]
+        locktime = [
+            getnumber(d) for d in [l for l in data
+                                   if 'Lock time' in l][0].split()[4:]
+        ]
+        rowsent = [
+            getnumber(d) for d in [l for l in data
+                                   if 'Rows sent' in l][0].split()[4:]
+        ]
         rowsaffecte = [
             getnumber(d)
             for d in [l for l in data if 'Rows affecte' in l][0].split()[4:]
         ]
-        bytessent = [getnumber(d)
-                     for d in [l for l in data
-                               if 'Bytes sent' in l][0].split()[4:]]
-        querysize = [getnumber(d)
-                     for d in [l for l in data
-                               if 'Query size' in l][0].split()[4:]]
+        bytessent = [
+            getnumber(d) for d in [l for l in data
+                                   if 'Bytes sent' in l][0].split()[4:]
+        ]
+        querysize = [
+            getnumber(d) for d in [l for l in data
+                                   if 'Query size' in l][0].split()[4:]
+        ]
 
         qdata['exectime'] = exectime[0]
         qdata['locktime'] = locktime[0]
@@ -333,7 +353,8 @@ def head_match(f, match, N):
     finds a query tag and returns head of the report
     '''
     p = re.compile(
-        r'# Count|# Exec time|# Lock time|# Rows |# Bytes sent|# Query size|# Databases|# Hosts|#Users')
+        r'# Count|# Exec time|# Lock time|# Rows |# Bytes sent|# Query size|# Databases|# Hosts|#Users'
+    )
     sqlp = re.compile(
         r'# EXPLAIN \/\*!50100 PARTITIONS\*\/|call |COMMIT|update|insert')
     head = None

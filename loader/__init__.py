@@ -19,14 +19,17 @@ handler = logging.handlers.RotatingFileHandler(
     log_loader.get('log_file'), **log_common)
 handler.setFormatter(
     logging.Formatter(
-        '%(asctime)s %(levelname)-8s[%(filename)s:%(lineno)d(%(funcName)s)] %(message)s'))
+        '%(asctime)s %(levelname)-8s[%(filename)s:%(lineno)d(%(funcName)s)] %(message)s'
+    ))
 logger.addHandler(handler)
 
 
 def print_stack():
     ex_type, value, tb = sys.exc_info()
-    errorlist = [line.lstrip()
-                 for line in traceback.format_exception(ex_type, value, tb)]
+    errorlist = [
+        line.lstrip()
+        for line in traceback.format_exception(ex_type, value, tb)
+    ]
     errorlist.reverse()
     return '\n' + ''.join(errorlist)
 
@@ -96,10 +99,9 @@ class Loader(object):
             filename = os.path.abspath(filename)
             name = filename.replace('.pyc', '').replace('.py', '')
             if not os.path.exists(
-                    os.path.join(os.path.dirname(
-                        name), '__init__.py')) and not os.path.exists(
-                            os.path.join(os.path.dirname(name),
-                                         '__init__.pyc')):
+                    os.path.join(os.path.dirname(name), '__init__.py')
+            ) and not os.path.exists(
+                    os.path.join(os.path.dirname(name), '__init__.pyc')):
                 sys.path.insert(0, os.path.join(os.path.dirname(name)))
                 name = os.path.basename(name)
                 fn_, path, desc = imp.find_module(name,
@@ -152,8 +154,10 @@ class Loader(object):
                     if callable(getattr(mod, attr)):
                         func = getattr(mod, attr)
                         if isinstance(func, type):
-                            if any(['Error' in func.__name__,
-                                    'Exception' in func.__name__]):
+                            if any([
+                                    'Error' in func.__name__,
+                                    'Exception' in func.__name__
+                            ]):
                                 continue
                         try:
                             funcs['{0}.{1}'.format(mod.__name__, attr)] = func

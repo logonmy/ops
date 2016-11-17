@@ -51,29 +51,29 @@ class Etcd(object):
         return json.loads(res.text)
 
     def rmdir(self, key, recursive=False):
-        uri = '%s/v2/keys/%s?dir=true&recursive=%s' % (self.endpoint,
-                                                       key,
-                                                       'true' if recursive else
-                                                       'false', )
+        uri = '%s/v2/keys/%s?dir=true&recursive=%s' % (
+            self.endpoint,
+            key,
+            'true' if recursive else 'false', )
         res = requests.delete(uri, auth=self.auth)
 
         res.raise_for_status()
         return json.loads(res.text)
 
     def get(self, key, recursive=False):
-        uri = '%s/v2/keys/%s?recursive=%s' % (self.endpoint,
-                                              key,
-                                              'true'
-                                              if recursive else 'false', )
+        uri = '%s/v2/keys/%s?recursive=%s' % (
+            self.endpoint,
+            key,
+            'true' if recursive else 'false', )
         res = requests.get(uri, auth=self.auth)
         res.raise_for_status()
         return json.loads(res.text)
 
     def wait(self, key, recursive=False):
-        uri = '%s/v2/keys/%s?wait=true&recursive=%s' % (self.endpoint,
-                                                        key,
-                                                        'true' if recursive
-                                                        else 'false', )
+        uri = '%s/v2/keys/%s?wait=true&recursive=%s' % (
+            self.endpoint,
+            key,
+            'true' if recursive else 'false', )
         res = requests.get(uri, auth=self.auth)
         res.raise_for_status()
         return json.loads(res.text)

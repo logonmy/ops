@@ -22,12 +22,14 @@ class log:
             limit)
         result = []
         for item in history:
-            result.append({'uid': item.login_uid,
-                           'user': item.login_user,
-                           'server_ip': item.server_ip,
-                           'action_data': item.post_data,
-                           'action': item.func,
-                           'controller': item.controller})
+            result.append({
+                'uid': item.login_uid,
+                'user': item.login_user,
+                'server_ip': item.server_ip,
+                'action_data': item.post_data,
+                'action': item.func,
+                'controller': item.controller
+            })
         return result
 
     def ansible_error(self, req, resp):
@@ -40,10 +42,12 @@ class log:
             'fail').order_by(AnsibleLog.id.desc()).limit(limit)
         result = []
         for item in history:
-            result.append({'result': item.result,
-                           'category': item.category,
-                           'server_ip': item.server_ip,
-                           'create_timestamp': item.create_timestamp})
+            result.append({
+                'result': item.result,
+                'category': item.category,
+                'server_ip': item.server_ip,
+                'create_timestamp': item.create_timestamp
+            })
         return result
 
     def callback(self, req, resp):

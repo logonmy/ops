@@ -85,15 +85,16 @@ class AlterManager:
                     self.settings.MODEL_SHARD_DB_CREDENTIALS['dbname'] in
                     self.settings.OPTIONS['filter_shards']):
                 mqueue = multiprocessing.Queue()
-                mqueue.put(
-                    {'shard':
-                     self.settings.MODEL_SHARD_DB_CREDENTIALS['dbname'],
-                     'host': self.settings.MODEL_SHARD_DB_CREDENTIALS['host'],
-                     'port': self.settings.MODEL_SHARD_DB_CREDENTIALS['port'],
-                     'slave_host':
-                     self.settings.MODEL_SHARD_DB_CREDENTIALS['slave_host'],
-                     'slave_port':
-                     self.settings.MODEL_SHARD_DB_CREDENTIALS['slave_port']})
+                mqueue.put({
+                    'shard':
+                    self.settings.MODEL_SHARD_DB_CREDENTIALS['dbname'],
+                    'host': self.settings.MODEL_SHARD_DB_CREDENTIALS['host'],
+                    'port': self.settings.MODEL_SHARD_DB_CREDENTIALS['port'],
+                    'slave_host':
+                    self.settings.MODEL_SHARD_DB_CREDENTIALS['slave_host'],
+                    'slave_port':
+                    self.settings.MODEL_SHARD_DB_CREDENTIALS['slave_port']
+                })
                 mqueue.put(None)
 
                 # the temporary rewriting of the ignore_errors flag is so that when it gets copied to the process memory for the model shard worker, it will properly throw an error always
@@ -199,16 +200,20 @@ class AlterManager:
         queue_id = host + ':' + str(port)
         if not queue_id in self.queues:
             self.queues[queue_id] = multiprocessing.Queue()
-        self.shards[shard_name] = {'shard': shard_name,
-                                   'host': host,
-                                   'port': port,
-                                   'slave_host': slave_host,
-                                   'slave_port': slave_port}
-        self.queues[queue_id].put({'shard': shard_name,
-                                   'host': host,
-                                   'port': port,
-                                   'slave_host': slave_host,
-                                   'slave_port': slave_port})
+        self.shards[shard_name] = {
+            'shard': shard_name,
+            'host': host,
+            'port': port,
+            'slave_host': slave_host,
+            'slave_port': slave_port
+        }
+        self.queues[queue_id].put({
+            'shard': shard_name,
+            'host': host,
+            'port': port,
+            'slave_host': slave_host,
+            'slave_port': slave_port
+        })
 
     def load_shard_locations(self):
         dbconn = MySQLdb.connect(
@@ -566,7 +571,8 @@ def main():
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
         '--alter',
-        help='Alter operations portion of an alter statement similar to pt-online-schema-change, eg: "ADD COLUMN foo VARCHAR(10) AFTER bar, DROP COLUMN baz, ENGINE=InnoDB"')
+        help='Alter operations portion of an alter statement similar to pt-online-schema-change, eg: "ADD COLUMN foo VARCHAR(10) AFTER bar, DROP COLUMN baz, ENGINE=InnoDB"'
+    )
     group.add_argument(
         '--create',
         help='Create table statement to use for create type',
@@ -592,7 +598,8 @@ def main():
     parser.add_argument(
         '--ignore-errors',
         action='store_true',
-        help='Ignore errors on single shards and continue with the DDL operation. Shards that had errors will be listed in a report at the end of the run.')
+        help='Ignore errors on single shards and continue with the DDL operation. Shards that had errors will be listed in a report at the end of the run.'
+    )
     parser.add_argument(
         '--shards',
         nargs='+',
@@ -607,7 +614,8 @@ def main():
         '--execute', help='execute the operation', action='store_true')
     ptgroup = parser.add_argument_group(
         title='pt-online-schema-change options',
-        description='options get passed to all pt-online-schema-change processes when performing online alter, refer to the documentation for pt-online-schema-change. Some or all of theses options may be defined in the settings file.')
+        description='options get passed to all pt-online-schema-change processes when performing online alter, refer to the documentation for pt-online-schema-change. Some or all of theses options may be defined in the settings file.'
+    )
     ptgroup.add_argument('--check-interval', type=int)
     ptgroup.add_argument('--chunk-size', type=int)
     ptgroup.add_argument('--chunk-size-limit', type=float)

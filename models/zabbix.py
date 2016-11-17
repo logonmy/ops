@@ -29,8 +29,9 @@ class Events(BaseModel):
 
     class Meta:
         db_table = 'events'
-        indexes = ((('source', 'object', 'clock'), False),
-                   (('source', 'object', 'objectid', 'clock'), False), )
+        indexes = (
+            (('source', 'object', 'clock'), False),
+            (('source', 'object', 'objectid', 'clock'), False), )
 
 
 class Users(BaseModel):
@@ -223,8 +224,9 @@ class Interface(BaseModel):
 
     class Meta:
         db_table = 'interface'
-        indexes = ((('hostid', 'type'), False),
-                   (('ip', 'dns'), False), )
+        indexes = (
+            (('hostid', 'type'), False),
+            (('ip', 'dns'), False), )
 
 
 class Valuemaps(BaseModel):
@@ -834,8 +836,9 @@ class HistoryLog(BaseModel):
 
     class Meta:
         db_table = 'history_log'
-        indexes = ((('itemid', 'clock'), False),
-                   (('itemid', 'id'), True), )
+        indexes = (
+            (('itemid', 'clock'), False),
+            (('itemid', 'id'), True), )
 
 
 class HistoryStr(BaseModel):
@@ -858,8 +861,9 @@ class HistoryText(BaseModel):
 
     class Meta:
         db_table = 'history_text'
-        indexes = ((('itemid', 'clock'), False),
-                   (('itemid', 'id'), True), )
+        indexes = (
+            (('itemid', 'clock'), False),
+            (('itemid', 'id'), True), )
 
 
 class HistoryUint(BaseModel):
@@ -1497,8 +1501,9 @@ class Profiles(BaseModel):
 
     class Meta:
         db_table = 'profiles'
-        indexes = ((('userid', 'idx', 'idx2'), False),
-                   (('userid', 'profileid'), False), )
+        indexes = (
+            (('userid', 'idx', 'idx2'), False),
+            (('userid', 'profileid'), False), )
 
 
 class ProxyAutoregHost(BaseModel):

@@ -75,8 +75,10 @@ class util():
         # qemu MAC
         oui = [0x52, 0x54, 0x00]
 
-        mac = oui + [random.randint(0x00, 0xff), random.randint(0x00, 0xff),
-                     random.randint(0x00, 0xff)]
+        mac = oui + [
+            random.randint(0x00, 0xff), random.randint(0x00, 0xff),
+            random.randint(0x00, 0xff)
+        ]
         return ':'.join(map(lambda x: "%02x" % x, mac))
 
     @staticmethod
@@ -84,8 +86,9 @@ class util():
         """Generate a random UUID."""
 
         u = [random.randint(0, 255) for dummy in range(0, 16)]
-        return "-".join(["%02x" * 4, "%02x" * 2, "%02x" * 2, "%02x" * 2,
-                         "%02x" * 6]) % tuple(u)
+        return "-".join(
+            ["%02x" * 4, "%02x" * 2, "%02x" * 2, "%02x" * 2,
+             "%02x" * 6]) % tuple(u)
 
     @staticmethod
     def get_max_vcpus(conn, type=None):
@@ -205,6 +208,7 @@ class util():
             return gateway, mask, dhcp_pool
         else:
             return gateway, mask, None
+
 
 # Read write lock
 # ---------------
@@ -1082,8 +1086,8 @@ class wvmInstance(wvmConnect):
                     try:
                         dev = disk.xpathEval('target/@dev')[0].content
                         src_fl = disk.xpathEval(
-                            'source/@file|source/@dev|source/@name|source/@volume')[
-                                0].content
+                            'source/@file|source/@dev|source/@name|source/@volume'
+                        )[0].content
                         disk_format = disk.xpathEval('driver/@type')[0].content
                         try:
                             vol = self.get_volume_by_path(src_fl)
@@ -1096,11 +1100,13 @@ class wvmInstance(wvmConnect):
                     except libvirtError as e:
                         log_error(str(e))
                     finally:
-                        result.append({'dev': dev,
-                                       'image': volume,
-                                       'storage': storage,
-                                       'path': src_fl,
-                                       'format': disk_format})
+                        result.append({
+                            'dev': dev,
+                            'image': volume,
+                            'storage': storage,
+                            'path': src_fl,
+                            'format': disk_format
+                        })
             return result
 
         return util.get_xml_path(self._XMLDesc(0), func=disks)
@@ -1130,10 +1136,12 @@ class wvmInstance(wvmConnect):
                     except libvirtError as e:
                         log_error(str(e))
                     finally:
-                        result.append({'dev': dev,
-                                       'image': volume,
-                                       'storage': storage,
-                                       'path': src_fl})
+                        result.append({
+                            'dev': dev,
+                            'image': volume,
+                            'storage': storage,
+                            'path': src_fl
+                        })
             return result
 
         return util.get_xml_path(self._XMLDesc(0), func=disks)
@@ -1236,9 +1244,11 @@ class wvmInstance(wvmConnect):
             else:
                 rd_diff_usage = 0
                 wr_diff_usage = 0
-            dev_usage.append({'dev': dev[1],
-                              'rd': rd_diff_usage,
-                              'wr': wr_diff_usage})
+            dev_usage.append({
+                'dev': dev[1],
+                'rd': rd_diff_usage,
+                'wr': wr_diff_usage
+            })
         return dev_usage
 
     def net_usage(self):
@@ -1257,9 +1267,11 @@ class wvmInstance(wvmConnect):
                 tx_use_now = self.instance.interfaceStats(dev)[4]
                 rx_diff_usage = (rx_use_now - rx_use_ago) * 8
                 tx_diff_usage = (tx_use_now - tx_use_ago) * 8
-                dev_usage.append({'dev': i,
-                                  'rx': rx_diff_usage,
-                                  'tx': tx_diff_usage})
+                dev_usage.append({
+                    'dev': i,
+                    'rx': rx_diff_usage,
+                    'tx': tx_diff_usage
+                })
         else:
             for i, dev in enumerate(self.get_net_device()):
                 dev_usage.append({'dev': i, 'rx': 0, 'tx': 0})
@@ -1456,9 +1468,10 @@ class wvmInstance(wvmConnect):
             snap = self.instance.snapshotLookupByName(snapshot, 0)
             snap_time_create = util.get_xml_path(
                 snap.getXMLDesc(0), "/domainsnapshot/creationTime")
-            snapshots.append(
-                {'date': str(datetime.fromtimestamp(int(snap_time_create))),
-                 'name': snapshot})
+            snapshots.append({
+                'date': str(datetime.fromtimestamp(int(snap_time_create))),
+                'name': snapshot
+            })
         return snapshots
 
     def snapshot_delete(self, snapshot):
@@ -2014,10 +2027,12 @@ class wvmNetworks(wvmConnect):
             net_bridge = net.bridgeName()
             net_forwd = util.get_xml_path(
                 net.XMLDesc(0), "/network/forward/@mode")
-            networks.append({'name': network,
-                             'status': net_status,
-                             'device': net_bridge,
-                             'forward': net_forwd})
+            networks.append({
+                'name': network,
+                'status': net_status,
+                'device': net_bridge,
+                'forward': net_forwd
+            })
         return networks
 
     def define_network(self, xml):
@@ -2220,11 +2235,13 @@ class wvmStorages(wvmConnect):
             else:
                 stg_vol = None
             stg_size = stg.info()[1]
-            storages.append({'name': pool,
-                             'status': stg_status,
-                             'type': stg_type,
-                             'volumes': stg_vol,
-                             'size': stg_size})
+            storages.append({
+                'name': pool,
+                'status': stg_status,
+                'type': stg_type,
+                'volumes': stg_vol,
+                'size': stg_size
+            })
         return storages
 
     def define_storage(self, xml, flag):
@@ -2312,8 +2329,10 @@ class wvmStorage(wvmConnect):
         return self.pool.info()
 
     def get_status(self):
-        status = ['Not running', 'Initializing pool, not available',
-                  'Running normally', 'Running degraded']
+        status = [
+            'Not running', 'Initializing pool, not available',
+            'Running normally', 'Running degraded'
+        ]
         try:
             return status[self.pool.info()[0]]
         except ValueError as e:
@@ -2417,9 +2436,11 @@ class wvmStorage(wvmConnect):
         vol_list = []
 
         for volname in vols:
-            vol_list.append({'name': volname,
-                             'size': self.get_volume_size(volname),
-                             'type': self.get_volume_type(volname)})
+            vol_list.append({
+                'name': volname,
+                'size': self.get_volume_size(volname),
+                'type': self.get_volume_type(volname)
+            })
         return vol_list
 
     def create_volume(self, name, size, vol_fmt='qcow2', metadata=False):

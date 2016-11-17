@@ -256,9 +256,10 @@ class System(Cobbler):
         error_list = []
         for obj_name in system_names:
             try:
-                remote.xapi_object_edit('system', obj_name, "remove",
-                                        {'name': obj_name,
-                                         'recursive': False}, token)
+                remote.xapi_object_edit('system', obj_name, "remove", {
+                    'name': obj_name,
+                    'recursive': False
+                }, token)
             except xmlrpclib.Fault, msg:
                 error_list.append('{0} delete failed，error info {1}'.format(
                     obj_name, msg.faultString))
@@ -284,11 +285,16 @@ class Distros(Cobbler):
         return {
             'path': [True, False, [], '', u'distro address'],
             'name': [True, False, [], '', u'distros name'],
-            'arch': [False, True, ['i386', 'x86_64', 'ia64', 'ppc', 'ppc64',
-                                   's390', 's390x', 'arm'], 'i386',
-                     u'distro type'],
-            'breed': [False, True, ['redhat', 'debian', 'ubuntu', 'suse'],
-                      'redhat', u'distro type']
+            'arch': [
+                False, True, [
+                    'i386', 'x86_64', 'ia64', 'ppc', 'ppc64', 's390', 's390x',
+                    'arm'
+                ], 'i386', u'distro type'
+            ],
+            'breed': [
+                False, True, ['redhat', 'debian', 'ubuntu', 'suse'], 'redhat',
+                u'distro type'
+            ]
         }
 
     def upload(self, params):

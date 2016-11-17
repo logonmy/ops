@@ -58,8 +58,8 @@ class Idrac(object):
             self._login()
         try:
             data = '<EXEC><REQ><CMDINPUT>racadm %s</CMDINPUT><MAXOUTPUTLEN>0x0fff</MAXOUTPUTLEN></REQ></EXEC>' % cmd
-            return self._extract_cmd_output(self._make_request('/exec',
-                                                               data)).strip()
+            return self._extract_cmd_output(
+                self._make_request('/exec', data)).strip()
         finally:
             self._logout()
 
@@ -249,15 +249,17 @@ class Idrac(object):
          * test_alerts             : Test Alerts
          * debug_commands          : Execute Debug Commands
        '''
-        privileges = {'login': '0x0000001',
-                      'drac': '0x0000002',
-                      'user_management': '0x0000004',
-                      'clear_logs': '0x0000008',
-                      'server_control_commands': '0x0000010',
-                      'console_redirection': '0x0000020',
-                      'virtual_media': '0x0000040',
-                      'test_alerts': '0x0000080',
-                      'debug_commands': '0x0000100'}
+        privileges = {
+            'login': '0x0000001',
+            'drac': '0x0000002',
+            'user_management': '0x0000004',
+            'clear_logs': '0x0000008',
+            'server_control_commands': '0x0000010',
+            'console_redirection': '0x0000020',
+            'virtual_media': '0x0000040',
+            'test_alerts': '0x0000080',
+            'debug_commands': '0x0000100'
+        }
 
         permission = 0
         if uid is None:

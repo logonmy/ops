@@ -242,10 +242,12 @@ class MultiPartForm(object):
         parts = []
         part_boundary = '--' + self.boundary
 
-        parts.extend([part_boundary,
-                      'Content-Disposition: form-data; name="%s"' % name,
-                      '',
-                      value, ] for name, value in self.form_fields)
+        parts.extend([
+            part_boundary,
+            'Content-Disposition: form-data; name="%s"' % name,
+            '',
+            value,
+        ] for name, value in self.form_fields)
 
         parts.extend(
             [part_boundary,
@@ -288,9 +290,9 @@ class Command(object):
             self.process.terminate()
             thread.join()
             util = Common()
-            util.url_fetch(server_url + '/slowlog/log', {'cmd': self.cmd,
-                                                         'ip':
-                                                         util.get_one_ip()})
+            util.url_fetch(server_url + '/slowlog/log',
+                           {'cmd': self.cmd,
+                            'ip': util.get_one_ip()})
             return self.cmd
         result = open(tempfile.gettempdir() + os.path.sep + self.uuid,
                       'r').read()
@@ -396,7 +398,8 @@ class Common(Daemon):
             request = urllib2.Request(url=url)
             request.add_header(
                 'User-agent',
-                'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6')
+                'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'
+            )
             body = str(form)
             request.add_header('Content-type', form.get_content_type())
             request.add_header('Content-length', len(body))
@@ -567,7 +570,9 @@ class Common(Daemon):
                     message = {'ip': ip, 'cmd': cmd, 'result': result}
                     time.sleep(random.uniform(0, 1))
                     self.url_fetch(feedback_url,
-                                   {'param': json.dumps({'param': message})})
+                                   {'param': json.dumps({
+                                       'param': message
+                                   })})
 
                 threading.Thread(target=feedback).start()
         except BaseException as e:

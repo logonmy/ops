@@ -81,8 +81,10 @@ class cmdb:
             return '-t(tag) is need'
         asset_id = self._get_asset_id(host=host)
         if asset_id is None:
-            return {'status': 'fail',
-                    'msg': 'not such host,please addhost first'}
+            return {
+                'status': 'fail',
+                'msg': 'not such host,please addhost first'
+            }
         taglist = tag.split(',')
         unsuport_key = []
         for item in taglist:
@@ -95,9 +97,11 @@ class cmdb:
             servertag, created = ServerTag.get_or_create(
                 assets=asset_id, server_tag_value=value, server_tag_key=key)
         if len(unsuport_key) > 0:
-            return {'status': 'fail',
-                    'unsuport_key': unsuport_key,
-                    'msg': 'have some un support key'}
+            return {
+                'status': 'fail',
+                'unsuport_key': unsuport_key,
+                'msg': 'have some un support key'
+            }
         return {'status': 'ok'}
 
     def edittag(self, req, resp):
@@ -109,8 +113,10 @@ class cmdb:
             return '-t(tag) is need'
         asset_id = self._get_asset_id(host=host)
         if asset_id is None:
-            return {'status': 'fail',
-                    'msg': 'not such host,please addhost first'}
+            return {
+                'status': 'fail',
+                'msg': 'not such host,please addhost first'
+            }
         taglist = tag.split(',')
         unsuport_key = []
         for item in taglist:
@@ -123,9 +129,11 @@ class cmdb:
             ServerTag.update(server_tag_value=value)\
                 .where((ServerTag.server_tag_key == key) & (ServerTag.assets == asset_id)).execute()
         if len(unsuport_key) > 0:
-            return {'status': 'fail',
-                    'unsuport_key': unsuport_key,
-                    'msg': 'have some un support key'}
+            return {
+                'status': 'fail',
+                'unsuport_key': unsuport_key,
+                'msg': 'have some un support key'
+            }
         return {'status': 'ok'}
 
     def deltag(self, req, resp):

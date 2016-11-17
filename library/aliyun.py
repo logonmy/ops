@@ -68,7 +68,8 @@ class Connection(object):
             self.version = '2016-04-28'
         else:
             raise NotImplementedError(
-                'Currently only "ecs", "dns", "rds" and "slb" and "cdn" are supported.')
+                'Currently only "ecs", "dns", "rds" and "slb" and "cdn" are supported.'
+            )
 
         self.access_key_id = aliyun_config.get('access_key_id')
         self.secret_access_key = aliyun_config.get('secret_access_key')
@@ -96,10 +97,11 @@ class Connection(object):
         # This is pretty convoluted. urllib.urlencode does almost the same
         # and is faster, so if we switched signature version we could do
         # that instead
-        canonicalized_query_string = '&'.join(
-            ['%s=%s' % (self._percent_encode(k, encoding),
-                        self._percent_encode(v, encoding))
-             for k, v in sorted_params])
+        canonicalized_query_string = '&'.join([
+            '%s=%s' % (self._percent_encode(k, encoding),
+                       self._percent_encode(v, encoding))
+            for k, v in sorted_params
+        ])
 
         string_to_sign = 'GET&%2F&' + self._percent_encode(
             canonicalized_query_string, encoding)
@@ -517,24 +519,27 @@ class EssConnection(Connection):
         groups = []
         for page in self.get(params, paginated=True):
             for g in page['ScalingGroups']['ScalingGroups']:
-                groups.append(ScalingGroup(
-                    scaling_group_id=g['ScalingGroupId'],
-                    scaling_group_name=g['ScalingGroupName'],
-                    active_scaling_configuration_id=g['ActiveScalingConfigurationId'],  # NOQA
-                    region_id=g['RegionId'],
-                    min_size=g['MinSize'],
-                    max_size=g['MaxSize'],
-                    default_cooldown=g['DefaultCooldown'],
-                    removal_policies=g['RemovalPolicies']['RemovalPolicy'],
-                    load_balancer_id=g['LoadBalancerId'],
-                    db_instance_ids=g.get('DBInstanceIds', {}).get('DBInstanceId', None),
-                    lifecycle_state=g['LifecycleState'],
-                    total_capacity=g['TotalCapacity'],
-                    active_capacity=g['ActiveCapacity'],
-                    pending_capacity=g['PendingCapacity'],
-                    removing_capacity=g['RemovingCapacity'],
-                    creation_time=dateutil.parser.parse(g['CreationTime'])
-                ))
+                groups.append(
+                    ScalingGroup(
+                        scaling_group_id=g['ScalingGroupId'],
+                        scaling_group_name=g['ScalingGroupName'],
+                        active_scaling_configuration_id=g[
+                            'ActiveScalingConfigurationId'],  # NOQA
+                        region_id=g['RegionId'],
+                        min_size=g['MinSize'],
+                        max_size=g['MaxSize'],
+                        default_cooldown=g['DefaultCooldown'],
+                        removal_policies=g['RemovalPolicies']['RemovalPolicy'],
+                        load_balancer_id=g['LoadBalancerId'],
+                        db_instance_ids=g.get('DBInstanceIds', {}).get(
+                            'DBInstanceId', None),
+                        lifecycle_state=g['LifecycleState'],
+                        total_capacity=g['TotalCapacity'],
+                        active_capacity=g['ActiveCapacity'],
+                        pending_capacity=g['PendingCapacity'],
+                        removing_capacity=g['RemovingCapacity'],
+                        creation_time=dateutil.parser.parse(g[
+                            'CreationTime'])))
         return groups
 
     def get_all_scaling_group_ids(self,
@@ -547,8 +552,9 @@ class EssConnection(Connection):
             scaling_group_names (list): Optional list of names to find ids for.
         Return: list of :class:`.model.ScalingGroup` IDs.'''
 
-        groups = self.describe_scaling_groups(scaling_group_ids=scaling_group_ids,  # NOQA
-                                              scaling_group_names=scaling_group_names)  # NOQA
+        groups = self.describe_scaling_groups(
+            scaling_group_ids=scaling_group_ids,  # NOQA
+            scaling_group_names=scaling_group_names)  # NOQA
         return [g.scaling_group_id for g in groups]
 
 
@@ -923,7 +929,8 @@ class DiskMapping(object):
         """
         if None not in (size, snapshot_id):
             raise DiskMappingError(
-                "DiskMapping does not support both size AND snapshot. Choose one.")
+                "DiskMapping does not support both size AND snapshot. Choose one."
+            )
 
         self.category = category
         self.size = size
@@ -1230,7 +1237,8 @@ class EcsConnection(Connection):
             [x for x in resp['SecurityGroupIds']['SecurityGroupId']],
             [x for x in resp['PublicIpAddress']['IpAddress']],
             [x for x in resp['InnerIpAddress']['IpAddress']],
-            resp['InternetChargeType'], int(resp['InternetMaxBandwidthIn']),
+            resp['InternetChargeType'],
+            int(resp['InternetMaxBandwidthIn']),
             int(resp['InternetMaxBandwidthOut']),
             dateutil.parser.parse(resp['CreationTime']),
             dateutil.parser.parse(resp['ExpiredTime']),
@@ -1250,9 +1258,11 @@ class EcsConnection(Connection):
             instance_id (str): The id of the instance.
             force (bool): Whether to force stop the instance.
         """
-        self.get({'Action': 'StopInstance',
-                  'InstanceId': instance_id,
-                  'ForceStop': 'true' if force else 'false'})
+        self.get({
+            'Action': 'StopInstance',
+            'InstanceId': instance_id,
+            'ForceStop': 'true' if force else 'false'
+        })
 
     def reboot_instance(self, instance_id, force=False):
         """Reboot an instance.
@@ -1260,9 +1270,11 @@ class EcsConnection(Connection):
             instance_id (str): The id of the instance.
             force (bool): Whether to force reboot the instance.
         """
-        self.get({'Action': 'RebootInstance',
-                  'InstanceId': instance_id,
-                  'ForceStop': 'true' if force else 'false'})
+        self.get({
+            'Action': 'RebootInstance',
+            'InstanceId': instance_id,
+            'ForceStop': 'true' if force else 'false'
+        })
 
     def delete_instance(self, instance_id):
         """Delete an instance.
@@ -1291,8 +1303,10 @@ class EcsConnection(Connection):
             new_security_group_id (str): A single security group id.
             new_description (str): The new description for the instance.
         """
-        params = {'Action': 'ModifyInstanceAttribute',
-                  'InstanceId': instance_id}
+        params = {
+            'Action': 'ModifyInstanceAttribute',
+            'InstanceId': instance_id
+        }
         if new_instance_name:
             params['InstanceName'] = new_instance_name
         if new_password:
@@ -1393,9 +1407,11 @@ class EcsConnection(Connection):
             instance_id (str): The id of the instance.
             security_group_id (str): The id of the security_group.
         """
-        self.get({'Action': 'JoinSecurityGroup',
-                  'InstanceId': instance_id,
-                  'SecurityGroupId': security_group_id})
+        self.get({
+            'Action': 'JoinSecurityGroup',
+            'InstanceId': instance_id,
+            'SecurityGroupId': security_group_id
+        })
 
     def leave_security_group(self, instance_id, security_group_id):
         """Remove an instance from a security group.
@@ -1403,9 +1419,11 @@ class EcsConnection(Connection):
             instance_id (str): The id of the instance.
             security_group_id (str): The id of the security_group.
         """
-        self.get({'Action': 'LeaveSecurityGroup',
-                  'InstanceId': instance_id,
-                  'SecurityGroupId': security_group_id})
+        self.get({
+            'Action': 'LeaveSecurityGroup',
+            'InstanceId': instance_id,
+            'SecurityGroupId': security_group_id
+        })
 
     def create_disk(self,
                     zone_id,
@@ -1659,10 +1677,12 @@ class EcsConnection(Connection):
             params['InstanceChargeType'] = 'PostPaid'
         elif instance_charge_type == 'PrePaid':
             params['InstanceChargeType'] = 'PrePaid'
-            if not period or period not in [1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 24,
-                                            36]:
+            if not period or period not in [
+                    1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 24, 36
+            ]:
                 exit(
-                    "ERROR: PrePaid instances Must have a predefined period, in month [ 1-9, 12, 24, 36 ]")
+                    "ERROR: PrePaid instances Must have a predefined period, in month [ 1-9, 12, 24, 36 ]"
+                )
             else:
                 params['Period'] = period
         else:
@@ -1691,8 +1711,10 @@ class EcsConnection(Connection):
         Returns:
             the public IP allocated to the instance.
         """
-        return self.get({'Action': 'AllocatePublicIpAddress',
-                         'InstanceId': instance_id})
+        return self.get({
+            'Action': 'AllocatePublicIpAddress',
+            'InstanceId': instance_id
+        })
 
     def create_and_start_instance(self,
                                   image_id,
@@ -1938,16 +1960,19 @@ class EcsConnection(Connection):
             for disk in resp['Disks']['Disk']:
                 disks.append(
                     Disk(disk['DiskId'], disk['Type'], disk['Category'], disk[
-                        'Size'], dateutil.parser.parse(disk['AttachedTime']) if
-                         disk['AttachedTime'] != '' else None, dateutil.parser.
-                         parse(disk['CreationTime']) if disk['CreationTime'] !=
-                         '' else None, disk['DeleteAutoSnapshot'] == 'true'
+                        'Size'],
+                         dateutil.parser.parse(disk['AttachedTime'])
+                         if disk['AttachedTime'] != '' else None,
+                         dateutil.parser.parse(disk['CreationTime'])
+                         if disk['CreationTime'] != '' else None, disk[
+                             'DeleteAutoSnapshot'] == 'true'
                          if disk['DeleteAutoSnapshot'] != '' else None, disk[
                              'DeleteWithInstance'] == 'true'
                          if disk['DeleteWithInstance'] != '' else None, disk[
-                             'Description'] if disk['Description'] != '' else
-                         None, dateutil.parser.parse(disk['DetachedTime']) if
-                         disk['DetachedTime'] != '' else None, disk['Device']
+                             'Description']
+                         if disk['Description'] != '' else None,
+                         dateutil.parser.parse(disk['DetachedTime']) if disk[
+                             'DetachedTime'] != '' else None, disk['Device']
                          if disk['Device'] != '' else None, disk['ImageId']
                          if disk['ImageId'] != '' else None, disk['InstanceId']
                          if disk['InstanceId'] != '' else None,
@@ -1969,9 +1994,9 @@ class EcsConnection(Connection):
         resp = self.get({'Action': 'DescribeInstanceTypes'})
         for instance_type in resp['InstanceTypes']['InstanceType']:
             instance_types.append(
-                InstanceType(instance_type['InstanceTypeId'], int(
-                    instance_type['CpuCoreCount']), int(instance_type[
-                        'MemorySize'])))
+                InstanceType(instance_type['InstanceTypeId'],
+                             int(instance_type['CpuCoreCount']),
+                             int(instance_type['MemorySize'])))
 
         return instance_types
 
@@ -2021,9 +2046,11 @@ class EcsConnection(Connection):
             instance_id (str): The id of the instance.
             snapshot_id (str): The id of the snapshot.
         """
-        self.get({'Action': 'DeleteSnapshot',
-                  'InstanceId': instance_id,
-                  'SnapshotId': snapshot_id})
+        self.get({
+            'Action': 'DeleteSnapshot',
+            'InstanceId': instance_id,
+            'SnapshotId': snapshot_id
+        })
 
     def describe_snapshot(self, snapshot_id):
         """Describe a snapshot.
@@ -2063,13 +2090,14 @@ class EcsConnection(Connection):
         for resp in self.get(params, paginated=True):
             for snapshot in resp['Snapshots']['Snapshot']:
                 snapshots.append(
-                    Snapshot(snapshot['SnapshotId'], snapshot.get(
-                        'SnapshotName', None), int(snapshot['Progress'][:-1]),
+                    Snapshot(snapshot['SnapshotId'],
+                             snapshot.get('SnapshotName', None),
+                             int(snapshot['Progress'][:-1]),
                              dateutil.parser.parse(snapshot['CreationTime']),
                              snapshot.get('Description', None),
-                             snapshot.get('SourceDiskId', None), snapshot.get(
-                                 'SourceDiskType', None), int(
-                                     snapshot.get('SourceDiskSize', None))))
+                             snapshot.get('SourceDiskId', None),
+                             snapshot.get('SourceDiskType', None),
+                             int(snapshot.get('SourceDiskSize', None))))
 
         return snapshots
 
@@ -2158,11 +2186,12 @@ class EcsConnection(Connection):
         for resp in self.get(params, paginated=True):
             for item in resp['Images']['Image']:
                 images.append(
-                    Image(item['ImageId'], item['ImageVersion'] if
-                          'ImageVersion' in item else None, item['ImageName'],
-                          item['Description'] if 'Description' in item else
-                          None, int(item['Size']) if 'Size' in item else None,
-                          item['Architecture'] if 'Architecture' in item else
+                    Image(item['ImageId'], item['ImageVersion']
+                          if 'ImageVersion' in item else None, item[
+                              'ImageName'], item['Description']
+                          if 'Description' in item else None,
+                          int(item['Size']) if 'Size' in item else None, item[
+                              'Architecture'] if 'Architecture' in item else
                           None, item['ImageOwnerAlias'], item['OSName']
                           if 'OSName' in item else None))
 
@@ -2250,7 +2279,9 @@ class EcsConnection(Connection):
             List of :class:`.model.SecurityGroupInfo`.
         """
         infos = []
-        for resp in self.get({'Action': 'DescribeSecurityGroups'},
+        for resp in self.get({
+                'Action': 'DescribeSecurityGroups'
+        },
                              paginated=True):
             for item in resp['SecurityGroups']['SecurityGroup']:
                 infos.append(
@@ -2273,8 +2304,10 @@ class EcsConnection(Connection):
         Returns:
             The security group id.
         """
-        return self.get({'Action': 'CreateSecurityGroup',
-                         'Description': description})['SecurityGroupId']
+        return self.get({
+            'Action': 'CreateSecurityGroup',
+            'Description': description
+        })['SecurityGroupId']
 
     def get_security_group(self, security_group_id):
         """Get a security group.
@@ -2283,12 +2316,16 @@ class EcsConnection(Connection):
         Returns:
             The :class:`.model.SecurityGroup` object.
         """
-        outside_resp = self.get({'Action': 'DescribeSecurityGroupAttribute',
-                                 'SecurityGroupId': security_group_id,
-                                 'NicType': 'internet'})
-        inside_resp = self.get({'Action': 'DescribeSecurityGroupAttribute',
-                                'SecurityGroupId': security_group_id,
-                                'NicType': 'intranet'})
+        outside_resp = self.get({
+            'Action': 'DescribeSecurityGroupAttribute',
+            'SecurityGroupId': security_group_id,
+            'NicType': 'internet'
+        })
+        inside_resp = self.get({
+            'Action': 'DescribeSecurityGroupAttribute',
+            'SecurityGroupId': security_group_id,
+            'NicType': 'intranet'
+        })
         permissions = []
         for p in outside_resp['Permissions']['Permission']:
             permissions.append(
@@ -2312,8 +2349,10 @@ class EcsConnection(Connection):
         Args:
             security_group_id (str): The id of the security group.
         """
-        self.get({'Action': 'DeleteSecurityGroup',
-                  'SecurityGroupId': security_group_id})
+        self.get({
+            'Action': 'DeleteSecurityGroup',
+            'SecurityGroupId': security_group_id
+        })
 
     def add_external_cidr_ip_rule(self,
                                   security_group_id,
@@ -2518,10 +2557,12 @@ class EcsConnection(Connection):
         self.get(params)
 
 
-EngineVersion = {'MySQL': [5.5, 5.6],
-                 'SQLServer': ['2008r2'],
-                 'PostgreSQL': [9.4],
-                 'PPAS': [9.3]}
+EngineVersion = {
+    'MySQL': [5.5, 5.6],
+    'SQLServer': ['2008r2'],
+    'PostgreSQL': [9.4],
+    'PPAS': [9.3]
+}
 
 
 class RDSInstanceStatus(object):
@@ -2662,8 +2703,9 @@ class RdsConnection(Connection):
         Returns:
             The list of instance ids.
         """
-        return [x.instance_id
-                for x in self.describe_all_db_instances(region_id)]
+        return [
+            x.instance_id for x in self.describe_all_db_instances(region_id)
+        ]
 
     def get_dbinstance(self, instance_id):
         """Get an rdsinstance.
@@ -3438,9 +3480,11 @@ class SlbConnection(Connection):
             persistence_timeout (int): number of seconds to hold TCP
                 connection open
         """
-        params = {'Action': 'SetLoadBalancerTCPListenerAttribute',
-                  'LoadBalancerId': load_balancer_id,
-                  'ListenerPort': listener_port}
+        params = {
+            'Action': 'SetLoadBalancerTCPListenerAttribute',
+            'LoadBalancerId': load_balancer_id,
+            'ListenerPort': listener_port
+        }
         if healthy_threshold is not None:
             params['HealthyThreshold'] = healthy_threshold
         if unhealthy_threshold is not None:
@@ -3655,8 +3699,10 @@ class SlbConnection(Connection):
         backends = []
         for bs in backend_servers:
             if bs.weight is not None:
-                backends.append({'ServerId': bs.instance_id,
-                                 'Weight': bs.weight})
+                backends.append({
+                    'ServerId': bs.instance_id,
+                    'Weight': bs.weight
+                })
             else:
                 backends.append({'ServerId': bs.instance_id})
 

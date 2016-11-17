@@ -61,8 +61,10 @@ class monitor:
         hostname = req.get_param(name='s') or req.get_header(name='HOSTNAME')
         if hostname is None:
             return '-s(hostname) need'
-        hostid = self.zapi.host.get({"host": hostname,
-                                     "output": "hostid"})[0]["hostid"]
+        hostid = self.zapi.host.get({
+            "host": hostname,
+            "output": "hostid"
+        })[0]["hostid"]
         host_info = {'hostid': hostid, 'output': 'extend'}
         host_alert = self.zapi.alert.get(filter=host_info)
         alert_info = []
@@ -84,8 +86,10 @@ class monitor:
         hostname = req.get_param(name='s') or req.get_header(name='HOSTNAME')
         if hostname is None:
             return '-s(hostname) need'
-        hostid = self.zapi.host.get({"host": hostname,
-                                     "output": "hostid"})[0]["hostid"]
+        hostid = self.zapi.host.get({
+            "host": hostname,
+            "output": "hostid"
+        })[0]["hostid"]
         trigger_id, event_id, alert_info = [], [], []
         time_till = int(time.time())
         time_from = time_till - 86400
@@ -94,10 +98,12 @@ class monitor:
         for trigger in host_trigger:
             trigger_id.append(trigger.get('triggerid'))
         for id in trigger_id:
-            trigger_info = {'output': 'extend',
-                            "select_acknowledges": "extend",
-                            "objectid": id,
-                            "sortorder": "DESC"}
+            trigger_info = {
+                'output': 'extend',
+                "select_acknowledges": "extend",
+                "objectid": id,
+                "sortorder": "DESC"
+            }
             host_event = self.zapi.event.get(filter=trigger_info)
             for event in host_event:
                 event_id.append(event.get('eventid'))
@@ -129,11 +135,16 @@ class monitor:
             return '-s(hostname) need'
         if template is None:
             return '-t(template) need'
-        hostid = self.zapi.host.get({"host": hostname,
-                                     "output": "hostid"})[0]["hostid"]
-        templateid = self.zapi.template.get(
-            {"output": "templateid",
-             "filter": {"host": template}})[0]["templateid"]
+        hostid = self.zapi.host.get({
+            "host": hostname,
+            "output": "hostid"
+        })[0]["hostid"]
+        templateid = self.zapi.template.get({
+            "output": "templateid",
+            "filter": {
+                "host": template
+            }
+        })[0]["templateid"]
 
         if not str(hostid).isdigit():
             return hostid
@@ -169,9 +180,12 @@ class monitor:
 
         group_ids = []
         if host_groups is None:
-            group_list = self.zapi.hostgroup.get({'output': 'extend',
-                                                  'filter':
-                                                  {'name': host_groups}})
+            group_list = self.zapi.hostgroup.get({
+                'output': 'extend',
+                'filter': {
+                    'name': host_groups
+                }
+            })
         else:
             group_list = self.zapi.hostgroup.get({'output': 'extend'})
         for group in group_list:
@@ -186,11 +200,16 @@ class monitor:
             return '-g(groupname) need'
         if hostname is None:
             return '-s(hostname) need'
-        hostid = self.zapi.host.get({"host": hostname,
-                                     "output": "hostid"})[0]["hostid"]
-        groupid = self.zapi.hostgroup.get({"output": "groupid",
-                                           "filter":
-                                           {"name": groupname}})[0]["groupid"]
+        hostid = self.zapi.host.get({
+            "host": hostname,
+            "output": "hostid"
+        })[0]["hostid"]
+        groupid = self.zapi.hostgroup.get({
+            "output": "groupid",
+            "filter": {
+                "name": groupname
+            }
+        })[0]["groupid"]
         if hostid != '' and groupid != '':
             return self.zapi.hostgroup.massremove(
                 groupids=[groupid], hostids=[hostid])
@@ -204,11 +223,16 @@ class monitor:
             return '-g(groupname) need'
         if hostname is None:
             return '-s(hostname) need'
-        hostid = self.zapi.host.get({"host": hostname,
-                                     "output": "hostid"})[0]["hostid"]
-        groupid = self.zapi.hostgroup.get({"output": "groupid",
-                                           "filter":
-                                           {"name": groupname}})[0]["groupid"]
+        hostid = self.zapi.host.get({
+            "host": hostname,
+            "output": "hostid"
+        })[0]["hostid"]
+        groupid = self.zapi.hostgroup.get({
+            "output": "groupid",
+            "filter": {
+                "name": groupname
+            }
+        })[0]["groupid"]
         if hostid != '' and groupid != '':
             return self.zapi.hostgroup.massadd(
                 groups=[groupid], hosts=[hostid])
@@ -228,8 +252,10 @@ class monitor:
         hostname = req.get_param(name='s') or req.get_header(name='HOSTNAME')
         if not hostname:
             return "param error: hostname empty"
-        hostid = self.zapi.host.get({"host": hostname,
-                                     "output": "hostid"})[0]["hostid"]
+        hostid = self.zapi.host.get({
+            "host": hostname,
+            "output": "hostid"
+        })[0]["hostid"]
         if str(hostid).isdigit():
             return self.zapi.host.delete(hostid)
         return hostid
@@ -326,14 +352,15 @@ class monitor:
         if hostname is None:
             return '-s(hostname) need'
 
-        hostid = self.zapi.host.get({"host": hostname,
-                                     "output": "hostid"})[0]["hostid"]
+        hostid = self.zapi.host.get({
+            "host": hostname,
+            "output": "hostid"
+        })[0]["hostid"]
         ret = ''
-        return self.zapi.host.get(output=['hostid'],
-                                  selectParentTemplates=[
-                                      'templateid', 'name'
-                                  ],
-                                  hostids=hostid)
+        return self.zapi.host.get(
+            output=['hostid'],
+            selectParentTemplates=['templateid', 'name'],
+            hostids=hostid)
 
     def enable_trigger(self, req, resp):
         hostname = req.get_param(name='s') or req.get_header(name='HOSTNAME')
@@ -357,8 +384,11 @@ class monitor:
         try:
             if hostname is None:
                 return '-s(hostname) need'
-            hostid = self.zapi.host.get(
-                {"filter": {"host": hostname}})[0]["hostid"]
+            hostid = self.zapi.host.get({
+                "filter": {
+                    "host": hostname
+                }
+            })[0]["hostid"]
             triggerid = self.zapi.trigger.get(
                 hostids=hostid,
                 search={"description": description})[0]['triggerid']
@@ -396,12 +426,18 @@ class monitor:
         try:
             if hostname is None:
                 return '-s(hostname) need'
-            hostid = self.zapi.host.get(
-                {"filter": {"host": hostname}})[0]["hostid"]
-            itemid = self.zapi.item.get({"output": "extend",
-                                         "hostids": hostid,
-                                         "search":
-                                         {"key_": item}})[0]["itemid"]
+            hostid = self.zapi.host.get({
+                "filter": {
+                    "host": hostname
+                }
+            })[0]["hostid"]
+            itemid = self.zapi.item.get({
+                "output": "extend",
+                "hostids": hostid,
+                "search": {
+                    "key_": item
+                }
+            })[0]["itemid"]
             para = '''
                    {
                         "itemid": "%s",
@@ -430,8 +466,10 @@ class monitor:
         try:
             if hostname is None:
                 return '-s(hostname) need'
-            hostid = self.zapi.host.get({"host": hostname,
-                                         "output": "hostid"})[0]["hostid"]
+            hostid = self.zapi.host.get({
+                "host": hostname,
+                "output": "hostid"
+            })[0]["hostid"]
 
             para = '''
             {
@@ -592,9 +630,11 @@ class monitor:
 
         result = []
         try:
-            self.zapi.trigger.create({"description": description,
-                                      "expression": expression,
-                                      "priority": priority})
+            self.zapi.trigger.create({
+                "description": description,
+                "expression": expression,
+                "priority": priority
+            })
         except Exception as e:
             log_error(e)
             raise Exception(e)
@@ -609,19 +649,25 @@ class monitor:
             return '-t(templates) need'
         if not hostname:
             return '-s(hostname) need'
-        templates_id = self.zapi.template.get({"output": "templateid",
-                                               "filter":
-                                               {"host": templates.split(",")}})
+        templates_id = self.zapi.template.get({
+            "output": "templateid",
+            "filter": {
+                "host": templates.split(",")
+            }
+        })
         templateids = self._get_list(templates_id, "templateid")
-        hostid = self.zapi.host.get(
-            {"filter": {"host": hostname}})[0]["hostid"]
+        hostid = self.zapi.host.get({
+            "filter": {
+                "host": hostname
+            }
+        })[0]["hostid"]
         try:
             result.append(
-                self.zapi.template.massremove({"templateids":
-                                               templateids,
-                                               "templateids_clear":
-                                               templateids,
-                                               "hostids": hostid}))
+                self.zapi.template.massremove({
+                    "templateids": templateids,
+                    "templateids_clear": templateids,
+                    "hostids": hostid
+                }))
         except Exception as e:
             log_error(e)
             raise Exception(e)
@@ -636,16 +682,23 @@ class monitor:
             return '-t(templates) need'
         if not hostname:
             return '-s(hostname) need'
-        templates_id = self.zapi.template.get({"output": "templateid",
-                                               "filter":
-                                               {"host": templates.split(",")}})
-        hostid = self.zapi.host.get(
-            {"filter": {"host": hostname}})[0]["hostid"]
+        templates_id = self.zapi.template.get({
+            "output": "templateid",
+            "filter": {
+                "host": templates.split(",")
+            }
+        })
+        hostid = self.zapi.host.get({
+            "filter": {
+                "host": hostname
+            }
+        })[0]["hostid"]
         try:
             result.append(
-                self.zapi.template.massadd({"templates":
-                                            templates_id,
-                                            "hosts": hostid}))
+                self.zapi.template.massadd({
+                    "templates": templates_id,
+                    "hosts": hostid
+                }))
         except Exception as e:
             log_error(e)
             raise Exception(e)
@@ -654,8 +707,11 @@ class monitor:
 
     def get_trigger(self, req, resp):
         hostname = req.get_param(name='s') or req.get_header(name='HOSTNAME')
-        hostid = self.zapi.host.get(
-            {"filter": {"host": hostname}})[0]["hostid"]
+        hostid = self.zapi.host.get({
+            "filter": {
+                "host": hostname
+            }
+        })[0]["hostid"]
         if not hostid:
             return False
         host_info = {'hostid': hostid, 'output': 'extend'}
@@ -675,8 +731,11 @@ class monitor:
         pattern1 = re.compile(r'.*\[(.*)\].*')
         pattern2 = re.compile(r'.*\[(/.*),.*\]')
         pattern3 = re.compile(r'.*\[,(.*)\].*')
-        hostid = self.zapi.host.get(
-            {"filter": {"host": hostname}})[0]["hostid"]
+        hostid = self.zapi.host.get({
+            "filter": {
+                "host": hostname
+            }
+        })[0]["hostid"]
         if not hostid:
             return False
         host_info = {'hostid': hostid, 'output': 'extend'}
@@ -712,11 +771,18 @@ class monitor:
         if not key:
             return '-k(key) need'
         result = []
-        hostid = self.zapi.host.get(
-            {"filter": {"host": hostname}})[0]["hostid"]
-        itemid = self.zapi.item.get({"output": "extend",
-                                     "hostids": hostid,
-                                     "search": {"key_": key}})[0]["itemid"]
+        hostid = self.zapi.host.get({
+            "filter": {
+                "host": hostname
+            }
+        })[0]["hostid"]
+        itemid = self.zapi.item.get({
+            "output": "extend",
+            "hostids": hostid,
+            "search": {
+                "key_": key
+            }
+        })[0]["itemid"]
         result.append(hostid, '\t', itemid)
         self.zapi.item.delete({"params": itemid})
 
@@ -765,47 +831,54 @@ class monitor:
             host = self.zapi.host.get({"filter": {"host": hostname}})[0]
             hostid = host['hostid']
         elif template and not hostname:
-            template = self.zapi.template.get(
-                {"filter": {"host": template}})[0]
+            template = self.zapi.template.get({
+                "filter": {
+                    "host": template
+                }
+            })[0]
             templateid = template["templateid"]
             hostid = templateid
-            _application = self.zapi.application.get(
-                {"output": "extend",
-                 "templateids": hostid,
-                 "filter": {"name": application}})[0]
+            _application = self.zapi.application.get({
+                "output": "extend",
+                "templateids": hostid,
+                "filter": {
+                    "name": application
+                }
+            })[0]
             applicationid = json.loads(json.dumps(_application))[
                 "applicationid"]
         try:
             if 'applicationid' in dir():
                 result.append(
-                    self.zapi.item.create({"name": name,
-                                           "key_": key,
-                                           "hostid": hostid,
-                                           "type": (type),
-                                           "interfaceid":
-                                           interfaceid,
-                                           "value_type": value_type,
-                                           "delay": delay,
-                                           "history": history,
-                                           "delta": delta,
-                                           "units": units,
-                                           "params": params,
-                                           "applications":
-                                           [applicationid]}))
+                    self.zapi.item.create({
+                        "name": name,
+                        "key_": key,
+                        "hostid": hostid,
+                        "type": (type),
+                        "interfaceid": interfaceid,
+                        "value_type": value_type,
+                        "delay": delay,
+                        "history": history,
+                        "delta": delta,
+                        "units": units,
+                        "params": params,
+                        "applications": [applicationid]
+                    }))
             else:
                 result.append(
-                    self.zapi.item.create({"name": name,
-                                           "key_": key,
-                                           "hostid": hostid,
-                                           "type": (type),
-                                           "interfaceid":
-                                           interfaceid,
-                                           "value_type": value_type,
-                                           "delay": delay,
-                                           "history": history,
-                                           "delta": delta,
-                                           "units": units,
-                                           "params": params}))
+                    self.zapi.item.create({
+                        "name": name,
+                        "key_": key,
+                        "hostid": hostid,
+                        "type": (type),
+                        "interfaceid": interfaceid,
+                        "value_type": value_type,
+                        "delay": delay,
+                        "history": history,
+                        "delta": delta,
+                        "units": units,
+                        "params": params
+                    }))
         except Exception as e:
             log_error(e)
             raise Exception(e)
@@ -823,13 +896,18 @@ class monitor:
             return '-s(hostname) need'
         if not name:
             return '-n(name) need'
-        hostid = self.zapi.host.get(
-            {"filter": {"host": hostname}})[0]["hostid"]
+        hostid = self.zapi.host.get({
+            "filter": {
+                "host": hostname
+            }
+        })[0]["hostid"]
         result.append(hostname, '\t', hostid, '\t', status)
         try:
-            msg = self.zapi.host.update({"hostid": hostid,
-                                         "status": status,
-                                         "name": name})
+            msg = self.zapi.host.update({
+                "hostid": hostid,
+                "status": status,
+                "name": name
+            })
             result.append(msg)
         except Exception as e:
             log_error(e)
@@ -848,18 +926,27 @@ class monitor:
         if not templates:
             return '-t(templates) need'
 
-        hostid = self.zapi.host.get(
-            {"filter": {"host": hostname}})[0]["hostid"]
+        hostid = self.zapi.host.get({
+            "filter": {
+                "host": hostname
+            }
+        })[0]["hostid"]
         if templates:
-            templates_id = self.zapi.template.get(
-                {"output": "templateid",
-                 "filter": {"host": templates.split(",")}})
+            templates_id = self.zapi.template.get({
+                "output": "templateid",
+                "filter": {
+                    "host": templates.split(",")
+                }
+            })
         else:
             templates_id = ""
         if groups:
-            groups_id = self.zapi.hostgroup.get({"output": "groupid",
-                                                 "filter":
-                                                 {"name": groups.split(",")}})
+            groups_id = self.zapi.hostgroup.get({
+                "output": "groupid",
+                "filter": {
+                    "name": groups.split(",")
+                }
+            })
         else:
             groups_id = ""
         if templates_id and groups_id:
@@ -882,19 +969,28 @@ class monitor:
         if not templates:
             return '-t(templates) need'
 
-        hostid = self.zapi.host.get(
-            {"filter": {"host": hostname}})[0]["hostid"]
+        hostid = self.zapi.host.get({
+            "filter": {
+                "host": hostname
+            }
+        })[0]["hostid"]
         if templates:
-            templates_id = self.zapi.template.get(
-                {"output": "templateid",
-                 "filter": {"host": templates.split(",")}})
+            templates_id = self.zapi.template.get({
+                "output": "templateid",
+                "filter": {
+                    "host": templates.split(",")
+                }
+            })
             templateids = self._get_list(templates_id, "templateid")
         else:
             templateids = ""
         if groups:
-            groups_id = self.zapi.hostgroup.get({"output": "groupid",
-                                                 "filter":
-                                                 {"name": groups.split(",")}})
+            groups_id = self.zapi.hostgroup.get({
+                "output": "groupid",
+                "filter": {
+                    "name": groups.split(",")
+                }
+            })
             groupids = self._get_list(groups_id, "groupid")
         else:
             groupids = ""
@@ -915,9 +1011,11 @@ class monitor:
         screen_name = req.get_param(name='screen_name')
         h_size = req.get_param(name='h_size')
         v_size = req.get_param(name='v_size')
-        screen = self.zapi.screen.create({'name': screen_name,
-                                          'hsize': h_size,
-                                          'vsize': v_size})
+        screen = self.zapi.screen.create({
+            'name': screen_name,
+            'hsize': h_size,
+            'vsize': v_size
+        })
         return screen['screenids'][0]
 
     def update_screen(self, req, resp):
@@ -925,9 +1023,11 @@ class monitor:
         h_size = req.get_param(name='h_size')
         v_size = req.get_param(name='v_size')
         screen_id = self._get_screen_id(screen_name=screen_name)
-        return self.zapi.screen.update({'screenid': screen_id,
-                                        'hsize': h_size,
-                                        'vsize': v_size})
+        return self.zapi.screen.update({
+            'screenid': screen_id,
+            'hsize': h_size,
+            'vsize': v_size
+        })
 
     def delete_screen(self, req, resp):
         screen_name = req.get_param(name='screen_name')
@@ -941,14 +1041,20 @@ class monitor:
         graph_name = req.get_param['g']
         if graph_name is None:
             return '-g(graph_name) need'
-        host_id = self.zapi.host.get({"host": hostname,
-                                      "output": "hostid"})[0]["hostid"]
+        host_id = self.zapi.host.get({
+            "host": hostname,
+            "output": "hostid"
+        })[0]["hostid"]
         graph_name_list = graph_name.split(',')
         graph_ids = []
         for graph_name in graph_name_list:
-            graphs_list = self.zapi.graph.get({'output': 'extend',
-                                               'search': {'name': graph_name},
-                                               'hostids': host_id})
+            graphs_list = self.zapi.graph.get({
+                'output': 'extend',
+                'search': {
+                    'name': graph_name
+                },
+                'hostids': host_id
+            })
             graph_id_list = []
             if len(graphs_list) > 0:
                 for graph in graphs_list:
@@ -963,8 +1069,10 @@ class monitor:
         if screen_name is None:
             return '--screen_name need'
         screen_id = self._get_screen_id(screen_name=screen_name)
-        screen_item_list = self.zapi.screenitem.get({'output': 'extend',
-                                                     'screenids': screen_id})
+        screen_item_list = self.zapi.screenitem.get({
+            'output': 'extend',
+            'screenids': screen_id
+        })
         return screen_item_list
 
     def delete_screen_items(self, req, resp):
@@ -1007,21 +1115,23 @@ class monitor:
             graph_id_list = self.get_graphs_by_host_id(req=req, resp=resp)
             for j, graph_id in enumerate(graph_id_list):
                 if graph_id is not None:
-                    self.zapi.screenitem.create({'screenid': screen_id,
-                                                 'resourcetype': 0,
-                                                 'resourceid': graph_id,
-                                                 'width': width,
-                                                 'height': height,
-                                                 'x': i,
-                                                 'y': j,
-                                                 'colspan': 1,
-                                                 'rowspan': 1,
-                                                 'elements': 0,
-                                                 'valign': 0,
-                                                 'halign': 0,
-                                                 'style': 0,
-                                                 'dynamic': 0,
-                                                 'sort_triggers': 0})
+                    self.zapi.screenitem.create({
+                        'screenid': screen_id,
+                        'resourcetype': 0,
+                        'resourceid': graph_id,
+                        'width': width,
+                        'height': height,
+                        'x': i,
+                        'y': j,
+                        'colspan': 1,
+                        'rowspan': 1,
+                        'elements': 0,
+                        'valign': 0,
+                        'halign': 0,
+                        'style': 0,
+                        'dynamic': 0,
+                        'sort_triggers': 0
+                    })
         return 'ok'
 
     def delete_maintenance(self, req, resp):
@@ -1043,28 +1153,43 @@ class monitor:
     def _get_screen_id(self, screen_name):
         if screen_name == "":
             return None
-        screen_id_list = self.zapi.screen.get({'output': 'extend',
-                                               'search':
-                                               {"name": screen_name}})
+        screen_id_list = self.zapi.screen.get({
+            'output': 'extend',
+            'search': {
+                "name": screen_name
+            }
+        })
         if len(screen_id_list) >= 1:
             screen_id = screen_id_list[0]['screenid']
             return screen_id
         return None
 
     def _get_host_by_host_name(self, host_name):
-        host_list = self.zapi.host.get({'output': 'extend',
-                                        'filter': {'host': [host_name]}})
+        host_list = self.zapi.host.get({
+            'output': 'extend',
+            'filter': {
+                'host': [host_name]
+            }
+        })
         return host_list[0]
 
     def _get_proxyid_by_proxy_name(self, proxy_name):
-        proxy_list = self.zapi.proxy.get({'output': 'extend',
-                                          'filter': {'host': [proxy_name]}})
+        proxy_list = self.zapi.proxy.get({
+            'output': 'extend',
+            'filter': {
+                'host': [proxy_name]
+            }
+        })
         return proxy_list[0]['proxyid']
 
     def _get_group_ids_by_group_names(self, group_names):
         group_ids = []
-        group_list = self.zapi.hostgroup.get({'output': 'extend',
-                                              'filter': {'name': group_names}})
+        group_list = self.zapi.hostgroup.get({
+            'output': 'extend',
+            'filter': {
+                'name': group_names
+            }
+        })
         for group in group_list:
             group_id = group['groupid']
             group_ids.append({'groupid': group_id})
@@ -1072,16 +1197,20 @@ class monitor:
 
     def _get_host_templates_by_host_id(self, host_id):
         template_ids = []
-        template_list = self.zapi.template.get({'output': 'extend',
-                                                'hostids': host_id})
+        template_list = self.zapi.template.get({
+            'output': 'extend',
+            'hostids': host_id
+        })
         for template in template_list:
             template_ids.append(template['templateid'])
         return template_ids
 
     def get_host_groups_by_host_id(self, host_id):
         exist_host_groups = []
-        host_groups_list = self.zapi.hostgroup.get({'output': 'extend',
-                                                    'hostids': host_id})
+        host_groups_list = self.zapi.hostgroup.get({
+            'output': 'extend',
+            'hostids': host_id
+        })
 
         if len(host_groups_list) >= 1:
             for host_groups_name in host_groups_list:
@@ -1095,13 +1224,17 @@ class monitor:
         templates = req.get_param['t']
         if templates is None:
             return '-t(templates) need'
-        host_id = self.zapi.host.get({"host": hostname,
-                                      "output": "hostid"})[0]["hostid"]
+        host_id = self.zapi.host.get({
+            "host": hostname,
+            "output": "hostid"
+        })[0]["hostid"]
 
-        template_id_list = self.zapi.template.get(
-            {"output": "templateid",
-             "filter":
-             {"host": templates.split(",")}})
+        template_id_list = self.zapi.template.get({
+            "output": "templateid",
+            "filter": {
+                "host": templates.split(",")
+            }
+        })
         exist_template_id_list = self._get_host_templates_by_host_id(host_id)
 
         exist_template_ids = set(exist_template_id_list)
@@ -1110,9 +1243,11 @@ class monitor:
 
         templates_clear = exist_template_ids.difference(template_ids)
         templates_clear_list = list(templates_clear)
-        request_str = {'hostid': host_id,
-                       'templates': template_id_list,
-                       'templates_clear': templates_clear_list}
+        request_str = {
+            'hostid': host_id,
+            'templates': template_id_list,
+            'templates_clear': templates_clear_list
+        }
         return self.zapi.host.update(request_str)
 
     def update_inventory_mode(self, req, resp):
@@ -1122,8 +1257,10 @@ class monitor:
         inventory_mode = req.get_param(name='i')
         if not inventory_mode:
             return '-i(inventory_mode) need'
-        host_id = self.zapi.host.get({"host": hostname,
-                                      "output": "hostid"})[0]["hostid"]
+        host_id = self.zapi.host.get({
+            "host": hostname,
+            "output": "hostid"
+        })[0]["hostid"]
         if inventory_mode == "automatic":
             inventory_mode = int(1)
         elif inventory_mode == "manual":
@@ -1138,11 +1275,15 @@ class monitor:
         hostname = req.get_param(name='s') or req.get_header(name='HOSTNAME')
         if hostname is None:
             return '-s(hostname) need'
-        host_id = self.zapi.host.get({"host": hostname,
-                                      "output": "hostid"})[0]["hostid"]
-        return self.zapi.usermacro.get({"output": "extend",
-                                        "selectSteps": "extend",
-                                        'hostids': [host_id]})
+        host_id = self.zapi.host.get({
+            "host": hostname,
+            "output": "hostid"
+        })[0]["hostid"]
+        return self.zapi.usermacro.get({
+            "output": "extend",
+            "selectSteps": "extend",
+            'hostids': [host_id]
+        })
 
     def create_host_macro(self, req, resp):
         hostname = req.get_param(name='s') or req.get_header(name='HOSTNAME')
@@ -1154,11 +1295,15 @@ class monitor:
         macro_value = req.get_param(name='v')
         if macro_value is None:
             return '-v(macro_value) need'
-        host_id = self.zapi.host.get({"host": hostname,
-                                      "output": "hostid"})[0]["hostid"]
-        return self.zapi.usermacro.create({'hostid': host_id,
-                                           'macro': '{$' + macro_name + '}',
-                                           'value': macro_value})
+        host_id = self.zapi.host.get({
+            "host": hostname,
+            "output": "hostid"
+        })[0]["hostid"]
+        return self.zapi.usermacro.create({
+            'hostid': host_id,
+            'macro': '{$' + macro_name + '}',
+            'value': macro_value
+        })
 
     def get_host(self, req, resp):
         result = []
@@ -1166,11 +1311,14 @@ class monitor:
         if not hostname:
             return '-s(hostname) need'
         try:
-            hostinfo = self.zapi.host.get({"filter": {"host": hostname},
-                                           "output": "hostid",
-                                           "selectGroups": "extend",
-                                           "selectParentTemplates":
-                                           ["templateid", "name"]})[0]
+            hostinfo = self.zapi.host.get({
+                "filter": {
+                    "host": hostname
+                },
+                "output": "hostid",
+                "selectGroups": "extend",
+                "selectParentTemplates": ["templateid", "name"]
+            })[0]
             hostid = hostinfo["hostid"]
             host_group_list = []
             host_template_list = []
@@ -1192,8 +1340,12 @@ class monitor:
         if not hostname:
             return '-s(hostname) need'
 
-        hostid = self.zapi.host.get({"filter": {"host": hostname},
-                                     "output": "hostid"})[0]["hostid"]
+        hostid = self.zapi.host.get({
+            "filter": {
+                "host": hostname
+            },
+            "output": "hostid"
+        })[0]["hostid"]
         result.append(hostname, '\t', hostid)
         try:
             result = self.zapi.host.delete([hostid])
@@ -1217,50 +1369,64 @@ class monitor:
         if not status:
             return '-t(status) need'
         if proxy:
-            proxy_id = self.zapi.proxy.get({"output": "proxyid",
-                                            "selectInterface": "extend",
-                                            "filter":
-                                            {"host": proxy}})[0]['proxyid']
+            proxy_id = self.zapi.proxy.get({
+                "output": "proxyid",
+                "selectInterface": "extend",
+                "filter": {
+                    "host": proxy
+                }
+            })[0]['proxyid']
         else:
             proxy_id = ""
 
         groups = req.get_param['groups']
         templates = req.get_param['templates']
-        groups_id = self.zapi.hostgroup.get({"output": "groupid",
-                                             "filter":
-                                             {"name": groups.split(",")}})
-        templates_id = self.zapi.template.get({"output": "templateid",
-                                               "filter":
-                                               {"host": templates.split(",")}})
+        groups_id = self.zapi.hostgroup.get({
+            "output": "groupid",
+            "filter": {
+                "name": groups.split(",")
+            }
+        })
+        templates_id = self.zapi.template.get({
+            "output": "templateid",
+            "filter": {
+                "host": templates.split(",")
+            }
+        })
         try:
             if proxy_id:
                 result.append(
-                    self.zapi.host.create({"host": hostname,
-                                           "groups": groups_id,
-                                           "templates": templates_id,
-                                           "interfaces": [{"type": 1,
-                                                           "main": 1,
-                                                           "useip":
-                                                           1,
-                                                           "ip": ip,
-                                                           "dns": "",
-                                                           "port":
-                                                           "10050"}],
-                                           "proxy_hostid": proxy_id,
-                                           "status": status}))
+                    self.zapi.host.create({
+                        "host": hostname,
+                        "groups": groups_id,
+                        "templates": templates_id,
+                        "interfaces": [{
+                            "type": 1,
+                            "main": 1,
+                            "useip": 1,
+                            "ip": ip,
+                            "dns": "",
+                            "port": "10050"
+                        }],
+                        "proxy_hostid": proxy_id,
+                        "status": status
+                    }))
             else:
                 result.append(
-                    self.zapi.host.create({"host": hostname,
-                                           "groups": groups_id,
-                                           "templates": templates_id,
-                                           "interfaces":
-                                           [{"type": 1,
-                                             "main": 1,
-                                             "useip": 1,
-                                             "ip": ip,
-                                             "dns": "",
-                                             "port": "10050",
-                                             "status": status}]}))
+                    self.zapi.host.create({
+                        "host": hostname,
+                        "groups": groups_id,
+                        "templates": templates_id,
+                        "interfaces": [{
+                            "type": 1,
+                            "main": 1,
+                            "useip": 1,
+                            "ip": ip,
+                            "dns": "",
+                            "port": "10050",
+                            "status": status
+                        }]
+                    }))
         except Exception as e:
             log_error(e)
             raise Exception(e)
@@ -1287,19 +1453,24 @@ class monitor:
         if not main:
             return '-m(main) need'
 
-        hostid = self.zapi.host.get({"host": hostname,
-                                     "output": "hostid"})[0]["hostid"]
-        interfaceid = self.zapi.hostinterface.get(
-            {"hostids": hostid,
-             "output": "interfaceid"})[0]["interfaceid"]
+        hostid = self.zapi.host.get({
+            "host": hostname,
+            "output": "hostid"
+        })[0]["hostid"]
+        interfaceid = self.zapi.hostinterface.get({
+            "hostids": hostid,
+            "output": "interfaceid"
+        })[0]["interfaceid"]
         result.append(hostname, '\t', hostid, '\t', interfaceid)
         try:
-            msg = self.zapi.hostinterface.update({"interfaceid": interfaceid,
-                                                  "ip": ip,
-                                                  "main": main,
-                                                  "port": port,
-                                                  "useip": useip,
-                                                  "dns": dns})
+            msg = self.zapi.hostinterface.update({
+                "interfaceid": interfaceid,
+                "ip": ip,
+                "main": main,
+                "port": port,
+                "useip": useip,
+                "dns": dns
+            })
             result.append(msg)
         except Exception as e:
             log_error(e)
@@ -1329,34 +1500,48 @@ class monitor:
         time_till = int(
             time.mktime(time.strptime(time_till, '%Y-%m-%d %H:%M:%S')))
 
-        hostid = self.zapi.host.get({"host": hostname,
-                                     "output": "hostid"})[0]["hostid"]
-        groupid = self.zapi.hostgroup.get({"output": "groupid",
-                                           "filter":
-                                           {"name": groupname}})[0]["groupid"]
+        hostid = self.zapi.host.get({
+            "host": hostname,
+            "output": "hostid"
+        })[0]["hostid"]
+        groupid = self.zapi.hostgroup.get({
+            "output": "groupid",
+            "filter": {
+                "name": groupname
+            }
+        })[0]["groupid"]
 
-        item = self.zapi.item.get({"output": ["itemid", "name"],
-                                   "hostids": hostid,
-                                   "graphids": graphid,
-                                   "groupids": groupid})
+        item = self.zapi.item.get({
+            "output": ["itemid", "name"],
+            "hostids": hostid,
+            "graphids": graphid,
+            "groupids": groupid
+        })
         for key in item:
             result.append(key['name'])
             result.append(
-                self.zapi.history.get({"output": ["value", "clock"],
-                                       "history": 0,
-                                       "itemids": key['itemid'],
-                                       "sortfield": "clock",
-                                       "sortorder": "DESC",
-                                       "time_from": time_from,
-                                       "time_till": time_till}))
+                self.zapi.history.get({
+                    "output": ["value", "clock"],
+                    "history": 0,
+                    "itemids": key['itemid'],
+                    "sortfield": "clock",
+                    "sortorder": "DESC",
+                    "time_from": time_from,
+                    "time_till": time_till
+                }))
         return result
 
     def get_graph(self, req, resp):
         hostname = req.get_param['hostname'] or req.get_header(name='HOSTNAME')
-        hostid = self.zapi.host.get(
-            {"filter": {"host": hostname}})[0]["hostid"]
-        zabbix_graph = self.zapi.graph.get({"output": "extend",
-                                            "hostid": hostid})
+        hostid = self.zapi.host.get({
+            "filter": {
+                "host": hostname
+            }
+        })[0]["hostid"]
+        zabbix_graph = self.zapi.graph.get({
+            "output": "extend",
+            "hostid": hostid
+        })
         graph_ids = {}
         for graph in zabbix_graph:
             graph_id = int(graph['graphid'])
@@ -1385,104 +1570,157 @@ class monitor:
         key_httpCode_4xx = interface + "-HttpCode-400"
         key_httpCode_5xx = interface + "-HttpCode-500"
 
-        hostid = self.zapi.template.get(
-            {"filter": {"host": hostname}})[0]["templateid"]
-        i_responseTime = self.zapi.item.get(
-            {"output": "extend",
-             "hostids": hostid,
-             "search": {"key_": key_responseTime}})[0]["itemid"]
-        i_0_200 = self.zapi.item.get({"output": "extend",
-                                      "hostids": hostid,
-                                      "search":
-                                      {"key_": key_0_200}})[0]["itemid"]
-        i_200_500 = self.zapi.item.get({"output": "extend",
-                                        "hostids": hostid,
-                                        "search":
-                                        {"key_": key_200_500}})[0]["itemid"]
-        i_500_1000 = self.zapi.item.get({"output": "extend",
-                                         "hostids": hostid,
-                                         "search":
-                                         {"key_": key_500_1000}})[0]["itemid"]
-        i_1000_2000 = self.zapi.item.get(
-            {"output": "extend",
-             "hostids": hostid,
-             "search": {"key_": key_1000_2000}})[0]["itemid"]
-        i_2000_999999 = self.zapi.item.get(
-            {"output": "extend",
-             "hostids": hostid,
-             "search": {"key_": key_2000_999999}})[0]["itemid"]
-        i_Total_Requests = self.zapi.item.get(
-            {"output": "extend",
-             "hostids": hostid,
-             "search": {"key_": key_Total_Requests}})[0]["itemid"]
+        hostid = self.zapi.template.get({
+            "filter": {
+                "host": hostname
+            }
+        })[0]["templateid"]
+        i_responseTime = self.zapi.item.get({
+            "output": "extend",
+            "hostids": hostid,
+            "search": {
+                "key_": key_responseTime
+            }
+        })[0]["itemid"]
+        i_0_200 = self.zapi.item.get({
+            "output": "extend",
+            "hostids": hostid,
+            "search": {
+                "key_": key_0_200
+            }
+        })[0]["itemid"]
+        i_200_500 = self.zapi.item.get({
+            "output": "extend",
+            "hostids": hostid,
+            "search": {
+                "key_": key_200_500
+            }
+        })[0]["itemid"]
+        i_500_1000 = self.zapi.item.get({
+            "output": "extend",
+            "hostids": hostid,
+            "search": {
+                "key_": key_500_1000
+            }
+        })[0]["itemid"]
+        i_1000_2000 = self.zapi.item.get({
+            "output": "extend",
+            "hostids": hostid,
+            "search": {
+                "key_": key_1000_2000
+            }
+        })[0]["itemid"]
+        i_2000_999999 = self.zapi.item.get({
+            "output": "extend",
+            "hostids": hostid,
+            "search": {
+                "key_": key_2000_999999
+            }
+        })[0]["itemid"]
+        i_Total_Requests = self.zapi.item.get({
+            "output": "extend",
+            "hostids": hostid,
+            "search": {
+                "key_": key_Total_Requests
+            }
+        })[0]["itemid"]
 
-        i_httpCode_200 = self.zapi.item.get(
-            {"output": "extend",
-             "hostids": hostid,
-             "search": {"key_": key_httpCode_200}})[0]["itemid"]
-        i_httpCode_4xx = self.zapi.item.get(
-            {"output": "extend",
-             "hostids": hostid,
-             "search": {"key_": key_httpCode_4xx}})[0]["itemid"]
-        i_httpCode_5xx = self.zapi.item.get(
-            {"output": "extend",
-             "hostids": hostid,
-             "search": {"key_": key_httpCode_5xx}})[0]["itemid"]
+        i_httpCode_200 = self.zapi.item.get({
+            "output": "extend",
+            "hostids": hostid,
+            "search": {
+                "key_": key_httpCode_200
+            }
+        })[0]["itemid"]
+        i_httpCode_4xx = self.zapi.item.get({
+            "output": "extend",
+            "hostids": hostid,
+            "search": {
+                "key_": key_httpCode_4xx
+            }
+        })[0]["itemid"]
+        i_httpCode_5xx = self.zapi.item.get({
+            "output": "extend",
+            "hostids": hostid,
+            "search": {
+                "key_": key_httpCode_5xx
+            }
+        })[0]["itemid"]
 
         api = "MAPI - " + name
         api_response_time = "MAPI - " + name + " response time"
 
-        self.zapi.graph.create({"name": api,
-                                "width": 900,
-                                "height": 200,
-                                "gitems":
-                                [{"itemid": i_httpCode_200,
-                                  "color": "00DD00",
-                                  "drawtype": 1,
-                                  "yaxisside": 0,
-                                  "sortorder": 0}, {"itemid": i_httpCode_4xx,
-                                                    "color": "DD00DD",
-                                                    "drawtype": 1,
-                                                    "yaxisside": 0,
-                                                    "sortorder": 1},
-                                 {"itemid": i_httpCode_5xx,
-                                  "color": "DD0000",
-                                  "drawtype": 1,
-                                  "yaxisside": 0,
-                                  "sortorder": 2}, {"itemid": i_responseTime,
-                                                    "color": "0000DD",
-                                                    "drawtype": 0,
-                                                    "yaxisside": 1,
-                                                    "sortorder": 3}]})
-        self.zapi.graph.create({"name": api_response_time,
-                                "width": 900,
-                                "height": 200,
-                                "gitems":
-                                [{"itemid": i_0_200,
-                                  "color": "33FF33",
-                                  "drawtype": 1,
-                                  "yaxisside": 0}, {"itemid": i_200_500,
-                                                    "color": "008800",
-                                                    "drawtype": 1,
-                                                    "yaxisside":
-                                                    0}, {"itemid": i_500_1000,
-                                                         "color": "CCCC00",
-                                                         "drawtype": 1,
-                                                         "yaxisside": 0},
-                                 {"itemid": i_1000_2000,
-                                  "color": "FF3333",
-                                  "drawtype": 1,
-                                  "yaxisside": 0}, {"itemid": i_2000_999999,
-                                                    "color": "880000",
-                                                    "drawtype": 1,
-                                                    "yaxisside": 0},
-                                 {"itemid": i_Total_Requests,
-                                  "color": "CC00CC",
-                                  "drawtype": 0,
-                                  "yaxisside": 0}, {"itemid": i_responseTime,
-                                                    "color": "0000BB",
-                                                    "drawtype": 0,
-                                                    "yaxisside": 1}]})
+        self.zapi.graph.create({
+            "name": api,
+            "width": 900,
+            "height": 200,
+            "gitems": [{
+                "itemid": i_httpCode_200,
+                "color": "00DD00",
+                "drawtype": 1,
+                "yaxisside": 0,
+                "sortorder": 0
+            }, {
+                "itemid": i_httpCode_4xx,
+                "color": "DD00DD",
+                "drawtype": 1,
+                "yaxisside": 0,
+                "sortorder": 1
+            }, {
+                "itemid": i_httpCode_5xx,
+                "color": "DD0000",
+                "drawtype": 1,
+                "yaxisside": 0,
+                "sortorder": 2
+            }, {
+                "itemid": i_responseTime,
+                "color": "0000DD",
+                "drawtype": 0,
+                "yaxisside": 1,
+                "sortorder": 3
+            }]
+        })
+        self.zapi.graph.create({
+            "name": api_response_time,
+            "width": 900,
+            "height": 200,
+            "gitems": [{
+                "itemid": i_0_200,
+                "color": "33FF33",
+                "drawtype": 1,
+                "yaxisside": 0
+            }, {
+                "itemid": i_200_500,
+                "color": "008800",
+                "drawtype": 1,
+                "yaxisside": 0
+            }, {
+                "itemid": i_500_1000,
+                "color": "CCCC00",
+                "drawtype": 1,
+                "yaxisside": 0
+            }, {
+                "itemid": i_1000_2000,
+                "color": "FF3333",
+                "drawtype": 1,
+                "yaxisside": 0
+            }, {
+                "itemid": i_2000_999999,
+                "color": "880000",
+                "drawtype": 1,
+                "yaxisside": 0
+            }, {
+                "itemid": i_Total_Requests,
+                "color": "CC00CC",
+                "drawtype": 0,
+                "yaxisside": 0
+            }, {
+                "itemid": i_responseTime,
+                "color": "0000BB",
+                "drawtype": 0,
+                "yaxisside": 1
+            }]
+        })
         return 'ok'
 
     def add_graph(self, req, resp):
@@ -1509,108 +1747,167 @@ class monitor:
         key_retMsg_FAIL = interface + "-retMsg-FAIL"
         key_retMsg_SUCC = interface + "-retMsg-SUCC"
 
-        hostid = self.zapi.host.get(
-            {"filter": {"host": hostname}})[0]["hostid"]
-        i_responseTime = self.zapi.item.get(
-            {"output": "extend",
-             "hostids": hostid,
-             "search": {"key_": key_responseTime}})[0]["itemid"]
-        i_0_200 = self.zapi.item.get({"output": "extend",
-                                      "hostids": hostid,
-                                      "search":
-                                      {"key_": key_0_200}})[0]["itemid"]
-        i_200_500 = self.zapi.item.get({"output": "extend",
-                                        "hostids": hostid,
-                                        "search":
-                                        {"key_": key_200_500}})[0]["itemid"]
-        i_500_1000 = self.zapi.item.get({"output": "extend",
-                                         "hostids": hostid,
-                                         "search":
-                                         {"key_": key_500_1000}})[0]["itemid"]
-        i_1000_2000 = self.zapi.item.get(
-            {"output": "extend",
-             "hostids": hostid,
-             "search": {"key_": key_1000_2000}})[0]["itemid"]
-        i_2000_999999 = self.zapi.item.get(
-            {"output": "extend",
-             "hostids": hostid,
-             "search": {"key_": key_2000_999999}})[0]["itemid"]
-        i_Total_Requests = self.zapi.item.get(
-            {"output": "extend",
-             "hostids": hostid,
-             "search": {"key_": key_Total_Requests}})[0]["itemid"]
-        i_retMsg_FAIL = self.zapi.item.get(
-            {"output": "extend",
-             "hostids": hostid,
-             "search": {"key_": key_retMsg_FAIL}})[0]["itemid"]
-        i_retMsg_SUCC = self.zapi.item.get(
-            {"output": "extend",
-             "hostids": hostid,
-             "search": {"key_": key_retMsg_SUCC}})[0]["itemid"]
+        hostid = self.zapi.host.get({
+            "filter": {
+                "host": hostname
+            }
+        })[0]["hostid"]
+        i_responseTime = self.zapi.item.get({
+            "output": "extend",
+            "hostids": hostid,
+            "search": {
+                "key_": key_responseTime
+            }
+        })[0]["itemid"]
+        i_0_200 = self.zapi.item.get({
+            "output": "extend",
+            "hostids": hostid,
+            "search": {
+                "key_": key_0_200
+            }
+        })[0]["itemid"]
+        i_200_500 = self.zapi.item.get({
+            "output": "extend",
+            "hostids": hostid,
+            "search": {
+                "key_": key_200_500
+            }
+        })[0]["itemid"]
+        i_500_1000 = self.zapi.item.get({
+            "output": "extend",
+            "hostids": hostid,
+            "search": {
+                "key_": key_500_1000
+            }
+        })[0]["itemid"]
+        i_1000_2000 = self.zapi.item.get({
+            "output": "extend",
+            "hostids": hostid,
+            "search": {
+                "key_": key_1000_2000
+            }
+        })[0]["itemid"]
+        i_2000_999999 = self.zapi.item.get({
+            "output": "extend",
+            "hostids": hostid,
+            "search": {
+                "key_": key_2000_999999
+            }
+        })[0]["itemid"]
+        i_Total_Requests = self.zapi.item.get({
+            "output": "extend",
+            "hostids": hostid,
+            "search": {
+                "key_": key_Total_Requests
+            }
+        })[0]["itemid"]
+        i_retMsg_FAIL = self.zapi.item.get({
+            "output": "extend",
+            "hostids": hostid,
+            "search": {
+                "key_": key_retMsg_FAIL
+            }
+        })[0]["itemid"]
+        i_retMsg_SUCC = self.zapi.item.get({
+            "output": "extend",
+            "hostids": hostid,
+            "search": {
+                "key_": key_retMsg_SUCC
+            }
+        })[0]["itemid"]
 
         api = "API (" + pool + ") -- " + name
         api_response_time = "API (" + pool + ") -- " + name + " response time"
         api_response_time_pie = "API (" + pool + ") -- " + name + " response time (pie)"
 
-        self.zapi.graph.create({"name": api,
-                                "width": 900,
-                                "height": 200,
-                                "gitems":
-                                [{"itemid": i_retMsg_FAIL,
-                                  "color": "CC0000",
-                                  "drawtype": 1,
-                                  "yaxisside": 0}, {"itemid": i_retMsg_SUCC,
-                                                    "color": "00EE00",
-                                                    "drawtype": 1,
-                                                    "yaxisside": 0},
-                                 {"itemid": i_Total_Requests,
-                                  "color": "C800C8",
-                                  "drawtype": 0,
-                                  "yaxisside": 0}, {"itemid": i_responseTime,
-                                                    "color": "0000BB",
-                                                    "drawtype": 0,
-                                                    "yaxisside": 1}]})
-        self.zapi.graph.create({"name": api_response_time,
-                                "width": 900,
-                                "height": 200,
-                                "gitems":
-                                [{"itemid": i_0_200,
-                                  "color": "33FF33",
-                                  "drawtype": 1,
-                                  "yaxisside": 0}, {"itemid": i_200_500,
-                                                    "color": "008800",
-                                                    "drawtype": 1,
-                                                    "yaxisside":
-                                                    0}, {"itemid": i_500_1000,
-                                                         "color": "CCCC00",
-                                                         "drawtype": 1,
-                                                         "yaxisside": 0},
-                                 {"itemid": i_1000_2000,
-                                  "color": "FF3333",
-                                  "drawtype": 1,
-                                  "yaxisside": 0}, {"itemid": i_2000_999999,
-                                                    "color": "880000",
-                                                    "drawtype": 1,
-                                                    "yaxisside": 0},
-                                 {"itemid": i_Total_Requests,
-                                  "color": "CC00CC",
-                                  "drawtype": 0,
-                                  "yaxisside": 0}, {"itemid": i_responseTime,
-                                                    "color": "0000BB",
-                                                    "drawtype": 0,
-                                                    "yaxisside": 1}]})
-        self.zapi.graph.create({"name": api_response_time_pie,
-                                "width": 900,
-                                "height": 300,
-                                "graphtype": 2,
-                                "gitems":
-                                [{"itemid": i_0_200,
-                                  "color": "33FF33"}, {"itemid": i_200_500,
-                                                       "color": "008800"},
-                                 {"itemid": i_500_1000,
-                                  "color": "CCCC00"}, {"itemid": i_1000_2000,
-                                                       "color": "FF3333"},
-                                 {"itemid": i_2000_999999,
-                                  "color": "880000"}]})
+        self.zapi.graph.create({
+            "name": api,
+            "width": 900,
+            "height": 200,
+            "gitems": [{
+                "itemid": i_retMsg_FAIL,
+                "color": "CC0000",
+                "drawtype": 1,
+                "yaxisside": 0
+            }, {
+                "itemid": i_retMsg_SUCC,
+                "color": "00EE00",
+                "drawtype": 1,
+                "yaxisside": 0
+            }, {
+                "itemid": i_Total_Requests,
+                "color": "C800C8",
+                "drawtype": 0,
+                "yaxisside": 0
+            }, {
+                "itemid": i_responseTime,
+                "color": "0000BB",
+                "drawtype": 0,
+                "yaxisside": 1
+            }]
+        })
+        self.zapi.graph.create({
+            "name": api_response_time,
+            "width": 900,
+            "height": 200,
+            "gitems": [{
+                "itemid": i_0_200,
+                "color": "33FF33",
+                "drawtype": 1,
+                "yaxisside": 0
+            }, {
+                "itemid": i_200_500,
+                "color": "008800",
+                "drawtype": 1,
+                "yaxisside": 0
+            }, {
+                "itemid": i_500_1000,
+                "color": "CCCC00",
+                "drawtype": 1,
+                "yaxisside": 0
+            }, {
+                "itemid": i_1000_2000,
+                "color": "FF3333",
+                "drawtype": 1,
+                "yaxisside": 0
+            }, {
+                "itemid": i_2000_999999,
+                "color": "880000",
+                "drawtype": 1,
+                "yaxisside": 0
+            }, {
+                "itemid": i_Total_Requests,
+                "color": "CC00CC",
+                "drawtype": 0,
+                "yaxisside": 0
+            }, {
+                "itemid": i_responseTime,
+                "color": "0000BB",
+                "drawtype": 0,
+                "yaxisside": 1
+            }]
+        })
+        self.zapi.graph.create({
+            "name": api_response_time_pie,
+            "width": 900,
+            "height": 300,
+            "graphtype": 2,
+            "gitems": [{
+                "itemid": i_0_200,
+                "color": "33FF33"
+            }, {
+                "itemid": i_200_500,
+                "color": "008800"
+            }, {
+                "itemid": i_500_1000,
+                "color": "CCCC00"
+            }, {
+                "itemid": i_1000_2000,
+                "color": "FF3333"
+            }, {
+                "itemid": i_2000_999999,
+                "color": "880000"
+            }]
+        })
 
         return 'ok'

@@ -455,7 +455,8 @@ class Aliyun:
             data_disk_policy_enabled=data_disk_policy_enabled,
             data_disk_policy_time_period=data_disk_policy_time_period,
             data_disk_policy_retention_days=data_disk_policy_retention_days,
-            data_disk_policy_retention_last_week=data_disk_policy_retention_last_week)
+            data_disk_policy_retention_last_week=data_disk_policy_retention_last_week
+        )
 
     def describe_disks(self, req, resp):
         zone_id = req.get_param(name='zone_id')

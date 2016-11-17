@@ -205,8 +205,9 @@ class ExecLog():
         if is_log2db:
             try:
                 db._ensure_connected()
-                db.insert(sql, user, host, MySQLdb.escape_string(cmd),
-                          remote_ip, MySQLdb.escape_string(str(result)))
+                db.insert(sql, user, host,
+                          MySQLdb.escape_string(cmd), remote_ip,
+                          MySQLdb.escape_string(str(result)))
             except Exception as err:
                 pass
 
@@ -219,8 +220,9 @@ class ExecLog():
 class FileLog():
     def __init__(self, host, filename, type, remote_ip, result):
         self.msg = str(
-            host) + '\r\r' + filename + '\r\r' + type + '\r\r' + remote_ip + '\r\r' + str(
-                result) + '\r\n\r\n\r\n'
+            host
+        ) + '\r\r' + filename + '\r\r' + type + '\r\r' + remote_ip + '\r\r' + str(
+            result) + '\r\n\r\n\r\n'
         if is_log2db:
             try:
                 db._ensure_connected()
@@ -267,11 +269,13 @@ def set_log(level, filename='shell.log'):
     根据提示设置log打印
     """
     log_file = os.path.join(LOG_DIR, filename)
-    log_level_total = {'debug': logging.DEBUG,
-                       'info': logging.INFO,
-                       'warning': logging.WARN,
-                       'error': logging.ERROR,
-                       'critical': logging.CRITICAL}
+    log_level_total = {
+        'debug': logging.DEBUG,
+        'info': logging.INFO,
+        'warning': logging.WARN,
+        'error': logging.ERROR,
+        'critical': logging.CRITICAL
+    }
     logger_f = logging.getLogger('jumpserver')
     logger_f.setLevel(logging.DEBUG)
     fh = logging.FileHandler(log_file)
@@ -749,6 +753,7 @@ class App(MyPlaybook):
     def __init__(self, *args, **kwargs):
         super(App, self).__init__(*args, **kwargs)
 
+
 #---------------------------------------------------------------------
 # 开始
 #---------------------------------------------------------------------
@@ -775,12 +780,14 @@ def color_print(msg, color='red', exits=False):
     Print colorful string.
     颜色打印字符或者退出
     """
-    color_msg = {'blue': '\033[1;36m%s\033[0m',
-                 'green': '\033[1;32m%s\033[0m',
-                 'yellow': '\033[1;33m%s\033[0m',
-                 'red': '\033[1;31m%s\033[0m',
-                 'title': '\033[30;42m%s\033[0m',
-                 'info': '\033[32m%s\033[0m'}
+    color_msg = {
+        'blue': '\033[1;36m%s\033[0m',
+        'green': '\033[1;32m%s\033[0m',
+        'yellow': '\033[1;33m%s\033[0m',
+        'red': '\033[1;31m%s\033[0m',
+        'title': '\033[30;42m%s\033[0m',
+        'info': '\033[32m%s\033[0m'
+    }
     msg = color_msg.get(color, 'red') % msg
     print msg
     if exits:

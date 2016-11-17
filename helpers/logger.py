@@ -14,21 +14,25 @@ logger = logging.getLogger(__name__)
 handler = RotatingFileHandler(log_error_config.get('log_file'), **log_common)
 handler.setFormatter(
     logging.Formatter(
-        '%(asctime)s %(levelname)-8s[%(filename)s:%(lineno)d(%(funcName)s)] %(message)s'))
+        '%(asctime)s %(levelname)-8s[%(filename)s:%(lineno)d(%(funcName)s)] %(message)s'
+    ))
 logger.addHandler(handler)
 
 logger_debug = logging.getLogger(__name__ + '_debug')
 handler = RotatingFileHandler(log_debug_config.get('log_file'), **log_common)
 handler.setFormatter(
     logging.Formatter(
-        '%(asctime)s %(levelname)-8s[%(filename)s:%(lineno)d(%(funcName)s)] %(message)s'))
+        '%(asctime)s %(levelname)-8s[%(filename)s:%(lineno)d(%(funcName)s)] %(message)s'
+    ))
 logger_debug.addHandler(handler)
 
 
 def print_stack():
     ex_type, value, tb = sys.exc_info()
-    errorlist = [line.lstrip()
-                 for line in traceback.format_exception(ex_type, value, tb)]
+    errorlist = [
+        line.lstrip()
+        for line in traceback.format_exception(ex_type, value, tb)
+    ]
     errorlist.reverse()
     return '\n' + ''.join(errorlist)
 

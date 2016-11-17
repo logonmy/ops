@@ -40,8 +40,10 @@ class Ldap:
         conn.search(
             search_base=search_base,
             search_filter=search_filter,
-            attributes=['cn', 'userPrincipalName', 'userAccountControl',
-                        'givenName', 'sn'])
+            attributes=[
+                'cn', 'userPrincipalName', 'userAccountControl', 'givenName',
+                'sn'
+            ])
         return conn.response
 
     def rebind(self, req, resp):

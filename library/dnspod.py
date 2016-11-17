@@ -14,9 +14,10 @@ class DnspodApiError(Exception):
 
 class Dnspod:
     def __init__(self):
-        dp_response = self.__request(
-            'Auth', {'login_email': dnspod_config.get('login_email'),
-                     'login_password': dnspod_config.get('login_password')})
+        dp_response = self.__request('Auth', {
+            'login_email': dnspod_config.get('login_email'),
+            'login_password': dnspod_config.get('login_password')
+        })
         self.__token = dp_response['user_token']
 
     def __request(self, action_addr, params=None):
@@ -49,11 +50,13 @@ class Dnspod:
     def add_record(self, domain_uid, record_type, name, content):
         if record_type not in allowedTypes:
             raise DnspodApiError('Type: ' + record_type + ' is not allowed!')
-        post_fields = {'domain_id': domain_uid,
-                       'sub_domain': name,
-                       'record_type': record_type,
-                       'record_line': 'default',
-                       'value': content}
+        post_fields = {
+            'domain_id': domain_uid,
+            'sub_domain': name,
+            'record_type': record_type,
+            'record_line': 'default',
+            'value': content
+        }
         dp_response = self.__request('Record.Create', post_fields)
         return dp_response['record']['id']
 
@@ -72,6 +75,7 @@ class Dnspod:
         return dp_response['record']['id']
 
     def deleteRecord(self, domainUid, recordId):
-        self.__request('Record.Remove', {'domain_id': domainUid,
-                                         'record_id': recordId})
+        self.__request('Record.Remove',
+                       {'domain_id': domainUid,
+                        'record_id': recordId})
         return True

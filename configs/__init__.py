@@ -75,8 +75,10 @@ cobbler_config = {
 }
 
 cmdb_config = {
-    'key_can_use_list': ['cop', 'owt', 'loc', 'idc', 'pdl', 'sbs', 'srv',
-                         'mod', 'grp', 'ptn', 'cln', 'fls', 'status', 'virt']
+    'key_can_use_list': [
+        'cop', 'owt', 'loc', 'idc', 'pdl', 'sbs', 'srv', 'mod', 'grp', 'ptn',
+        'cln', 'fls', 'status', 'virt'
+    ]
 }
 deploy_config = {
     'deploy_to_dir': '/data/www',
@@ -134,9 +136,15 @@ ovs_config = {'port': 6632, }
 
 advance_path = [
     # path => user list
-    {r'/dns/*': ['admin', 'manager', 'ops']},
-    {r'/idrac/*': ['admin', 'manager', 'ops']},
-    {r'/kvm/add_flavor': ['admin', 'manager', 'ops']}
+    {
+        r'/dns/*': ['admin', 'manager', 'ops']
+    },
+    {
+        r'/idrac/*': ['admin', 'manager', 'ops']
+    },
+    {
+        r'/kvm/add_flavor': ['admin', 'manager', 'ops']
+    }
 ]
 
 aliyun_config = {
@@ -160,12 +168,16 @@ cloudflare_config = {'token': '', 'email': ''}
 ldap_config = {'url': '', 'user': '', 'password': ''}
 
 netconf_config = {
-    'nexus': {'user': 'test',
-              'password': '',
-              'port': 830},
-    'h3c': {'user': 'test',
-            'password': '',
-            'port': 830}
+    'nexus': {
+        'user': 'test',
+        'password': '',
+        'port': 830
+    },
+    'h3c': {
+        'user': 'test',
+        'password': '',
+        'port': 830
+    }
 }
 elasticsearch_config = {'hosts': ''}
 

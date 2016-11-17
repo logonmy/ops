@@ -346,10 +346,10 @@ class IPint:
         if self._ipversion == 4:
             ret = self.strFullsize(0)
         elif self._ipversion == 6:
-            ret = ':'.join(
-                [hex(x)[2:]
-                 for x in [int(x, 16)
-                           for x in self.strFullsize(0).split(':')]])
+            ret = ':'.join([
+                hex(x)[2:]
+                for x in [int(x, 16) for x in self.strFullsize(0).split(':')]
+            ])
         else:
             raise ValueError, "only IPv4 and IPv6 supported"
 
@@ -933,8 +933,9 @@ def _parseAddressIPv6(ipstr):
             raise ValueError("%r: Invalid IPv6 address: '::' after IPv4" %
                              ipstr)
         value = parseAddress(items[-1])[0]
-        items = items[:-1] + ["%04x" % (value >> 16), "%04x" %
-                              (value & 0xffff)]
+        items = items[:-1] + [
+            "%04x" % (value >> 16), "%04x" % (value & 0xffff)
+        ]
 
     # Expand fill_pos to fill with '0'
     # ['1','2'] with fill_pos=1 => ['1', '0', '0', '0', '0', '0', '0', '2']
@@ -1107,22 +1108,24 @@ def _countFollowingZeros(l):
         return 1 + _countFollowingZeros(l[1:])
 
 
-_BitTable = {'0': '0000',
-             '1': '0001',
-             '2': '0010',
-             '3': '0011',
-             '4': '0100',
-             '5': '0101',
-             '6': '0110',
-             '7': '0111',
-             '8': '1000',
-             '9': '1001',
-             'a': '1010',
-             'b': '1011',
-             'c': '1100',
-             'd': '1101',
-             'e': '1110',
-             'f': '1111'}
+_BitTable = {
+    '0': '0000',
+    '1': '0001',
+    '2': '0010',
+    '3': '0011',
+    '4': '0100',
+    '5': '0101',
+    '6': '0110',
+    '7': '0111',
+    '8': '1000',
+    '9': '1001',
+    'a': '1010',
+    'b': '1011',
+    'c': '1100',
+    'd': '1101',
+    'e': '1110',
+    'f': '1111'
+}
 
 
 def _intToBin(val):

@@ -127,9 +127,11 @@ class cdn:
     def _refresh_chinacache(self, domain, files):
         urls = ['http//' + domain + '/' + filename for filename in files]
         task = '{"urls":%s}' % urls
-        data = {'username': chinacache_config.get('username'),
-                'password': chinacache_config.get('password'),
-                'task': task}
+        data = {
+            'username': chinacache_config.get('username'),
+            'password': chinacache_config.get('password'),
+            'task': task
+        }
         r = requests.post(
             'https://r.chinacache.com/content/refresh', data=data)
         return r.text

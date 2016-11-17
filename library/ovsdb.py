@@ -67,9 +67,11 @@ class OVSDBConnection(threading.Thread):
                           e.message, message)
 
     def __echo_response(message, self):
-        self.send({"result": message.get("params", None),
-                   "error": None,
-                   "id": message['id']})
+        self.send({
+            "result": message.get("params", None),
+            "error": None,
+            "id": message['id']
+        })
 
     def run(self):
 
@@ -110,9 +112,11 @@ class OVSDBConnection(threading.Thread):
     @staticmethod
     def default_echo_handler(message, ovsconn):
         log_debug("responding to echo")
-        ovsconn.send({"result": message.get("params", None),
-                      "error": None,
-                      "id": message['id']})
+        ovsconn.send({
+            "result": message.get("params", None),
+            "error": None,
+            "id": message['id']
+        })
 
     @staticmethod
     def default_message_handler(message, ovsconn):

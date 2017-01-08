@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+
+#http://cbs.centos.org/repos/virt7-kvm-common-release/x86_64/os/Packages/
+
 yum install -y qemu-kvm libvirt bridge-utils lvm2 wget xfsprogs
 sed -i 's/#LIBVIRTD_ARGS/LIBVIRTD_ARGS/g' /etc/sysconfig/libvirtd
 sed -i 's/#listen_tls/listen_tls/g' /etc/libvirt/libvirtd.conf

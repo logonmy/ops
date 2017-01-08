@@ -2,6 +2,7 @@
 
 
 #http://cbs.centos.org/repos/virt7-kvm-common-release/x86_64/os/Packages/
+#qemu-kvm >=2.5 libvirt>=2.5 openvswitch>=2.6
 
 yum install -y qemu-kvm libvirt bridge-utils lvm2 wget xfsprogs
 sed -i 's/#LIBVIRTD_ARGS/LIBVIRTD_ARGS/g' /etc/sysconfig/libvirtd
